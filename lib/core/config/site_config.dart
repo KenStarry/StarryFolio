@@ -134,13 +134,20 @@ class SiteConfig {
   ///
   /// Empty until provided; the channel tile is omitted rather than rendering a
   /// link to `wa.me/` that opens WhatsApp on nothing.
-  static const String whatsappNumber = '';
+  ///
+  /// `254…` not `+254…` — wa.me takes the country code but rejects the plus.
+  static const String whatsappNumber = '254717446607';
 
   /// Buy Me a Coffee username, the part after `buymeacoffee.com/`. Empty hides
   /// the support section entirely.
-  static const String buyMeACoffee = '';
+  static const String buyMeACoffee = 'kenstarry';
 
-  static String get whatsappUrl => 'https://wa.me/$whatsappNumber';
+  /// Pre-fills the opening message, so the visitor is not dropped into an
+  /// empty thread wondering how to start — and so the enquiry arrives already
+  /// labelled with where it came from.
+  static String get whatsappUrl =>
+      'https://wa.me/$whatsappNumber'
+      '?text=${Uri.encodeComponent('Hi Ken — I found you via kenstarry.com.')}';
   static String get buyMeACoffeeUrl => 'https://buymeacoffee.com/$buyMeACoffee';
 
   static const List<SocialLink> socials = [
