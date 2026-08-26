@@ -4,44 +4,42 @@ import 'package:jaspr/jaspr.dart';
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/cta_button.dart';
-import '../../../../core/presentation/components/eyebrow.dart';
 import '../../../../core/routing/route_paths.dart';
 import 'portrait_frame.dart';
 
 /// Above-the-fold hero. Owns the page's only `<h1>`.
 ///
-/// Three columns, as in the reference: the name at display size on the left,
-/// the card stack in the middle, and a narrow introduction column on the right.
-/// Below `lg` it collapses to one column with the stack last, so the name and
-/// the introduction stay adjacent on a phone.
+/// Two columns rather than the reference's three. The reference's middle column
+/// held a tall cutout figure that filled it vertically; this avatar is square,
+/// and squeezed into a narrow middle column it had no presence at all. Merging
+/// the name and the introduction into one column gives the card roughly half
+/// the width to sit in, and lets the name run at real display size.
 ///
-/// Entrances here are time-based (`.rise` + `.d-N`) rather than scroll-driven:
-/// this content is already in view on load, so a scroll timeline would have
-/// nothing to advance it and the hero would sit at its start state forever.
+/// Entrances are time-based (`.rise` + `.d-N`) rather than scroll-driven: this
+/// content is already in view on load, so a scroll timeline would have nothing
+/// to advance it and the hero would sit at its start state forever.
 class HeroSection extends StatelessComponent {
   const HeroSection({super.key});
 
   @override
   Component build(BuildContext context) {
     return section(
-      classes: 'bg-ink-900 pb-24 pt-10 sm:pb-32 lg:pb-40',
+      classes: 'relative bg-ink-900 pb-24 pt-12 sm:pb-32 lg:pb-36 lg:pt-6',
       [
         div(
           classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
             div(
-              classes: 'grid items-end gap-14 '
-                  'lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)_minmax(0,0.86fr)] '
-                  'lg:gap-10',
+              classes: 'grid items-center gap-16 lg:grid-cols-[1.06fr_0.94fr] '
+                  'lg:gap-20',
               [
-                // ── Name ──
+                // ── Copy ──
                 div(
-                  classes: 'lg:pb-6',
                   [
                     if (SiteConfig.available) _availability(),
 
                     const h1(
-                      classes: 'rise d-2 type-display mt-7 font-display '
+                      classes: 'rise d-2 type-display mt-8 font-display '
                           'font-extrabold text-ink-100',
                       [
                         Component.text(SiteConfig.firstName),
@@ -51,8 +49,8 @@ class HeroSection extends StatelessComponent {
                     ),
 
                     // The mark under the name. Two weights of the same accent
-                    // rather than one bar — it reads as a considered detail at
-                    // the exact place the eye lands after the name.
+                    // rather than one bar — a considered detail exactly where
+                    // the eye lands after reading the name.
                     const div(
                       classes: 'rise d-3 mt-8 flex items-center gap-2',
                       [
@@ -61,36 +59,26 @@ class HeroSection extends StatelessComponent {
                       ],
                     ),
 
-                    _socials(),
-                  ],
-                ),
-
-                // ── Card stack ──
-                // `order-last` on small screens keeps the reading order
-                // name → introduction → portrait, while the DOM order stays
-                // name → portrait → introduction for the desktop grid.
-                const div(
-                  classes: 'rise d-5 order-last lg:order-none',
-                  [PortraitFrame()],
-                ),
-
-                // ── Introduction ──
-                const div(
-                  classes: 'rise d-4 lg:pb-6',
-                  [
-                    Eyebrow('Introduction'),
-                    p(
-                      classes: 'type-quote mt-6 font-display font-semibold '
-                          'text-ink-100',
+                    const p(
+                      classes: 'rise d-4 type-quote mt-9 max-w-md font-display '
+                          'font-semibold text-ink-100',
                       [Component.text(SiteConfig.heroStatement)],
                     ),
-                    p(
-                      classes: 'mt-6 text-sm leading-relaxed text-ink-400',
+
+                    const p(
+                      classes: 'rise d-5 mt-6 max-w-md text-sm leading-relaxed '
+                          'text-ink-400',
                       [Component.text(SiteConfig.heroLead)],
                     ),
-                    div(
-                      classes: 'mt-9',
+
+                    const div(
+                      classes: 'rise d-6 mt-10 flex flex-wrap items-center '
+                          'gap-x-8 gap-y-4',
                       [
+                        CtaButton(
+                          label: 'See the work',
+                          href: RoutePaths.projects,
+                        ),
                         CtaButton(
                           label: 'My story',
                           href: '${RoutePaths.home}#about',
@@ -98,7 +86,15 @@ class HeroSection extends StatelessComponent {
                         ),
                       ],
                     ),
+
+                    _socials(),
                   ],
+                ),
+
+                // ── Avatar ──
+                const div(
+                  classes: 'rise d-4 order-first lg:order-none',
+                  [PortraitFrame()],
                 ),
               ],
             ),
@@ -113,10 +109,7 @@ class HeroSection extends StatelessComponent {
   static Component _availability() => const div(
         classes: 'rise d-1 inline-flex items-center gap-2.5',
         [
-          span(
-            classes: 'h-1.5 w-1.5 rounded-full bg-iris-400 dot-live',
-            [],
-          ),
+          span(classes: 'h-1.5 w-1.5 rounded-full bg-iris-400 dot-live', []),
           span(
             classes: 'type-eyebrow font-mono text-ink-400',
             [Component.text(SiteConfig.availabilityLabel)],
@@ -125,8 +118,14 @@ class HeroSection extends StatelessComponent {
       );
 
   static Component _socials() => div(
-        classes: 'rise d-6 mt-12 flex items-center gap-5',
+        classes: 'rise d-7 mt-14 flex items-center gap-5 border-t '
+            'border-ink-800 pt-8',
         [
+          const span(
+            classes: 'type-eyebrow font-mono text-ink-500',
+            [Component.text('Find me')],
+          ),
+          const span(classes: 'h-px w-6 bg-ink-700', []),
           for (final social in SiteConfig.socials)
             a(
               href: social.url,

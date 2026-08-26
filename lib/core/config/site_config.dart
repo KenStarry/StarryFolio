@@ -42,16 +42,18 @@ class SiteConfig {
 
   // ── Hero ──────────────────────────────────────────────────────────────────
 
-  /// Portrait for the hero card, as a path under `web/`.
+  /// Avatar for the hero card, as a path under `web/`.
   ///
-  /// Currently a placeholder SVG drawn in the site palette. **To finish the
-  /// hero:** drop a real 4:5 portrait into `web/images/` and point this at it —
-  /// the card stack, its proportions and every offset stay identical, so
-  /// swapping the file shifts no layout.
-  static const String portrait = 'images/portrait-placeholder.svg';
+  /// **Authored square.** The subject fills the full frame and sits flush to
+  /// the bottom edge, so the card is `aspect-square` and the image is
+  /// `object-contain` — cropping it to a portrait ratio would cut the laptop
+  /// and the glass straight off, which is the whole joke.
+  static const String portrait = 'images/ken-avatar.webp';
 
+  /// Describes what is actually in the frame rather than claiming to be a
+  /// photograph of a person — the avatar is an illustration.
   static const String portraitAlt =
-      '$name — $role, based in $location';
+      "$name's avatar — a ginger cat in a hoodie working at a laptop";
 
   /// Named in the About section's "Currently" panel. Kept here so the panel
   /// never has to hard-code a project name that could go stale.
