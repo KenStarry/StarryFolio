@@ -12,8 +12,15 @@
   //   * `_routes.json` is a Pages concept and no longer applies. Requests that
   //     match a static asset are served directly; only what does not match
   //     reaches the Worker, which is exactly the routing that file used to buy.
-  "name": "kenstarry",
-  "compatibility_date": "2026-08-27",
+  // Must match the Workers project name exactly, or the CI overrides it and
+  // offers to open a PR fixing the mismatch.
+  "name": "starryfolio",
+  // Kept a little behind today. Cloudflare rejects a date its own clock has
+  // not reached yet ("Can't set compatibility date in the future", 10021),
+  // and a build running late in the UTC day will trip over a same-day value.
+  // The exact date only pins runtime semantics; a few days back costs
+  // nothing.
+  "compatibility_date": "2026-08-20",
 
   // Produced by `scripts/build.sh`, which must run before `wrangler deploy`.
   "main": "./build/jaspr/_worker.js",
