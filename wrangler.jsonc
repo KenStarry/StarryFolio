@@ -28,8 +28,27 @@
   "assets": {
     "directory": "./build/jaspr",
     "binding": "ASSETS",
+
+    // Cloudflare's default is "auto-trailing-slash", which 307s /projects to
+    // /projects/. Every canonical tag and every sitemap entry this site emits
+    // omits the trailing slash, so the default made each of them redirect —
+    // an extra round trip per navigation, and a canonical URL that does not
+    // serve its own page. Dropping the slash makes the served URL and the
+    // declared one identical.
+    "html_handling": "drop-trailing-slash",
+
     // Serves the pre-rendered 404.html for unmatched routes, which is what the
     // Netlify redirect rule used to do.
     "not_found_handling": "404-page"
-  }
+  },
+
+  // Both default to true and warn when unset. Declared explicitly so the
+  // choice is visible rather than implicit.
+  //
+  // Worth revisiting once kenstarry.com is attached: the site would then be
+  // reachable at two hostnames. The canonical tags all point at the custom
+  // domain, so this is not harmful, but setting it false afterwards removes
+  // the ambiguity entirely.
+  "workers_dev": true,
+  "preview_urls": true
 }
