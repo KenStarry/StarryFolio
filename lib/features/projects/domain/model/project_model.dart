@@ -14,7 +14,6 @@ class ProjectModel {
     required this.stack,
     required this.summary,
     this.highlights = const [],
-    this.gradient = 'from-star-400/25 to-ink-600/10',
     this.repoUrl,
     this.liveUrl,
     this.storeUrl,
@@ -35,9 +34,6 @@ class ProjectModel {
   /// Bullet points — what was actually built or learned.
   final List<String> highlights;
 
-  /// Tailwind gradient stops for the card header.
-  final String gradient;
-
   final String? repoUrl;
   final String? liveUrl;
   final String? storeUrl;
@@ -57,7 +53,6 @@ class ProjectModel {
         stack: _stringList(map['stack']),
         summary: _stringList(map['summary']),
         highlights: _stringList(map['highlights']),
-        gradient: map['gradient']?.toString() ?? 'from-star-400/25 to-ink-600/10',
         repoUrl: map['repoUrl']?.toString(),
         liveUrl: map['liveUrl']?.toString(),
         storeUrl: map['storeUrl']?.toString(),
@@ -73,7 +68,6 @@ class ProjectModel {
         'stack': stack,
         'summary': summary,
         'highlights': highlights,
-        'gradient': gradient,
         'repoUrl': repoUrl,
         'liveUrl': liveUrl,
         'storeUrl': storeUrl,

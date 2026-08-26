@@ -7,13 +7,10 @@ import 'core/config/site_config.dart';
 // Red squiggle before that first run is expected.
 import 'main.server.options.dart';
 
-/// Runs before paint so the correct theme is applied without a flash.
-const _themeBoot = "(function(){try{"
-    "var t=localStorage.getItem('theme');"
-    "var dark=t?t==='dark':true;"
-    "document.documentElement.classList.toggle('dark',dark);"
-    "}catch(e){document.documentElement.classList.add('dark');}})();";
-
+/// The site is a single committed dark theme built on two tones — there is no
+/// light palette and no toggle, so there is also no theme-boot script and no
+/// flash to guard against. The `dark` class and `localStorage` read that used
+/// to live here are gone with it.
 void main() {
   Jaspr.initializeApp(options: defaultServerOptions);
 
@@ -24,7 +21,8 @@ void main() {
       meta: {
         'description': SiteConfig.tagline,
         'author': SiteConfig.name,
-        'theme-color': '#07070b',
+        'theme-color': '#282739',
+        'color-scheme': 'dark',
       },
       head: [
         link(rel: 'icon', href: '/favicon.svg', attributes: {'type': 'image/svg+xml'}),
@@ -37,8 +35,8 @@ void main() {
         link(
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2'
-              '?family=Inter:wght@400;500;600;700'
-              '&family=Space+Grotesk:wght@500;600;700'
+              '?family=Inter:wght@400;500;600'
+              '&family=Plus+Jakarta+Sans:wght@500;600;700;800'
               '&family=JetBrains+Mono:wght@400;500&display=swap',
         ),
         // Tailwind output, compiled from web/styles.tw.css by jaspr_tailwind.
@@ -50,8 +48,6 @@ void main() {
         // Per-page canonical, Open Graph and JSON-LD live in `core/seo/`.
         meta(name: 'twitter:card', content: 'summary_large_image'),
         meta(name: 'robots', content: 'index, follow, max-image-preview:large'),
-
-        script(content: _themeBoot),
       ],
       body: App(),
     ),

@@ -1,96 +1,92 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
-import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
+import '../../../../core/presentation/components/cta_button.dart';
+import '../../../../core/presentation/components/eyebrow.dart';
 import '../../../../core/routing/route_paths.dart';
+import 'portrait_frame.dart';
 
 /// Above-the-fold hero. Owns the page's only `<h1>`.
+///
+/// Three columns, as in the reference: the name at display size on the left,
+/// the portrait in the middle, and a narrow introduction column on the right.
+/// Below `lg` it collapses to a single column with the portrait last, so the
+/// name and the introduction stay adjacent on a phone.
 class HeroSection extends StatelessComponent {
   const HeroSection({super.key});
 
   @override
   Component build(BuildContext context) {
     return section(
-      classes: 'relative overflow-hidden',
+      classes: 'bg-ink-900 pb-24 pt-10 sm:pb-32 lg:pb-40',
       [
-        // Ambient glow + starfield, purely decorative.
-        const div(
-          classes: 'pointer-events-none absolute inset-0 '
-              'bg-[radial-gradient(60%_50%_at_50%_0%,rgba(246,200,90,0.14),transparent_70%)]',
-          [],
-        ),
-        const div(
-          classes: 'starfield pointer-events-none absolute inset-0 opacity-0 dark:opacity-100',
-          [],
-        ),
         div(
-          classes: 'relative mx-auto max-w-6xl px-5 pt-24 pb-20 sm:px-8 sm:pt-32 sm:pb-28',
+          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
-            p(
-              classes: 'flex items-center gap-2 font-mono text-xs uppercase '
-                  'tracking-[0.2em] text-star-500 dark:text-star-400',
-              [
-                AppIcons.star(classes: 'h-3.5 w-3.5'),
-                const Component.text('${SiteConfig.role} · ${SiteConfig.location}'),
-              ],
-            ),
-            const h1(
-              classes: 'mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.1] '
-                  'tracking-tight text-ink-900 sm:text-6xl lg:text-7xl dark:text-ink-50',
-              [
-                Component.text('Apps people '),
-                span(
-                  classes: 'bg-gradient-to-r from-star-500 to-star-300 bg-clip-text text-transparent',
-                  [Component.text('actually reopen')],
-                ),
-                Component.text('.'),
-              ],
-            ),
-            const p(
-              classes: 'mt-6 max-w-2xl text-lg leading-relaxed text-ink-500 dark:text-ink-300',
-              [Component.text(SiteConfig.tagline)],
-            ),
             div(
-              classes: 'mt-10 flex flex-wrap items-center gap-3',
+              classes: 'grid items-end gap-14 '
+                  'lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)_minmax(0,0.86fr)] '
+                  'lg:gap-10',
               [
-                Link(
-                  to: RoutePaths.projects,
-                  classes: 'inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 '
-                      'text-sm font-medium text-ink-50 transition-transform duration-300 '
-                      'ease-expo hover:-translate-y-0.5 '
-                      'dark:bg-star-400 dark:text-ink-950',
-                  children: [
-                    const Component.text('See the work'),
-                    AppIcons.arrow(),
+                // ── Name ──
+                div(
+                  classes: 'reveal lg:pb-6',
+                  [
+                    const h1(
+                      classes: 'type-display font-display font-extrabold '
+                          'text-ink-100',
+                      [
+                        Component.text(SiteConfig.firstName),
+                        br(),
+                        Component.text('${SiteConfig.lastName}.'),
+                      ],
+                    ),
+
+                    // The short rule under the name, straight from the
+                    // reference. It replaces what was an amber bar there.
+                    const div(classes: 'mt-8 h-1 w-16 bg-ink-200', []),
+
+                    _socials(),
                   ],
                 ),
-                const a(
-                  href: 'mailto:${SiteConfig.email}',
-                  classes: 'inline-flex items-center gap-2 rounded-full border '
-                      'border-ink-200 px-6 py-3 text-sm font-medium text-ink-700 '
-                      'transition-colors hover:border-star-400 hover:text-star-500 '
-                      'dark:border-ink-700 dark:text-ink-200 dark:hover:text-star-300',
-                  [Component.text('Start a project')],
+
+                // ── Portrait ──
+                // `order-last` on small screens keeps the reading order
+                // name → introduction → portrait, while the DOM order stays
+                // name → portrait → introduction for the desktop grid.
+                const div(
+                  classes: 'reveal order-last lg:order-none',
+                  [PortraitFrame()],
                 ),
-              ],
-            ),
-            dl(
-              classes: 'mt-16 grid max-w-2xl grid-cols-3 gap-6 border-t '
-                  'border-ink-200/70 pt-8 dark:border-ink-800',
-              [
-                for (final stat in SiteConfig.stats)
-                  div([
-                    dt(
-                      classes: 'font-display text-3xl font-semibold text-ink-900 dark:text-ink-50',
-                      [Component.text(stat.value)],
+
+                // ── Introduction ──
+                const div(
+                  classes: 'reveal lg:pb-6',
+                  [
+                    Eyebrow('Introduction'),
+                    p(
+                      classes: 'type-quote mt-6 font-display font-semibold '
+                          'text-ink-100',
+                      [Component.text(SiteConfig.heroStatement)],
                     ),
-                    dd(
-                      classes: 'mt-1 text-xs text-ink-400 sm:text-sm',
-                      [Component.text(stat.label)],
+                    p(
+                      classes: 'mt-6 text-sm leading-relaxed text-ink-400',
+                      [Component.text(SiteConfig.heroLead)],
                     ),
-                  ]),
+                    div(
+                      classes: 'mt-9',
+                      [
+                        CtaButton(
+                          label: 'My story',
+                          href: '${RoutePaths.home}#about',
+                          variant: CtaVariant.quiet,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -98,4 +94,22 @@ class HeroSection extends StatelessComponent {
       ],
     );
   }
+
+  static Component _socials() => div(
+        classes: 'mt-12 flex items-center gap-5',
+        [
+          for (final social in SiteConfig.socials)
+            a(
+              href: social.url,
+              target: Target.blank,
+              attributes: {
+                'rel': 'me noopener',
+                'aria-label': '${social.label} — ${social.handle}',
+              },
+              classes: 'text-ink-400 transition-colors duration-300 '
+                  'hover:text-ink-100',
+              [AppIcons.social(social.label, classes: 'h-[1.15rem] w-[1.15rem]')],
+            ),
+        ],
+      );
 }

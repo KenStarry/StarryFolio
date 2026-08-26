@@ -6,10 +6,10 @@ import '../../../config/site_config.dart';
 import '../../../routing/route_paths.dart';
 import '../../../state/controllers/nav_menu_controller.dart';
 import '../app_icons.dart';
-import 'theme_toggle.dart';
 
 const _links = <({String label, String href})>[
-  (label: 'Work', href: RoutePaths.projects),
+  (label: 'Services', href: '${RoutePaths.home}#services'),
+  (label: 'Works', href: RoutePaths.projects),
   (label: 'About', href: '${RoutePaths.home}#about'),
   (label: 'Contact', href: '${RoutePaths.home}#contact'),
 ];
@@ -17,9 +17,13 @@ const _links = <({String label, String href})>[
 /// Sticky top navigation.
 ///
 /// This is the site's only `@client` island: everything else is static HTML.
-/// It owns the [ProviderScope], which is why the theme and menu controllers are
-/// reachable from here down but nowhere else — the content pages are rendered
-/// on the server, where provider reads are not available.
+/// It owns the [ProviderScope], which is why the menu controller is reachable
+/// from here down but nowhere else — the content pages are rendered on the
+/// server, where provider reads are not available.
+///
+/// Every link is a plain `<a>` rather than a router [Link]. An island hydrates
+/// as its own root with no [Router] above it, so a `Link` here would look for
+/// an ancestor that does not exist in the client tree.
 @client
 class NavBar extends StatelessComponent {
   const NavBar({super.key});
@@ -38,46 +42,51 @@ class _NavBarView extends StatelessComponent {
     final isOpen = context.watch(navMenuControllerProvider);
 
     return header(
-      classes: 'sticky top-0 z-50 border-b border-ink-200/60 '
-          'bg-ink-50/80 backdrop-blur-xl '
-          'dark:border-ink-800/80 dark:bg-ink-950/70',
+      classes: 'sticky top-0 z-50',
       [
+        // Plate, faded in by a scroll timeline. Separated from the nav itself
+        // so the bar floats clean over the hero at rest and gains a surface
+        // only once content runs beneath it.
+        const div(
+          classes: 'nav-plate absolute inset-0 border-b border-ink-700/70 '
+              'bg-ink-900/90 backdrop-blur-md',
+          attributes: {'aria-hidden': 'true'},
+          [],
+        ),
+
         nav(
-          classes: 'mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8',
+          classes: 'relative mx-auto flex h-20 max-w-6xl items-center '
+              'justify-between px-6 sm:px-8 lg:px-12',
           [
-            a(
-              href: RoutePaths.home,
-              classes: 'group flex items-center gap-2 font-display text-base font-semibold '
-                  'tracking-tight text-ink-900 dark:text-ink-50',
-              [
-                span(
-                  classes: 'text-star-400 transition-transform duration-500 '
-                      'ease-expo group-hover:rotate-180',
-                  [AppIcons.star()],
-                ),
-                Component.text(SiteConfig.shortName.toLowerCase()),
-              ],
-            ),
+            _logo(),
+
             div(
-              classes: 'hidden items-center gap-8 md:flex',
+              classes: 'hidden items-center gap-10 md:flex',
               [
                 for (final link in _links)
                   a(
                     href: link.href,
-                    classes: 'text-sm text-ink-500 transition-colors hover:text-ink-900 '
-                        'dark:text-ink-300 dark:hover:text-star-300',
+                    classes: 'link-line text-sm text-ink-400 '
+                        'transition-colors duration-300 hover:text-ink-100',
                     [Component.text(link.label)],
                   ),
-                const ThemeToggle(),
               ],
             ),
+
             div(
-              classes: 'flex items-center gap-2 md:hidden',
+              classes: 'flex items-center gap-3',
               [
-                const ThemeToggle(),
+                const a(
+                  href: 'mailto:${SiteConfig.email}',
+                  classes: 'hidden bg-ink-200 px-5 py-2.5 text-sm font-medium '
+                      'text-ink-900 transition-colors duration-300 '
+                      'hover:bg-ink-100 md:inline-flex',
+                  [Component.text("Let's talk")],
+                ),
                 button(
-                  classes: 'inline-flex h-9 w-9 items-center justify-center rounded-full '
-                      'border border-ink-200 text-ink-600 dark:border-ink-700 dark:text-ink-200',
+                  classes: 'inline-flex h-10 w-10 items-center justify-center '
+                      'border border-ink-600 text-ink-200 transition-colors '
+                      'duration-300 hover:border-ink-400 md:hidden',
                   attributes: {
                     'aria-label': isOpen ? 'Close menu' : 'Open menu',
                     'aria-expanded': '$isOpen',
@@ -92,23 +101,69 @@ class _NavBarView extends StatelessComponent {
             ),
           ],
         ),
+
         if (isOpen)
           div(
             id: 'mobile-menu',
-            classes: 'border-t border-ink-200/60 px-5 pb-4 md:hidden '
-                'dark:border-ink-800/80',
+            classes: 'relative border-t border-ink-700/70 bg-ink-900 px-6 '
+                'pb-8 pt-2 md:hidden',
             [
               for (final link in _links)
                 a(
                   href: link.href,
-                  classes: 'block py-3 text-sm text-ink-600 dark:text-ink-200',
+                  classes: 'flex items-center justify-between border-b '
+                      'border-ink-800 py-4 font-display text-lg font-semibold '
+                      'text-ink-100',
                   onClick: () =>
                       context.read(navMenuControllerProvider.notifier).close(),
-                  [Component.text(link.label)],
+                  [
+                    Component.text(link.label),
+                    AppIcons.arrowUpRight(classes: 'h-4 w-4 text-ink-400'),
+                  ],
                 ),
+              div(
+                classes: 'mt-6 flex items-center gap-3',
+                [
+                  for (final social in SiteConfig.socials)
+                    a(
+                      href: social.url,
+                      target: Target.blank,
+                      attributes: {
+                        'rel': 'me noopener',
+                        'aria-label': social.label,
+                      },
+                      classes: 'inline-flex h-10 w-10 items-center '
+                          'justify-center border border-ink-700 text-ink-400 '
+                          'transition-colors hover:border-ink-500 '
+                          'hover:text-ink-200',
+                      [AppIcons.social(social.label)],
+                    ),
+                ],
+              ),
             ],
           ),
       ],
     );
   }
+
+  /// Square monogram mark. A flat pale tile with the initial knocked out —
+  /// it echoes the reference's logo block without introducing a second colour.
+  Component _logo() => const a(
+        href: RoutePaths.home,
+        classes: 'group flex items-center gap-3',
+        attributes: {'aria-label': '${SiteConfig.name} — home'},
+        [
+          span(
+            classes: 'flex h-9 w-9 items-center justify-center bg-ink-200 '
+                'font-display text-sm font-extrabold text-ink-900 '
+                'transition-colors duration-300 group-hover:bg-ink-100',
+            [Component.text(SiteConfig.monogram)],
+          ),
+          span(
+            classes: 'font-display text-sm font-semibold tracking-tight '
+                'text-ink-100',
+            [Component.text(SiteConfig.wordmark)],
+          ),
+        ],
+      );
 }

@@ -1,6 +1,23 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import 'eyebrow.dart';
+
+/// Ground tone for a section.
+///
+/// Sections alternate so the page reads as stacked bands rather than one
+/// continuous sheet — that segmentation is the structure of the reference.
+enum SectionTone {
+  /// The page's base tone, `#282739`.
+  base,
+
+  /// One step up, `#35364A`. Used for every other band.
+  raised,
+
+  /// The deepest tone, `#1E1F2B`. Reserved for the footer.
+  deep,
+}
+
 /// A consistently spaced page section with an optional eyebrow, heading and lead.
 ///
 /// The heading defaults to `<h2>`. A page whose main subject *is* the section —
@@ -14,7 +31,9 @@ class SectionBlock extends StatelessComponent {
     this.eyebrow,
     this.heading,
     this.lead,
+    this.tone = SectionTone.base,
     this.classes = '',
+    this.bodyClasses = '',
     this.isPageHeading = false,
     super.key,
   });
@@ -27,46 +46,71 @@ class SectionBlock extends StatelessComponent {
   final String? eyebrow;
   final String? heading;
   final String? lead;
+  final SectionTone tone;
   final String classes;
+  final String bodyClasses;
 
   /// Renders [heading] as the page's `<h1>` rather than an `<h2>`.
   final bool isPageHeading;
 
   @override
   Component build(BuildContext context) {
+    final ground = switch (tone) {
+      SectionTone.base => 'bg-ink-900',
+      SectionTone.raised => 'bg-ink-800',
+      SectionTone.deep => 'bg-ink-950',
+    };
+
+    final hasHead = eyebrow != null || heading != null || lead != null;
+
     return section(
       id: id,
-      classes: 'mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28 $classes',
+      classes: '$ground py-24 sm:py-32 lg:py-40 $classes',
       [
-        if (eyebrow != null)
-          p(
-            classes: 'font-mono text-xs uppercase tracking-[0.2em] text-star-500 '
-                'dark:text-star-400',
-            [Component.text(eyebrow!)],
-          ),
-        if (heading != null)
-          if (isPageHeading)
-            h1(
-              classes: _headingClasses,
-              [Component.text(heading!)],
-            )
-          else
-            h2(
-              classes: _headingClasses,
-              [Component.text(heading!)],
+        div(
+          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          [
+            if (hasHead)
+              div(
+                classes: 'reveal max-w-2xl',
+                [
+                  if (eyebrow != null) Eyebrow(eyebrow!),
+                  if (heading != null)
+                    if (isPageHeading)
+                      h1(classes: _headingClasses, _headingLines(heading!))
+                    else
+                      h2(classes: _headingClasses, _headingLines(heading!)),
+                  if (lead != null)
+                    p(
+                      classes: 'mt-5 max-w-lg text-sm leading-relaxed '
+                          'text-ink-400 sm:text-[0.9375rem]',
+                      [Component.text(lead!)],
+                    ),
+                ],
+              ),
+            div(
+              classes: hasHead ? 'mt-14 sm:mt-20 $bodyClasses' : bodyClasses,
+              children,
             ),
-        if (lead != null)
-          p(
-            classes: 'mt-4 max-w-2xl text-base leading-relaxed text-ink-500 '
-                'dark:text-ink-300',
-            [Component.text(lead!)],
-          ),
-        div(classes: heading != null ? 'mt-12' : '', children),
+          ],
+        ),
       ],
     );
   }
 
+  /// Splits authored newlines into `<br>`-separated text, so a heading can set
+  /// as a deliberate two-line block rather than wrapping wherever the container
+  /// happens to end. A crawler still reads one continuous string.
+  static List<Component> _headingLines(String heading) {
+    final lines = heading.split('\n');
+    return [
+      for (final (i, line) in lines.indexed) ...[
+        if (i > 0) const br(),
+        Component.text(line),
+      ],
+    ];
+  }
+
   static const String _headingClasses =
-      'mt-3 font-display text-3xl font-semibold tracking-tight '
-      'text-ink-900 sm:text-4xl dark:text-ink-50';
+      'type-section mt-5 font-display font-bold text-ink-100';
 }

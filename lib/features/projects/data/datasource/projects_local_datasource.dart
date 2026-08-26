@@ -19,7 +19,6 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Rentals, minus the WhatsApp chaos.',
       year: '2026',
       status: ProjectStatus.building,
-      gradient: 'from-star-400/30 to-violet-500/10',
       stack: ['Flutter', 'Riverpod', 'Firebase', 'Google Maps'],
       summary: [
         'A marketplace that connects tenants with verified landlords — listings, '
@@ -41,7 +40,6 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'A money tracker that does not nag.',
       year: '2025',
       status: ProjectStatus.shipped,
-      gradient: 'from-emerald-400/25 to-star-400/10',
       stack: ['Flutter', 'BLoC', 'Isar', 'fl_chart'],
       summary: [
         'Personal finance for people who bounce off budgeting apps. Flow logs '
@@ -63,7 +61,6 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Junior-secondary school operations in one app.',
       year: '2025',
       status: ProjectStatus.shipped,
-      gradient: 'from-sky-400/25 to-star-400/10',
       stack: ['Flutter', 'Clean Architecture', 'REST', 'Hive'],
       summary: [
         'Attendance, grade books and parent comms for Kenyan junior secondary '

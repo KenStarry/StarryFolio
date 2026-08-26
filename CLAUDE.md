@@ -94,7 +94,7 @@ abstract repository, never on `*_impl`. Models live in `domain/`.
 **Core vs feature:** content-agnostic goes in `core/`; domain-specific stays in the feature.
 Extract to `core/` once it is used in 2+ places.
 
-Current features: `home`, `projects`, `not_found`.
+Major Current features: `home`, `projects`, `services`, `not_found`.
 
 ---
 
@@ -185,9 +185,15 @@ dart analyze                                         # must be clean
 **Environment** — both must be on `PATH` or the build fails:
 
 ```bash
-export PATH="$(dirname $(which flutter))/cache/dart-sdk/bin:$PATH"   # real Dart SDK
+# Real Dart SDK. On a Homebrew *cask* install `which flutter` is a symlink into
+# /opt/homebrew/bin, which has no cache/ dir — resolve the symlink first.
+export PATH="$(dirname $(readlink -f $(which flutter)))/cache/dart-sdk/bin:$PATH"
 export PATH="$PATH:$HOME/.pub-cache/bin:$HOME/.local/bin"            # jaspr + tailwindcss
 ```
+
+On this machine that resolves to
+`/opt/homebrew/share/flutter/bin/cache/dart-sdk/bin`. Verify with
+`which dart` before building — it must **not** print `/opt/homebrew/bin/dart`.
 
 - `which dart` resolving to a Flutter *wrapper* makes the Jaspr CLI refuse to start
   ("failed to verify the surrounding Dart SDK").
@@ -228,9 +234,30 @@ Files `snake_case.dart`; generated `*.g.dart` never hand-edited.
 | Model | `*_model.dart` → `*Model` | `project_model.dart` |
 | Enum | `*_status.dart` → `*Status` | `project_status.dart` |
 
-**Tailwind:** classes must be **string literals** — the scanner reads `.dart` source, so a
-class built by concatenation gets purged. Design tokens live in `web/styles.tw.css`; change
-`--color-star-400` and the accent moves everywhere.
+**Design system:** two tones and a pale, and nothing else.
+
+| Token | Hex | Role |
+|---|---|---|
+| `ink-950` | `#1E1F2B` | footer — the page closes darker than it opens |
+| `ink-900` | `#282739` | base section ground |
+| `ink-800` | `#35364A` | raised section ground · card surface |
+| `ink-700` | `#434659` | card hover · hairline borders |
+| `ink-400` | `#8A8EA8` | muted text |
+| `ink-200` | `#D0D4ED` | primary text · the inverted card |
+| `ink-100` | `#E9EBF7` | headings |
+
+**There is no accent hue.** Emphasis comes from weight, scale, elevation and
+inversion. Sections alternate `ink-900` / `ink-800` so the page reads as stacked
+bands. Exactly one element per screen inverts (`.card-invert`) — a second
+cancels the first. Adding a second hue, a gradient, a glow or a texture is a
+regression, not an enhancement: that is precisely what the first pass got wrong.
+
+**Dark only.** There is no light palette, no `dark:` variant and no theme
+toggle. `#282739` *is* the design.
+
+**Tailwind:** classes must be **string literals** — the scanner reads `.dart`
+source, so a class built by concatenation gets purged. Design tokens live in
+`web/styles.tw.css`; change `--color-ink-200` and the pale moves everywhere.
 
 **Copy:** warm and human, never system-speak. "This page drifted off", not "Error 404".
 
@@ -249,4 +276,5 @@ From `~/.claude/flutter_architecture_spec.md`, and why:
 | `get_it` + Riverpod DI | `core/di/locator.dart` | Providers are unreachable in the content path; one flat composition root instead. |
 | `dio` | none yet | No network calls. Slots in behind `ProjectsRepository` unchanged. |
 | `ThemeExtension<AppColors>` | Tailwind `@theme` in `web/styles.tw.css` | CSS tokens are the web equivalent. |
+| Light + dark themes | Dark only | The two-tone palette *is* the design; there is no second theme to switch to. |
 | Hive / secure storage / `flutter_animate` / `JourneyStepper` | n/a | No Flutter runtime. |

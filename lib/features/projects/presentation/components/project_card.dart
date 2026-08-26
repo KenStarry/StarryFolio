@@ -5,7 +5,9 @@ import 'package:jaspr_router/jaspr_router.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../domain/model/project_model.dart';
+import 'project_cover.dart';
 
+/// The case-study card, used on the home teaser and the projects index.
 class ProjectCard extends StatelessComponent {
   const ProjectCard({required this.project, super.key});
 
@@ -15,69 +17,45 @@ class ProjectCard extends StatelessComponent {
   Component build(BuildContext context) {
     return Link(
       to: RoutePaths.projectDetail(project.slug),
-      classes: 'group relative flex flex-col overflow-hidden rounded-2xl border '
-          'border-ink-200/70 bg-white/60 transition-all duration-500 ease-expo '
-          'hover:-translate-y-1 hover:border-star-400/60 hover:shadow-xl '
-          'hover:shadow-star-400/5 '
-          'dark:border-ink-800 dark:bg-ink-900/50 dark:hover:border-star-400/40',
+      classes: 'card reveal group flex flex-col',
       children: [
-        // Gradient header — swap for a real screenshot via project.coverImage.
+        ProjectCover(project: project),
         div(
-          classes: 'relative h-36 w-full bg-gradient-to-br ${project.gradient}',
-          [
-            if (project.coverImage != null)
-              img(
-                src: '/${project.coverImage}',
-                alt: '${project.name} — ${project.tagline}',
-                // Cards sit below the fold on every page that uses them.
-                attributes: const {'loading': 'lazy', 'decoding': 'async'},
-                classes: 'h-full w-full object-cover',
-              )
-            else
-              const div(classes: 'starfield absolute inset-0 opacity-70', []),
-          ],
-        ),
-        div(
-          classes: 'flex flex-1 flex-col p-6',
+          classes: 'flex flex-1 flex-col p-7',
           [
             div(
-              classes: 'flex items-center gap-3',
+              classes: 'flex items-baseline justify-between gap-4',
               [
                 h3(
-                  classes: 'font-display text-lg font-semibold tracking-tight '
-                      'text-ink-900 dark:text-ink-50',
+                  classes: 'font-display text-lg font-bold tracking-tight '
+                      'text-ink-100',
                   [Component.text(project.name)],
                 ),
                 span(
-                  classes: 'rounded-full px-2 py-0.5 font-mono text-[10px] '
-                      'uppercase tracking-wider ${project.status.classes}',
-                  [Component.text(project.status.label)],
+                  classes: 'font-mono text-[11px] text-ink-500',
+                  [Component.text(project.year)],
                 ),
               ],
             ),
             p(
-              classes: 'mt-2 text-sm leading-relaxed text-ink-500 dark:text-ink-300',
+              classes: 'mt-2.5 text-sm leading-relaxed text-ink-400',
               [Component.text(project.tagline)],
             ),
+            // Pushes the footer down so a row of cards with different tagline
+            // lengths still lines its baselines up.
+            const div(classes: 'flex-1 min-h-8', []),
             div(
-              classes: 'mt-5 flex flex-wrap gap-2',
+              classes: 'mt-6 flex items-center justify-between border-t '
+                  'border-ink-700 pt-5',
               [
-                for (final tech in project.stack.take(4))
-                  span(
-                    classes: 'rounded-md bg-ink-100 px-2 py-1 font-mono text-[11px] '
-                        'text-ink-500 dark:bg-ink-800 dark:text-ink-300',
-                    [Component.text(tech)],
-                  ),
-              ],
-            ),
-            div(
-              classes: 'mt-6 flex items-center gap-1.5 text-sm font-medium '
-                  'text-star-500 dark:text-star-400',
-              [
-                const Component.text('Case study'),
+                p(
+                  classes: 'font-mono text-[11px] text-ink-500',
+                  [Component.text(project.stack.take(3).join('  ·  '))],
+                ),
                 span(
-                  classes: 'transition-transform duration-300 group-hover:translate-x-1',
-                  [AppIcons.arrow()],
+                  classes: 'text-ink-300 transition-transform duration-500 '
+                      'ease-soft group-hover:translate-x-1',
+                  [AppIcons.arrowUpRight(classes: 'h-4 w-4')],
                 ),
               ],
             ),

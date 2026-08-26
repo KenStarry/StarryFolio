@@ -49,14 +49,14 @@ class ProjectsPage extends AsyncStatelessComponent {
         ),
         SectionBlock(
           eyebrow: 'Work',
-          heading: 'Projects',
+          heading: 'All creative works,\nselected projects.',
           isPageHeading: true,
           lead: 'Everything worth showing, newest first. Each one has a short '
               'case study — what it does, what was hard, what I would do '
               'differently.',
           children: [
             div(
-              classes: 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3',
+              classes: 'grid gap-5 sm:grid-cols-2 lg:grid-cols-3',
               [for (final project in projects) ProjectCard(project: project)],
             ),
           ],
