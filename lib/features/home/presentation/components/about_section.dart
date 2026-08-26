@@ -1,24 +1,44 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
+import '../../../../core/presentation/components/app_icons.dart';
+import '../../../../core/presentation/components/error_notice.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../../core/routing/route_paths.dart';
+import '../../../about/domain/model/about_profile.dart';
+import '../../../about/domain/model/experience_model.dart';
 
-/// About + the numbers + the toolkit.
+/// The home page's About band — an overview, and a door.
 ///
-/// A two-column split rather than a [SectionBlock], because that centres a
+/// A two-column split rather than a `SectionBlock`, because that centres a
 /// single narrow measure and this band is deliberately asymmetric. It owns its
 /// own ground and divider so the rhythm still matches the sections around it.
 ///
-/// The toolkit is pills rather than the ruled rows it was: four dense rows of
-/// dot-separated text read as a spec sheet, where pills read as a palette you
-/// can scan. Each one lifts and picks up the accent on hover, which is the
-/// cheapest way to make a static block feel alive.
+/// It used to carry the whole toolkit as pills. That now lives on `/about`
+/// with a depth against each entry, and what is left here is the shortest
+/// honest answer to "who is this": the line he works by, the bio, the
+/// numbers, and the three most recent roles. Everything else is one click
+/// away, which is the entire job of a teaser — the same relationship the
+/// services row has to `/services`.
+///
+/// Receives an already-resolved profile rather than fetching: the home page
+/// owns its awaits, so the whole page renders in one pass.
 class AboutSection extends StatelessComponent {
-  const AboutSection({super.key});
+  const AboutSection({required this.profile, this.error, super.key});
+
+  final AboutProfile profile;
+
+  /// Set when the repository returned a `Left`. The band still renders its
+  /// heading and prose — only the roles strip is replaced, because everything
+  /// else here is static content that still deserves to be indexed.
+  final String? error;
 
   @override
   Component build(BuildContext context) {
+    final recent = profile.experience.take(3).toList(growable: false);
+
     return section(
       id: 'about',
       classes: 'bg-ink-900 py-24 sm:py-32 lg:py-40',
@@ -45,7 +65,7 @@ class AboutSection extends StatelessComponent {
             const div(classes: 'divider mt-12', []),
 
             div(
-              classes: 'mt-12 grid gap-14 lg:grid-cols-[0.9fr_1.1fr] '
+              classes: 'mt-12 grid gap-14 lg:grid-cols-[0.95fr_1.05fr] '
                   'lg:gap-20 sm:mt-16',
               [
                 // ── Left: the words ──
@@ -71,7 +91,7 @@ class AboutSection extends StatelessComponent {
                   ],
                 ),
 
-                // ── Right: numbers, then the toolkit ──
+                // ── Right: the numbers, then where they came from ──
                 div(
                   classes: 'reveal',
                   [
@@ -85,10 +105,7 @@ class AboutSection extends StatelessComponent {
                                   'text-ink-100',
                               [Component.text(stat.value)],
                             ),
-                            const div(
-                              classes: 'mt-3 h-px w-8 bg-iris-500',
-                              [],
-                            ),
+                            const div(classes: 'mt-3 h-px w-8 bg-iris-500', []),
                             p(
                               classes: 'mt-3 text-xs leading-snug text-ink-400',
                               [Component.text(stat.label)],
@@ -99,28 +116,20 @@ class AboutSection extends StatelessComponent {
 
                     const div(classes: 'divider-quiet mt-14', []),
 
-                    div(
-                      classes: 'mt-10 space-y-8',
-                      [
-                        for (final group in SiteConfig.toolkit)
-                          div([
-                            h3(
-                              classes: 'type-eyebrow font-mono text-ink-500',
-                              [Component.text(group.group)],
-                            ),
-                            div(
-                              classes: 'mt-4 flex flex-wrap gap-2',
-                              [
-                                for (final item in group.items)
-                                  span(
-                                    classes: 'pill',
-                                    [Component.text(item)],
-                                  ),
-                              ],
-                            ),
-                          ]),
-                      ],
-                    ),
+                    if (error != null)
+                      div(classes: 'mt-10', [ErrorNotice(message: error!)])
+                    else ...[
+                      const p(
+                        classes: 'type-eyebrow mt-10 font-mono text-ink-500',
+                        [Component.text('Recently')],
+                      ),
+                      div(
+                        classes: 'mt-2',
+                        [for (final role in recent) _roleRow(role)],
+                      ),
+                    ],
+
+                    _storyLink(),
                   ],
                 ),
               ],
@@ -130,6 +139,45 @@ class AboutSection extends StatelessComponent {
       ],
     );
   }
+
+  /// One role, as a ruled row. Three of these say more about a career than a
+  /// paragraph describing it does, and they cost four lines of markup each.
+  static Component _roleRow(ExperienceModel role) => div(
+        classes: 'grid grid-cols-[6.5rem_1fr] items-baseline gap-4 border-t '
+            'border-ink-700/50 py-4',
+        [
+          p(
+            classes: 'font-mono text-xs text-ink-500',
+            [Component.text(role.period)],
+          ),
+          div([
+            p(
+              classes: 'text-sm text-ink-200',
+              [Component.text(role.role)],
+            ),
+            p(
+              classes: 'mt-1 text-xs text-ink-500',
+              [Component.text(role.company)],
+            ),
+          ]),
+        ],
+      );
+
+  /// The door through to `/about`.
+  static Component _storyLink() => Link(
+        to: RoutePaths.about,
+        classes: 'link-line group mt-10 inline-flex items-center gap-3 '
+            'text-sm font-medium text-ink-200 transition-colors duration-300 '
+            'hover:text-ink-100',
+        children: [
+          const Component.text('The full story'),
+          span(
+            classes: 'transition-transform duration-500 ease-soft '
+                'group-hover:translate-x-1.5',
+            [AppIcons.arrow(classes: 'h-4 w-4')],
+          ),
+        ],
+      );
 
   /// A small "currently" panel. Grounds the bio in something present-tense,
   /// which is what stops an about section reading as a CV.
