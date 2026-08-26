@@ -3,23 +3,24 @@ import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/presentation/components/app_icons.dart';
+import '../../../../core/presentation/components/store_badge.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../domain/model/project_model.dart';
 import 'project_cover.dart';
 
 /// A large, boxy, floating case-study card.
 ///
-/// Anatomy deliberately mirrors the hero's portrait card: a big flat cover with
-/// a solid caption panel beneath it, divided by a hairline. A gradient scrim
-/// over the image would be the conventional move, but this design is flat by
-/// rule — a solid panel keeps the card in the same family as everything else on
-/// the page.
-///
 /// **Every card is the same size, everywhere.** The cover ratio and the caption
 /// scale are fixed here rather than exposed as parameters, so no caller can
-/// reintroduce the size variation that made the grid read as inconsistent. What
-/// varies between layouts is position — [classes] takes grid placement and
-/// stagger offsets, and nothing else.
+/// reintroduce size variation. What varies between layouts is position —
+/// [classes] takes grid placement and stagger offsets, and nothing else.
+///
+/// The card is an `<article>`, not a link. Products that ship to a store carry
+/// their own store links in the footer, and an `<a>` cannot legally contain
+/// another `<a>` — browsers close the outer one early and the layout falls
+/// apart. Instead the title is the real link and `.stretch-link` pulls its hit
+/// area over the whole card, while the badges sit above it on `z-index`. One
+/// clearly-named card link, plus separately-named store links.
 class ProjectCard extends StatelessComponent {
   const ProjectCard({
     required this.project,
@@ -32,44 +33,29 @@ class ProjectCard extends StatelessComponent {
   /// Placement only — grid column, stagger offset, reveal. Never sizing.
   final String classes;
 
-  /// The one cover ratio on the site. 4:3 rather than the 4:5 it was: with a
-  /// caption panel underneath, a portrait cover made the whole card elongated.
+  /// The one cover ratio on the site. 4:3 rather than a portrait crop: with a
+  /// caption panel underneath, a tall cover made the whole card elongated.
   static const String _coverAspect = 'aspect-[4/3]';
 
   @override
   Component build(BuildContext context) {
-    return Link(
-      to: RoutePaths.projectDetail(project.slug),
+    final links = project.links;
+
+    return article(
       classes: 'float-card group relative flex flex-col overflow-hidden '
           'border border-ink-700 bg-ink-800 $classes',
-      // Always emitted, not just when filterable: it is inert markup off the
-      // filter page and keeps the card usable in any grid that wants to filter.
       attributes: {'data-cat': project.category.slug},
-      children: [
+      [
         // ── Cover ──
         div(
           classes: 'relative w-full overflow-hidden $_coverAspect',
           [
             ProjectCover(project: project, fill: true),
-
-            // Status, top-left. Sits on the cover so the caption panel stays
-            // reserved for identity.
             span(
               classes: 'absolute left-4 top-4 z-10 border bg-ink-900/70 '
                   'px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider '
                   'backdrop-blur-sm ${project.status.classes}',
               [Component.text(project.status.label)],
-            ),
-
-            // Arrow, top-right. Fades and slides in on hover rather than
-            // sitting there permanently — it is an affordance, not decoration.
-            const div(
-              classes: 'absolute right-4 top-4 z-10 flex h-9 w-9 items-center '
-                  'justify-center border border-iris-400/40 bg-ink-900/70 '
-                  'text-iris-300 opacity-0 backdrop-blur-sm transition-all '
-                  'duration-500 ease-soft group-hover:translate-x-0 '
-                  'group-hover:opacity-100 translate-x-2',
-              [_arrow],
             ),
           ],
         ),
@@ -95,9 +81,24 @@ class ProjectCard extends StatelessComponent {
 
             h3(
               classes: 'mt-4 font-display text-xl font-extrabold '
-                  'tracking-tight text-ink-100 transition-colors duration-300 '
-                  'group-hover:text-iris-300 sm:text-2xl',
-              [Component.text(project.name)],
+                  'tracking-tight text-ink-100 sm:text-2xl',
+              [
+                Link(
+                  to: RoutePaths.projectDetail(project.slug),
+                  classes: 'stretch-link inline-flex items-center gap-2 '
+                      'transition-colors duration-300 '
+                      'hover:text-iris-300 group-hover:text-iris-300',
+                  children: [
+                    Component.text(project.name),
+                    span(
+                      classes: 'text-ink-500 transition-transform '
+                          'duration-500 ease-soft group-hover:translate-x-1 '
+                          'group-hover:text-iris-300',
+                      [AppIcons.arrowUpRight(classes: 'h-4 w-4')],
+                    ),
+                  ],
+                ),
+              ],
             ),
 
             p(
@@ -105,29 +106,28 @@ class ProjectCard extends StatelessComponent {
               [Component.text(project.tagline)],
             ),
 
-            // Holds the stack row on the card's floor so a row of cards with
+            // Holds the footer on the card's floor so a row of cards with
             // different tagline lengths still shares one baseline.
             const div(classes: 'flex-1 min-h-6', []),
 
-            p(
-              classes: 'mt-6 font-mono text-[11px] text-ink-500',
-              [Component.text(project.stack.take(3).join('  ·  '))],
-            ),
+            if (links.isEmpty)
+              p(
+                classes: 'mt-6 font-mono text-[11px] text-ink-500',
+                [Component.text(project.stack.take(3).join('  ·  '))],
+              )
+            else
+              StoreBadgeRow(
+                links: links,
+                product: project.name,
+                compact: true,
+                // Two is what fits at card width; the rest stay reachable on
+                // the case-study page.
+                limit: 2,
+                classes: 'mt-6',
+              ),
           ],
         ),
       ],
     );
   }
-
-  static const Component _arrow = _Arrow();
-}
-
-/// Extracted so the surrounding card chrome can stay a `const` subtree —
-/// `AppIcons.arrowUpRight` is a method call and cannot appear in one.
-class _Arrow extends StatelessComponent {
-  const _Arrow();
-
-  @override
-  Component build(BuildContext context) =>
-      AppIcons.arrowUpRight(classes: 'h-4 w-4');
 }

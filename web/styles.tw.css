@@ -727,6 +727,52 @@
     0%, 100%  { opacity: 0; }
     22%, 78%  { opacity: 0.75; }
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     STRETCHED LINK
+
+     Lets a card carry several independent links while still being clickable
+     anywhere. Nesting an `<a>` inside an `<a>` is invalid HTML and browsers
+     recover from it by closing the outer anchor early, so the card cannot
+     simply wrap everything.
+
+     Instead the title is the real link and its pseudo-element is stretched
+     over the whole card. Any control that needs its own click target — the
+     store badges — is lifted above it on `z-index`. Screen readers get one
+     clearly-named card link plus separately-named store links, rather than a
+     single anchor swallowing all the text.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .stretch-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Sits above the stretched pseudo so these stay independently clickable. */
+  .above-stretch {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Compact badge, for the tighter footprint inside a card. */
+  .store-badge-sm {
+    @apply inline-flex items-center gap-2 border border-ink-600 bg-ink-850
+           px-3 py-2 text-ink-100;
+    transition: transform 0.4s var(--ease-soft),
+                border-color 0.4s var(--ease-soft),
+                background-color 0.4s var(--ease-soft);
+  }
+
+  .store-badge-sm:hover {
+    @apply bg-ink-800;
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--color-iris-500) 60%, transparent);
+  }
+
+  .store-badge-sm .store-badge-title {
+    @apply mt-0 text-xs;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

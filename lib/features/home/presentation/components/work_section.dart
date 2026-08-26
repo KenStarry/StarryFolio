@@ -17,6 +17,11 @@ import '../../../projects/presentation/components/project_showcase.dart';
 /// the rest of the page is built on and forced the mockup to bleed awkwardly
 /// past the card edge.
 ///
+/// The two cards beside it are the **other flagships**. Everything on this
+/// section is a featured project: the home page shows only flagships, and
+/// elevating one of them to the flat treatment is what makes it the overall
+/// feature. The rest of the catalogue lives behind the archive tile.
+///
 /// Supporting work sits in a three-column row — two cards and the call to
 /// action occupying the third cell. Putting the CTA *in* the grid rather than
 /// floating it underneath completes the row, and it is what lets the cards be
@@ -34,12 +39,14 @@ class WorkSection extends StatelessComponent {
         .where((item) => item.featured && item.mockupImage != null)
         .firstOrNull;
 
-    // Skip every flagship: a second one shrunk into a small card undersells
-    // it, and `/projects` gives each a full band anyway.
-    final supporting = projects
-        .where((item) => item != feature && !item.featured)
-        .take(2)
-        .toList(growable: false);
+    // The other flagships lead, since this section is a showcase of featured
+    // work. Non-featured projects only top the row up if there are fewer than
+    // two other flagships, so the layout never renders a short row.
+    final others = projects.where((item) => item != feature);
+    final supporting = [
+      ...others.where((item) => item.featured),
+      ...others.where((item) => !item.featured),
+    ].take(2).toList(growable: false);
 
     final shown = (feature == null ? 0 : 1) + supporting.length;
     final remaining = projects.length - shown;

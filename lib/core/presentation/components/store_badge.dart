@@ -20,6 +20,7 @@ class StoreBadge extends StatelessComponent {
   const StoreBadge({
     required this.link,
     required this.product,
+    this.compact = false,
     super.key,
   });
 
@@ -27,6 +28,10 @@ class StoreBadge extends StatelessComponent {
 
   /// Product name, used only to build the accessible label.
   final String product;
+
+  /// Single-line form for tight spaces such as a card footer. Drops the
+  /// overline — at card width the two-line badge wraps and looks broken.
+  final bool compact;
 
   @override
   Component build(BuildContext context) {
@@ -37,21 +42,27 @@ class StoreBadge extends StatelessComponent {
         'rel': 'noopener',
         'aria-label': link.accessibleLabel(product),
       },
-      classes: 'store-badge group',
+      classes: compact ? 'store-badge-sm above-stretch group' : 'store-badge group',
       [
         span(
           classes: 'store-badge-glyph',
           attributes: const {'aria-hidden': 'true'},
-          [AppIcons.byName(link.type.icon, classes: 'h-6 w-6')],
+          [
+            AppIcons.byName(
+              link.type.icon,
+              classes: compact ? 'h-4 w-4' : 'h-6 w-6',
+            ),
+          ],
         ),
         span(
           classes: 'flex min-w-0 flex-col leading-none',
           attributes: const {'aria-hidden': 'true'},
           [
-            span(
-              classes: 'store-badge-overline',
-              [Component.text(link.overline)],
-            ),
+            if (!compact)
+              span(
+                classes: 'store-badge-overline',
+                [Component.text(link.overline)],
+              ),
             span(
               classes: 'store-badge-title',
               [Component.text(link.title)],
@@ -72,12 +83,20 @@ class StoreBadgeRow extends StatelessComponent {
   const StoreBadgeRow({
     required this.links,
     required this.product,
+    this.compact = false,
+    this.limit,
     this.classes = '',
     super.key,
   });
 
   final List<AppLink> links;
   final String product;
+  final bool compact;
+
+  /// Caps how many badges are shown. A card footer has room for two; the
+  /// remainder stay reachable on the case-study page.
+  final int? limit;
+
   final String classes;
 
   @override
@@ -88,11 +107,13 @@ class StoreBadgeRow extends StatelessComponent {
       ...links.where((l) => l.isStore),
       ...links.where((l) => !l.isStore),
     ];
+    final shown = limit == null ? ordered : ordered.take(limit!).toList();
 
     return div(
       classes: 'flex flex-wrap items-stretch gap-3 $classes',
       [
-        for (final link in ordered) StoreBadge(link: link, product: product),
+        for (final link in shown)
+          StoreBadge(link: link, product: product, compact: compact),
       ],
     );
   }
