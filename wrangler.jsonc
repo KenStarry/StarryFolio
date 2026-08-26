@@ -1,0 +1,28 @@
+{
+  // Cloudflare Workers (with static assets) — not Pages.
+  //
+  // Pages is in maintenance mode and its dashboard flow now steers new projects
+  // here, which is why this is a Worker serving assets rather than a Pages
+  // project. The practical differences:
+  //
+  //   * `assets.directory` replaces Pages' `pages_build_output_dir`
+  //   * `functions/api/contact.js` is a *Pages Functions* source layout, so the
+  //     build compiles it into `_worker.js` via `wrangler pages functions
+  //     build`. `main` points at that bundle.
+  //   * `_routes.json` is a Pages concept and no longer applies. Requests that
+  //     match a static asset are served directly; only what does not match
+  //     reaches the Worker, which is exactly the routing that file used to buy.
+  "name": "kenstarry",
+  "compatibility_date": "2026-08-27",
+
+  // Produced by `scripts/build.sh`, which must run before `wrangler deploy`.
+  "main": "./build/jaspr/_worker.js",
+
+  "assets": {
+    "directory": "./build/jaspr",
+    "binding": "ASSETS",
+    // Serves the pre-rendered 404.html for unmatched routes, which is what the
+    // Netlify redirect rule used to do.
+    "not_found_handling": "404-page"
+  }
+}

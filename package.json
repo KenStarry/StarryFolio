@@ -1,0 +1,8 @@
+{
+  "name": "starryfolio",
+  "private": true,
+  "description": "Tooling for deploying the Jaspr build to Cloudflare Workers. The site itself is Dart — see pubspec.yaml.",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

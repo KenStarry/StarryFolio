@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 #
-# Production build for Cloudflare Pages.
+# Production build for Cloudflare Workers (static assets + a Worker).
 #
 # Cloudflare's build image has no Dart and no Tailwind binary, so both are
 # fetched here. Kept in the repo rather than pasted into the dashboard so the
 # build is reviewable and versioned alongside the code it builds.
 #
-# Cloudflare Pages settings:
+# Cloudflare Workers Builds settings:
 #   Build command       ./scripts/build.sh
-#   Output directory    build/jaspr
+#   Deploy command      npx wrangler deploy
+#
+# There is no "output directory" field — `wrangler.jsonc` declares it via
+# `assets.directory`.
 set -euo pipefail
 
 DART_VERSION="${DART_VERSION:-3.12.2}"
@@ -51,12 +54,24 @@ OUT="build/jaspr"
 # `packages/starry/` is deliberately left alone: it is this package's own
 # builder metadata, it is a few KB, and it is the one subtree where a future
 # Jaspr version could plausibly want something at runtime.
+before=$(du -sk "$OUT" | cut -f1)
+
 if [ -d "$OUT/packages" ]; then
-  before=$(du -sk "$OUT" | cut -f1)
   find "$OUT/packages" -mindepth 1 -maxdepth 1 -not -name 'starry' -exec rm -rf {} +
-  after=$(du -sk "$OUT" | cut -f1)
-  echo "→ pruned tooling debris: ${before}KB → ${after}KB"
 fi
+
+# More build leakage that has no business being served:
+#   .dart_tool/           pub's package map, pointing at packages just pruned
+#   .build.manifest       build_runner bookkeeping
+#   styles.tw.css         the Tailwind *source*; styles.css is the compiled
+#                         output the pages actually link, so shipping both
+#                         publishes the source for no reason
+#   images/.gitkeep       placeholder for an otherwise-empty git directory
+rm -rf "$OUT/.dart_tool"
+rm -f  "$OUT/.build.manifest" "$OUT/styles.tw.css" "$OUT/images/.gitkeep"
+
+after=$(du -sk "$OUT" | cut -f1)
+echo "→ pruned build leakage: ${before}KB → ${after}KB"
 
 # ── Cloudflare conventions ────────────────────────────────────────────────────
 # Pages serves `/404.html` for unmatched routes. Jaspr emits `404/index.html`,
@@ -67,15 +82,17 @@ if [ -f "$OUT/404/index.html" ]; then
   echo "→ wrote 404.html"
 fi
 
-# Only /api/* should reach the Worker. Without this every static request is
-# billed an invocation and pays the cold-start.
-cat > "$OUT/_routes.json" <<'JSON'
-{
-  "version": 1,
-  "include": ["/api/*"],
-  "exclude": []
-}
-JSON
-echo "→ wrote _routes.json"
+# ── Compile the Pages Function into a Worker ─────────────────────────────────
+# `functions/api/contact.js` uses the Pages Functions layout, where the file
+# path is the route. Workers has no such convention, so this compiles the
+# directory into a single `_worker.js` bundle that `wrangler.jsonc` points
+# `main` at. Skipping this step deploys a site with no working contact form.
+echo "→ compiling functions"
+npx --yes wrangler@4 pages functions build --outdir="$OUT/_worker.js/"
+
+# Without this, `_worker.js` would also be uploaded as a *static asset* and
+# served as downloadable source at /_worker.js.
+printf '_worker.js\n' > "$OUT/.assetsignore"
+echo "→ wrote .assetsignore"
 
 echo "✓ $(find "$OUT" -type f | wc -l | tr -d ' ') files, $(du -sh "$OUT" | cut -f1)"

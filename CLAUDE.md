@@ -202,9 +202,19 @@ touching a `@client` component must be proven with a real `jaspr build`. Use
 `package:universal_web/js_interop.dart`, which conditionally exports the real
 library on web and throwing stubs on the VM.
 
-**Deployment — Cloudflare Pages.** Build command `./scripts/build.sh`, output
-`build/jaspr`. That script fetches Dart and the Tailwind binary (neither is in
-Cloudflare's image), then does three things the platform needs:
+**Deployment — Cloudflare Workers** (not Pages; Pages is in maintenance mode
+and the dashboard now steers new projects to Workers).
+
+| Setting | Value |
+|---|---|
+| Build command | `./scripts/build.sh` |
+| Deploy command | `npx wrangler deploy` |
+
+There is no output-directory field — `wrangler.jsonc` declares it via
+`assets.directory`. `git push` to `main` is the deploy.
+
+`scripts/build.sh` fetches Dart and the Tailwind binary (neither is in
+Cloudflare's image), then does what the platform needs:
 
 1. **Prunes `build/jaspr/packages/`** of everything except `starry/`. Jaspr
    copies the test runner, DDC dev-compiler and analyzer assets into the output
@@ -212,12 +222,18 @@ Cloudflare's image), then does three things the platform needs:
    stays; it is this package's own builder metadata.
 2. **Copies `404/index.html` to `404.html`** — Pages serves the latter for
    unmatched routes, Jaspr only emits the former.
-3. **Writes `_routes.json`** limiting Worker invocation to `/api/*`, so static
-   requests are not billed an invocation and do not pay a cold start.
+3. **Compiles `functions/` into `_worker.js`** with `wrangler pages functions
+   build`, and writes `.assetsignore` so that bundle is not *also* served as a
+   downloadable static asset. Skip this step and the site deploys with a dead
+   contact form.
 
-The contact function is `functions/api/contact.js` — a Pages Function, so the
-file path *is* the route. It runs on Workers, not Node: no `process`, secrets
-arrive on `context.env`.
+`functions/api/contact.js` keeps the Pages Functions layout — file path *is*
+the route — because that build step converts it. It runs on Workers, not Node:
+no `process`, secrets arrive on `context.env`.
+
+Also pruned: `.dart_tool/`, `.build.manifest`, `styles.tw.css` (the Tailwind
+*source*, next to the compiled `styles.css` the pages actually link) and
+`images/.gitkeep`.
 
 - `which dart` resolving to a Flutter *wrapper* makes the Jaspr CLI refuse to start
   ("failed to verify the surrounding Dart SDK").
