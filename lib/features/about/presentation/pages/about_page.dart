@@ -5,8 +5,7 @@ import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/presentation/components/cta_button.dart';
 import '../../../../core/presentation/components/error_notice.dart';
-import '../../../../core/presentation/components/eyebrow.dart';
-import '../../../../core/presentation/components/jump_nav.dart';
+import '../../../../core/presentation/components/page_header.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/presentation/components/section_rail.dart';
 import '../../../../core/routing/route_paths.dart';
@@ -121,7 +120,12 @@ class AboutPage extends AsyncStatelessComponent {
   }
 }
 
-/// Page header — the `<h1>`, the dossier card and the jump pills.
+/// Page header, on the shared [PageHeader] template.
+///
+/// The one page whose header carries an aside — the dossier answers *who* while
+/// the title is still saying *what* — and the numbers come straight off the
+/// profile, so a role added to the datasource moves the count without anyone
+/// remembering to.
 class _Header extends StatelessComponent {
   const _Header({required this.profile});
 
@@ -129,107 +133,31 @@ class _Header extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return section(
-      // `isolate` matters: the ghost wordmark below sits at `-z-10`, and
-      // without a stacking context here it would paint *behind* this
-      // section's own background and simply never be seen.
-      classes: 'relative isolate overflow-hidden bg-ink-900 pb-16 pt-16 '
-          'sm:pb-20 sm:pt-24',
-      [
-        // The ghost wordmark at page scale, anchored to the eyebrow directly
-        // beneath it. Texture, never content.
-        const div(
-          classes: 'pointer-events-none absolute -right-10 -top-6 -z-10 '
-              'select-none',
-          attributes: {'aria-hidden': 'true'},
-          [
-            span(
-              classes: 'showcase-ghost font-display font-extrabold '
-                  'text-ink-100/[0.035]',
-              [Component.text('About')],
-            ),
-          ],
+    return PageHeader(
+      trail: 'About',
+      ghost: 'About',
+      path: RoutePaths.about,
+      meta: '${SiteConfig.location} · UTC+3',
+      title: '${SiteConfig.name},',
+      titleTail: 'end to end.',
+      lead: 'A Flutter engineer who owns the whole surface — design system, '
+          'architecture, release. This is the long version: the roles, the '
+          'tools, the process, and the part that is not work.',
+      aside: AboutDossier(
+        currentCompany: profile.currentRole?.company ?? '',
+      ),
+      facts: [
+        (value: '5+', label: 'Years in Flutter'),
+        (
+          value: profile.experience.length.toString().padLeft(2, '0'),
+          label: 'Roles held',
         ),
-
-        div(
-          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
-          [
-            div(
-              classes: 'grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] '
-                  'lg:gap-20',
-              [
-                div(
-                  classes: 'reveal',
-                  [
-                    const Eyebrow('About'),
-
-                    const h1(
-                      classes: 'type-section mt-5 font-display font-extrabold '
-                          'text-ink-100',
-                      [
-                        Component.text('${SiteConfig.name},'),
-                        br(),
-                        Component.text('end to end.'),
-                      ],
-                    ),
-
-                    const p(
-                      classes: 'mt-6 max-w-lg text-base leading-relaxed '
-                          'text-ink-300',
-                      [Component.text(SiteConfig.heroStatement)],
-                    ),
-
-                    p(
-                      classes: 'mt-5 max-w-lg text-sm leading-relaxed '
-                          'text-ink-400',
-                      [Component.text(SiteConfig.bio.first)],
-                    ),
-
-                    const div(
-                      classes: 'mt-9 flex flex-wrap items-center gap-3',
-                      [
-                        CtaButton(
-                          label: 'Start a project',
-                          href: 'mailto:${SiteConfig.email}',
-                        ),
-                        CtaButton(
-                          label: 'See the work',
-                          href: RoutePaths.projects,
-                          variant: CtaVariant.outline,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                div(
-                  classes: 'reveal',
-                  [
-                    AboutDossier(
-                      currentCompany: profile.currentRole?.company ?? '',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            const div(classes: 'divider mt-16', []),
-
-            div(
-              classes: 'mt-8',
-              [
-                JumpNav(
-                  path: RoutePaths.about,
-                  label: 'Jump to a section',
-                  stops: [
-                    for (final stop in AboutPage._stops)
-                      (anchor: stop.anchor, label: stop.label, count: 0),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+        (value: '02', label: 'App stores'),
+        (value: '100%', label: 'Of the stack owned'),
+      ],
+      jumpStops: [
+        for (final stop in AboutPage._stops)
+          (anchor: stop.anchor, label: stop.label, count: 0),
       ],
     );
   }

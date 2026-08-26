@@ -4,6 +4,7 @@ import 'package:jaspr/jaspr.dart';
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/cta_button.dart';
+import '../../../../core/presentation/components/two_tone_title.dart';
 import '../../../../core/routing/route_paths.dart';
 import 'portrait_frame.dart';
 
@@ -38,13 +39,19 @@ class HeroSection extends StatelessComponent {
                   [
                     if (SiteConfig.available) _availability(),
 
-                    const h1(
+                    // Two-tone, inverted against the page headers: the
+                    // muted line comes *first*, so the name reads
+                    // muted → bright → the accent rule below it. A name is
+                    // not a sentence with a clause to send to the back; the
+                    // composition here is a crescendo into the mark, and
+                    // `Starry` is the half that carries the domain, the
+                    // wordmark and the ghost behind the portrait.
+                    const TwoToneTitle(
                       classes: 'rise d-2 type-display mt-8 font-display '
                           'font-extrabold text-ink-100',
-                      [
-                        Component.text(SiteConfig.firstName),
-                        br(),
-                        Component.text('${SiteConfig.lastName}.'),
+                      lines: [
+                        (text: SiteConfig.firstName, muted: true),
+                        (text: '${SiteConfig.lastName}.', muted: false),
                       ],
                     ),
 

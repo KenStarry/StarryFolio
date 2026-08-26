@@ -99,6 +99,15 @@
     letter-spacing: -0.035em;
   }
 
+  /* The page header's title. Sits deliberately *between* the home hero's
+     display size and a section heading: every inner page should open big and
+     bold, but nothing on the site is allowed to out-shout the hero. */
+  .type-page {
+    font-size: clamp(2.5rem, 6.2vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.032em;
+  }
+
   .type-section {
     font-size: clamp(1.75rem, 3.4vw, 2.75rem);
     line-height: 1.12;
@@ -124,6 +133,32 @@
     letter-spacing: 0.22em;
     text-transform: uppercase;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     GHOST TITLE
+
+     The ghost-wordmark motif, at page-header scale: the page's own name set
+     enormous behind its header, bleeding off the bottom-left corner so it
+     reads as a watermark the content stands on rather than a word someone
+     forgot to delete.
+
+     Three sizes rather than one, picked by word length in `PageHeader`. A
+     single clamp that flatters `Work` sets `Services` at a width no viewport
+     can hold, and the point of the motif is that it is *felt*, not read — a
+     ghost clipped mid-letter is just a mistake at 3% opacity.
+
+     Always `aria-hidden` and `select-none` in the markup: it repeats a real
+     heading a few pixels away and must never enter the document outline.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .ghost-title {
+    line-height: 0.72;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+
+  .ghost-title-lg { font-size: clamp(7rem, 27vw, 21rem); }
+  .ghost-title-md { font-size: clamp(5rem, 19vw, 15rem); }
+  .ghost-title-sm { font-size: clamp(3.75rem, 13vw, 10.5rem); }
 
   /* ═══════════════════════════════════════════════════════════════════════
      SURFACES

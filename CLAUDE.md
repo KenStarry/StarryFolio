@@ -309,7 +309,37 @@ merely tidy, and it is the pattern to reach for when a section needs depth:
 - **Anchored to something real.** It echoes the adjacent heading or name. A
   decorative word with no referent is just noise.
 
-The footer wordmark is the same idea at page scale.
+The footer wordmark is the same idea at page scale, and `PageHeader` carries it
+on every inner page — the page's own name bleeding off the bottom-left corner,
+sized in three steps by word length (`.ghost-title-lg/md/sm`), because one clamp
+that flatters `Work` sets `Services` at a width no viewport can hold.
+
+**Two-tone display titles — the headline treatment.** Every `<h1>` on the site
+is set in two tones by `TwoToneTitle`: one half `ink-100` at `font-extrabold`,
+the other `ink-400` one weight step lighter. The muted half sits back in *two*
+dimensions rather than one, which is the difference between a heading that looks
+recoloured and one that looks typeset.
+
+- **One definition, never inlined.** The moment the pair of spans is written out
+  twice, the copies start disagreeing about which grey, which weight, and
+  whether the muted half gets its own line.
+- **`ink-400`, never `ink-500`.** A headline is content. `ink-400` on `ink-900`
+  is ~4.3:1; `ink-500` is ~2.5:1, under the 3:1 floor even large text must
+  clear. The `ink-500` used for mono labels is not available here.
+- **One weight step.** `font-bold` under an `extrabold` headline. Two notches
+  reads as a mistake, and both weights must actually be loaded — Plus Jakarta
+  Sans ships 700 and 800 in `main.server.dart`, so neither is synthesised.
+- **Which half sits back is a judgement.** On a page header it is the clause
+  that qualifies the first — "What I build, / *and how I work.*" On the home
+  hero it is inverted: a name is not a sentence with a clause to send to the
+  back, so it runs muted → bright → the accent rule beneath, cresting into the
+  mark rather than trailing away from it.
+
+**`PageHeader` opens every page except home.** Trail, title, standfirst,
+optional aside, ruled numbers, jump pills — in that order, from one component,
+so three pages cannot drift into three ideas of what a header is. Its motion is
+the time-based `.rise` stagger, never `.reveal`: a header is above the fold and
+there is nothing to scroll yet.
 
 **No vertical lists of projects.** Projects are always large boxy floating cards
 (`.float-card`) — a cover, a hairline, a solid caption panel, mirroring the hero's

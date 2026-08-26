@@ -6,6 +6,7 @@ import '../../../../core/di/locator.dart';
 import '../../../../core/presentation/components/error_notice.dart';
 import '../../../../core/presentation/components/company_marquee.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../../core/presentation/components/page_header.dart';
 import '../../../../core/presentation/components/section_rail.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/routing/route_paths.dart';
@@ -236,56 +237,27 @@ class _Header extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return section(
-      classes: 'bg-ink-900 pb-16 pt-16 sm:pb-20 sm:pt-24',
-      [
-        div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
-          [
-            const div(
-              classes: 'reveal max-w-2xl',
-              [
-                Eyebrow('Work'),
-                h1(
-                  classes: 'type-section mt-5 font-display font-extrabold '
-                      'text-ink-100',
-                  [
-                    Component.text('All creative works,'),
-                    br(),
-                    Component.text('selected projects.'),
-                  ],
-                ),
-                p(
-                  classes: 'mt-6 max-w-lg text-sm leading-relaxed text-ink-400 '
-                      'sm:text-[0.9375rem]',
-                  [
-                    Component.text(
-                      'Everything worth showing, grouped by what it was built '
-                      'for. Each one has a short case study — what it does, '
-                      'what was hard, and what I would redo given another pass.',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const div(classes: 'divider mt-12', []),
-            div(
-              classes: 'reveal mt-8 flex flex-wrap items-center gap-x-10 gap-y-4',
-              [
-                _stat(count.toString().padLeft(2, '0'), 'case studies'),
-                _stat('02', 'app stores'),
-                _stat('5+', 'years shipping'),
-              ],
-            ),
-            div(
-              classes: 'mt-10',
-              [
-                JumpNav(path: RoutePaths.projects, stops: _stops()),
-              ],
-            ),
-          ],
+    return PageHeader(
+      trail: 'Work',
+      ghost: 'Work',
+      path: RoutePaths.projects,
+      meta: '${featured.length} featured',
+      title: 'All creative works,',
+      titleTail: 'selected projects.',
+      lead: 'Everything worth showing, grouped by what it was built for. Each '
+          'one has a short case study — what it does, what was hard, and what '
+          'I would redo given another pass.',
+      facts: [
+        (value: count.toString().padLeft(2, '0'), label: 'Case studies'),
+        (
+          value: featured.length.toString().padLeft(2, '0'),
+          label: 'Flagships',
         ),
+        (value: '02', label: 'App stores'),
+        (value: '5+', label: 'Years shipping'),
       ],
+      jumpStops: _stops(),
+      jumpLabel: 'Jump to a section',
     );
   }
 
@@ -304,20 +276,6 @@ class _Header extends StatelessComponent {
           (anchor: cat.slug, label: cat.title, count: counts[cat]!),
     ];
   }
-
-  static Component _stat(String value, String label) => div(
-        classes: 'flex items-baseline gap-3',
-        [
-          span(
-            classes: 'font-display text-2xl font-extrabold text-ink-100',
-            [Component.text(value)],
-          ),
-          span(
-            classes: 'type-eyebrow font-mono text-ink-500',
-            [Component.text(label)],
-          ),
-        ],
-      );
 }
 
 /// A featured project, presented flat on its own band.

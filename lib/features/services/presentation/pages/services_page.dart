@@ -5,8 +5,7 @@ import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/presentation/components/cta_button.dart';
 import '../../../../core/presentation/components/error_notice.dart';
-import '../../../../core/presentation/components/eyebrow.dart';
-import '../../../../core/presentation/components/jump_nav.dart';
+import '../../../../core/presentation/components/page_header.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/presentation/components/section_rail.dart';
 import '../../../../core/routing/route_paths.dart';
@@ -93,7 +92,7 @@ class ServicesPage extends AsyncStatelessComponent {
   }
 }
 
-/// Page header. Owns the `<h1>`, and carries the jump pills.
+/// Page header, on the shared [PageHeader] template.
 class _Header extends StatelessComponent {
   const _Header({required this.services});
 
@@ -101,55 +100,30 @@ class _Header extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return section(
-      classes: 'bg-ink-900 pb-16 pt-16 sm:pb-20 sm:pt-24',
-      [
-        div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
-          [
-            const div(
-              classes: 'reveal max-w-2xl',
-              [
-                Eyebrow('Services'),
-                h1(
-                  classes: 'type-section mt-5 font-display font-extrabold '
-                      'text-ink-100',
-                  [
-                    Component.text('What I build,'),
-                    br(),
-                    Component.text('and how I work.'),
-                  ],
-                ),
-                p(
-                  classes: 'mt-6 max-w-lg text-sm leading-relaxed text-ink-400 '
-                      'sm:text-[0.9375rem]',
-                  [
-                    Component.text(
-                      'Six things I get hired for — usually several at once, '
-                      'which is the point. One person across design, build and '
-                      'release is how the seams disappear.',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const div(classes: 'divider mt-12', []),
-            div(
-              classes: 'mt-8',
-              [
-                JumpNav(
-                  path: RoutePaths.services,
-                  label: 'Jump to a service',
-                  stops: [
-                    for (final item in services)
-                      (anchor: item.slug, label: item.plainTitle, count: 0),
-                  ],
-                ),
-              ],
-            ),
-          ],
+    return PageHeader(
+      trail: 'Services',
+      ghost: 'Services',
+      path: RoutePaths.services,
+      meta: SiteConfig.availabilityLabel,
+      title: 'What I build,',
+      titleTail: 'and how I work.',
+      lead: 'Six things I get hired for — usually several at once, which is '
+          'the point. One person across design, build and release is how the '
+          'seams disappear.',
+      facts: [
+        (
+          value: services.length.toString().padLeft(2, '0'),
+          label: 'Services',
         ),
+        (value: '5+', label: 'Years shipping'),
+        (value: '02', label: 'App stores'),
+        (value: '100%', label: 'Of the stack owned'),
       ],
+      jumpStops: [
+        for (final item in services)
+          (anchor: item.slug, label: item.plainTitle, count: 0),
+      ],
+      jumpLabel: 'Jump to a service',
     );
   }
 }
