@@ -195,6 +195,30 @@ On this machine that resolves to
 `/opt/homebrew/share/flutter/bin/cache/dart-sdk/bin`. Verify with
 `which dart` before building — it must **not** print `/opt/homebrew/bin/dart`.
 
+**`dart analyze` is not sufficient on its own.** It analyses one target. An
+island's Dart is compiled for *both* server and client, so a web-only import
+(`dart:js_interop`) passes analysis and then fails the server build. Anything
+touching a `@client` component must be proven with a real `jaspr build`. Use
+`package:universal_web/js_interop.dart`, which conditionally exports the real
+library on web and throwing stubs on the VM.
+
+**Deployment — Cloudflare Pages.** Build command `./scripts/build.sh`, output
+`build/jaspr`. That script fetches Dart and the Tailwind binary (neither is in
+Cloudflare's image), then does three things the platform needs:
+
+1. **Prunes `build/jaspr/packages/`** of everything except `starry/`. Jaspr
+   copies the test runner, DDC dev-compiler and analyzer assets into the output
+   — ~1.3 MB, over half the artefact, referenced by nothing. `packages/starry/`
+   stays; it is this package's own builder metadata.
+2. **Copies `404/index.html` to `404.html`** — Pages serves the latter for
+   unmatched routes, Jaspr only emits the former.
+3. **Writes `_routes.json`** limiting Worker invocation to `/api/*`, so static
+   requests are not billed an invocation and do not pay a cold start.
+
+The contact function is `functions/api/contact.js` — a Pages Function, so the
+file path *is* the route. It runs on Workers, not Node: no `process`, secrets
+arrive on `context.env`.
+
 - `which dart` resolving to a Flutter *wrapper* makes the Jaspr CLI refuse to start
   ("failed to verify the surrounding Dart SDK").
 - The standalone `tailwindcss` binary is required — `jaspr_tailwind` shells out to it and
