@@ -16,7 +16,7 @@
     export PATH="$HOME/dart-sdk/bin:$HOME:$PATH"
     dart pub global activate jaspr_cli
     export PATH="$PATH:$HOME/.pub-cache/bin"
-    jaspr build --sitemap-domain https://kenstarry.com
+    jaspr build --sitemap-domain https://kenstarry.com --sitemap-exclude '^/404'
   """
 
 [build.environment]

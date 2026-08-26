@@ -7,8 +7,11 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
+  fpdart: ^1.2.0
   jaspr: ^0.23.0
+  jaspr_riverpod: ^0.4.6
   jaspr_router: ^0.9.0
+  riverpod_annotation: ^4.0.3
   universal_web: ^1.0.0
 
 dev_dependencies:
@@ -17,6 +20,7 @@ dev_dependencies:
   jaspr_builder: ^0.23.0
   jaspr_tailwind: ^0.3.6
   lints: ^5.0.0
+  riverpod_generator: ^4.0.4
 
 # Jaspr project configuration.
 # mode: static  -> pre-renders every route to HTML at build time (best SEO, cheapest hosting)

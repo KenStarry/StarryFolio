@@ -10,6 +10,17 @@ switch, mobile menu) hydrate on the client as Dart.
 
 ---
 
+## Learning the stack
+
+New to Jaspr? **[`docs/`](./docs/README.md)** is a full guide written for someone who knows
+HTML, CSS and JavaScript but has never seen Jaspr — the component model, static rendering and
+hydration, routing, Tailwind, the SEO layer, state, architecture, and a cookbook of recipes.
+
+Start with [Rendering & hydration](./docs/02-rendering-and-hydration.md) and
+[SEO](./docs/05-seo.md); together they explain why the code is shaped the way it is.
+
+---
+
 ## Prerequisites
 
 Two tools have to be on your **PATH** before anything builds:
@@ -54,7 +65,7 @@ and retry — build_runner caches enough state to keep replaying a fixed error.
 ## Build it
 
 ```bash
-jaspr build --sitemap-domain https://kenstarry.com
+jaspr build --sitemap-domain https://kenstarry.com --sitemap-exclude '^/404'
 ```
 
 Output lands in `build/jaspr/` as `index.html`, `projects/index.html`,
@@ -67,32 +78,53 @@ Netlify, Vercel or GitHub Pages at that folder.
 
 ## Where things live
 
+Feature-based clean architecture. Each feature owns `domain/` (models + the abstract
+repository), `data/` (datasource + implementations) and `presentation/` (pages +
+components); anything shared by two or more features lives in `core/`.
+
 ```
 lib/
-  main.server.dart     <html> document, SEO + OG tags, theme boot script
-  main.client.dart     hydration entrypoint for @client components
-  app.dart             the route table — add a route, get a static page
-  data/
-    profile.dart       name, bio, stats, socials, toolkit  ← edit this first
-    projects.dart      the project list + lookup helpers   ← then this
-  models/project.dart  Project model and ProjectStatus badge styles
-  components/          NavBar, footer, Layout, Section, ProjectCard, PageMeta, icons
-  pages/               home, projects index, project detail, 404
+  app.dart                     route table
+  main.server.dart             <html> document, site-wide head, theme boot script
+  main.client.dart             hydration entrypoint
+  core/
+    config/site_config.dart    name, bio, stats, email, socials, toolkit  ← edit this first
+    di/locator.dart            picks repository implementations
+    presentation/components/   AppLayout, SectionBlock, SiteFooter, AppIcons, ErrorNotice
+      nav/                     NavBar (the one @client island) + ThemeToggle
+    routing/route_paths.dart   every path, in one place
+    seo/                       PageMeta (title/canonical/OG) + StructuredData (JSON-LD)
+    state/controllers/         @riverpod controllers — client-side only
+  features/
+    home/       presentation/{pages,components}
+    projects/   domain/{model,enum,repository} · data/{datasource,repository} · presentation
+    not_found/  presentation/pages
 web/
-  styles.tw.css        Tailwind v4 theme tokens (colors, fonts, easing)
+  styles.tw.css                Tailwind v4 theme tokens (colors, fonts, easing)
   favicon.svg
-  images/              drop project covers and og.png here
+  images/                      project covers and og.png
 ```
 
 ## Make it yours
 
-1. **`lib/data/profile.dart`** — name, tagline, bio, stats, email, socials.
-2. **`lib/data/projects.dart`** — add a `Project`; it automatically appears on
-   the home page, the projects index, and gets its own pre-rendered
-   `/projects/<slug>` page.
-3. **`web/styles.tw.css`** — the `@theme` block is the whole design system.
-   Change `--color-star-400` and the accent shifts everywhere.
+1. **`lib/core/config/site_config.dart`** — name, tagline, bio, stats, email, socials.
+2. **`lib/features/projects/data/datasource/projects_local_datasource.dart`** — add a
+   `ProjectModel`; it appears on the home page, the projects index, and gets its own
+   pre-rendered `/projects/<slug>` page.
+3. **`web/styles.tw.css`** — the `@theme` block is the whole design system. Change
+   `--color-star-400` and the accent shifts everywhere.
 4. Add `web/images/og.png` (1200×630) so shared links get a preview card.
+
+## How rendering works
+
+Two paths, and they must not be mixed — see `CLAUDE.md` for the full rationale:
+
+- **Content** is server-only. Pages are `AsyncStatelessComponent`s that await a repository,
+  so the data is resolved *during* pre-rendering and the HTML ships complete. This is what
+  makes the site indexable.
+- **Interaction** lives in `@client` islands, which own a `ProviderScope` and use Riverpod.
+  Riverpod cannot be used in the content path: its async providers resolve after the HTML
+  has been serialized, so a crawler would receive a loading state.
 
 ## Notes
 
@@ -103,10 +135,12 @@ web/
   it inlines the `build_modules` builders, which then collide with the copy
   `jaspr_tailwind` pulls in (`outputs collide: package:collection/...`).
   Unpin only once `jaspr_tailwind` drops its `build_modules` dependency.
-- Per-page `<title>`, canonical and Open Graph tags come from `PageMeta`, not
-  from the root `Document`. Entries in that `Document`'s `head:` list are
+- Per-page `<title>`, canonical and Open Graph tags come from `core/seo/page_meta.dart`,
+  not from the root `Document`. Entries in that `Document`'s `head:` list are
   emitted verbatim and bypass Jaspr's override system, so a default there would
   duplicate rather than be replaced by the page-level tag.
+- `dartz` cannot be used on this SDK (its constraint caps at Dart `<3.0.0`);
+  `fpdart` supplies `Either` instead.
 
 - Dark mode is the default and is stored in `localStorage` under `theme`. The
   inline script in `main.server.dart` applies it before first paint, so there is
