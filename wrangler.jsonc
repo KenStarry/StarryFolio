@@ -42,13 +42,21 @@
     "not_found_handling": "404-page"
   },
 
-  // Both default to true and warn when unset. Declared explicitly so the
-  // choice is visible rather than implicit.
+  // kenstarry.com is the only hostname this site should answer on. Leaving the
+  // workers.dev route enabled would serve a byte-identical copy at a second
+  // address — the canonical tags point at the custom domain, so it would not
+  // be *harmful*, but there is no reason for it to exist.
+  "workers_dev": false,
+
+  // Must be disabled alongside it, not left to default. Preview URLs are
+  // served at `<preview>-<worker>.<subdomain>.workers.dev` — the same public
+  // subdomain — so turning off `workers_dev` while leaving these on keeps the
+  // site reachable there anyway. Cloudflare changed this default in Wrangler
+  // 4.44 for exactly that reason; setting it explicitly means the behaviour
+  // does not depend on which Wrangler version the CI happens to install.
   //
-  // Worth revisiting once kenstarry.com is attached: the site would then be
-  // reachable at two hostnames. The canonical tags all point at the custom
-  // domain, so this is not harmful, but setting it false afterwards removes
-  // the ambiguity entirely.
-  "workers_dev": true,
-  "preview_urls": true
+  // The cost is real: no per-branch preview URLs. Flip both back to true
+  // temporarily if a change ever needs previewing before it goes to
+  // production.
+  "preview_urls": false
 }
