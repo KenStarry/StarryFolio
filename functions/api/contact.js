@@ -146,9 +146,23 @@ export async function onRequestPost(context) {
   const from = env.CONTACT_FROM;
 
   if (!apiKey || !to || !from) {
-    // Never leak which variable is missing to the client.
-    console.error('contact: missing RESEND_API_KEY, CONTACT_TO or CONTACT_FROM');
-    return fail(500, 'The contact form is not configured yet. Email me directly.');
+    // Naming the absent variables is deliberate. They are declared in a public
+    // repository, so the names are not a secret, and knowing one is unset gives
+    // an attacker nothing they can act on — while a generic message turns every
+    // misconfiguration into a guessing game against a live deploy. Values are
+    // of course never included.
+    const absent = [
+      !apiKey && 'RESEND_API_KEY',
+      !to && 'CONTACT_TO',
+      !from && 'CONTACT_FROM',
+    ].filter(Boolean);
+
+    console.error('contact: unset ->', absent.join(', '));
+    return fail(
+      500,
+      `The contact form is not configured yet (unset: ${absent.join(', ')}). ` +
+        'Email me directly.',
+    );
   }
 
   const { subject, html, text } = buildEmail(clean);
