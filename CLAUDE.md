@@ -1,0 +1,252 @@
+# CLAUDE.md — starry
+
+Ken Starry's portfolio, **[kenstarry.com](https://kenstarry.com)**. Dart on the web via
+[Jaspr](https://docs.jaspr.site) in `static` mode: every route is pre-rendered to plain
+HTML at build time.
+
+> **This is a Jaspr project, not Flutter.** `~/.claude/flutter_architecture_spec.md` is the
+> house architecture and its *structure* applies here in full. Its Flutter-specific stack
+> does not — see [Spec deviations](#spec-deviations) for what changed and why.
+
+> **Background reading:** [`docs/`](./docs/README.md) explains the stack from first
+> principles — Jaspr's component model, static rendering, hydration, Tailwind, SEO and the
+> architecture. This file is the enforcement summary; `docs/` is the reasoning behind it.
+
+---
+
+## 0. The rule that outranks the others
+
+**SEO is the top priority. It wins over architectural purity, every time.**
+
+This is a static marketing site. Its entire job is to be crawled, indexed and shared. A
+refactor that is cleaner but leaves content out of the pre-rendered HTML is a regression,
+not an improvement.
+
+The practical test, after **any** change:
+
+```bash
+jaspr build --sitemap-domain https://kenstarry.com --sitemap-exclude '^/404'
+grep -c "Case study" build/jaspr/index.html   # expect 3, not 0
+```
+
+If content renders in the browser but is missing from `build/jaspr/**/*.html`, it is
+invisible to crawlers. Ship nothing in that state.
+
+---
+
+## 1. The constraint everything else follows from
+
+Riverpod **cannot** be used in the content path. This is measured, not assumed:
+
+| Pattern | What lands in the static HTML |
+|---|---|
+| `AsyncStatelessComponent` awaiting a repository | ✅ the real content |
+| `context.watch(someAsyncProvider)` in a `StatelessComponent` | ❌ `AsyncLoading<T>` — a spinner |
+| `await context.watch(p.future)` inside `AsyncStatelessComponent` | 💥 throws `Bad state: context.watch can only be used within the build method` |
+
+`AsyncStatelessElement.buildAsync` does not set the flag `jaspr_riverpod` requires, and
+after an `await` you are no longer inside the synchronous build. There is no arrangement of
+these two that works.
+
+**So the codebase has two separate paths, and they do not mix:**
+
+```
+Content path  (SEO-critical, server-only)     Interaction path  (client islands)
+─────────────────────────────────────────     ──────────────────────────────────
+AsyncStatelessComponent                       @client + ProviderScope
+  └─ await Locator.<repo>.method()              └─ context.watch / context.read
+  └─ result.fold(error, data)                   └─ @riverpod controllers + codegen
+  └─ pre-rendered into HTML                     └─ hydrates after load
+```
+
+Everything reachable from a `Route` builder is the content path. The **only** island is
+`core/presentation/components/nav/nav_bar.dart`.
+
+---
+
+## 2. Structure
+
+```
+lib/
+├── app.dart                      route table; composes feature pages
+├── main.server.dart              <html> document, site-wide head, theme boot script
+├── main.client.dart              hydration entrypoint for @client components
+│
+├── core/                         shared across 2+ features
+│   ├── config/site_config.dart   build-time identity — name, urls, socials, toolkit
+│   ├── di/locator.dart           composition root; picks repository impls
+│   ├── domain/model/             shared models (SocialLink)
+│   ├── presentation/components/  AppLayout, SectionBlock, SiteFooter, AppIcons, ErrorNotice
+│   │   └── nav/                  NavBar (the island) + ThemeToggle
+│   ├── routing/route_paths.dart  every path, in one place
+│   ├── seo/                      PageMeta + StructuredData/SchemaOrg
+│   └── state/controllers/        @riverpod controllers (client-side only)
+│
+└── features/<feature>/
+    ├── domain/                   model/ · enum/ · repository/   (abstract contract)
+    ├── data/                     datasource/ · repository/      (impl + mock)
+    └── presentation/             pages/ · components/
+```
+
+**Dependency direction:** `presentation → domain ← data`. Presentation depends on the
+abstract repository, never on `*_impl`. Models live in `domain/`.
+
+**Core vs feature:** content-agnostic goes in `core/`; domain-specific stays in the feature.
+Extract to `core/` once it is used in 2+ places.
+
+Current features: `home`, `projects`, `not_found`.
+
+---
+
+## 3. Adding a feature
+
+1. `features/<name>/domain/model/<name>_model.dart` — with defensive `fromMap`.
+2. `features/<name>/domain/repository/<name>_repository.dart` — abstract, returning
+   `Future<Either<String, T>>` (fpdart). `Left` is a message ready to render.
+3. `features/<name>/data/datasource/` then `data/repository/<name>_repository_impl.dart`.
+   Add a `_mock_repository.dart` alongside it.
+4. Register the impl in `core/di/locator.dart`.
+5. `features/<name>/presentation/pages/<name>_page.dart` — an `AsyncStatelessComponent`
+   that awaits the repository and `fold`s both branches. **The error branch must render a
+   real page**, not an empty one.
+6. Add the path to `core/routing/route_paths.dart`, then a `Route` in `app.dart`.
+7. Add `PageMeta` and, where it fits, `StructuredData`.
+8. Build and grep the HTML for the new content.
+
+### Adding a project
+
+Append to `features/projects/data/datasource/projects_local_datasource.dart`. It appears on
+the home page, the index, and gets its own pre-rendered `/projects/<slug>` page — the route
+table reads `ProjectsLocalDatasource.slugs` directly, because static generation must
+enumerate every page synchronously before any async work runs.
+
+---
+
+## 4. SEO rules
+
+- **One `<h1>` per page.** Zero leaves crawlers without a topic; two split it. Sections use
+  `<h2>` via `SectionBlock`; pass `isPageHeading: true` where the section *is* the page.
+- **Every route renders exactly one `PageMeta`** — title, description, canonical, Open Graph,
+  Twitter. Nothing else should emit those tags.
+- **Never put canonical or `og:*` in `main.server.dart`'s `head:` list.** Entries there are
+  emitted verbatim and bypass Jaspr's override system, so a page-level tag *duplicates*
+  rather than replaces. Only `title` and `meta` on `Document` participate in overriding, and
+  `<meta>` only dedupes by `name` — which is why `PageMeta` puts an `id` on every element.
+- **JSON-LD** via `StructuredData` + `SchemaOrg`. It goes in `Document.head`, so it survives
+  into the HTML for crawlers that never run JS. Validate after changes:
+  `python3 -c "..."` — or paste a page into Google's Rich Results Test.
+- **404 sets `noindex, follow`**, has no canonical, and is kept out of the sitemap via
+  `--sitemap-exclude '^/404'` — a noindex page listed in the sitemap is a crawl-budget
+  contradiction.
+- New images need `loading="lazy"` + `decoding="async"` and a descriptive `alt`.
+- External links get `rel="me noopener"` where they are identity profiles — `me` corroborates
+  the `sameAs` entries in the Person JSON-LD.
+
+---
+
+## 5. State (client islands only)
+
+Riverpod 3 via `jaspr_riverpod`, always with codegen:
+
+```dart
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'x_controller.g.dart';
+
+@Riverpod(keepAlive: true)   // persists; use @riverpod for autoDispose
+class XController extends _$XController {
+  @override
+  X build() => ...;
+}
+```
+
+`jaspr_riverpod` has **no** `ConsumerWidget` or `WidgetRef` — use `context.watch`,
+`context.read`, `context.listen` on any component's `BuildContext`. To scope rebuilds, wrap
+in `Builder`.
+
+An island owns its own `ProviderScope` (see `NavBar`). A nested component must **not** carry
+its own `@client` — that would hydrate it as a second root outside that scope. `ThemeToggle`
+is the worked example.
+
+Guard every browser API with `kIsWeb`: island code also runs during the static build, where
+there is no `document`.
+
+---
+
+## 6. Commands
+
+```bash
+jaspr serve                                          # localhost:8080, hot reload
+jaspr build --sitemap-domain https://kenstarry.com \
+  --sitemap-exclude '^/404'                          # -> build/jaspr/
+dart run build_runner build --delete-conflicting-outputs
+dart analyze                                         # must be clean
+```
+
+**Environment** — both must be on `PATH` or the build fails:
+
+```bash
+export PATH="$(dirname $(which flutter))/cache/dart-sdk/bin:$PATH"   # real Dart SDK
+export PATH="$PATH:$HOME/.pub-cache/bin:$HOME/.local/bin"            # jaspr + tailwindcss
+```
+
+- `which dart` resolving to a Flutter *wrapper* makes the Jaspr CLI refuse to start
+  ("failed to verify the surrounding Dart SDK").
+- The standalone `tailwindcss` binary is required — `jaspr_tailwind` shells out to it and
+  discards its stderr, so a missing binary surfaces only as
+  `PathNotFoundException: .../web/styles.css`.
+- When a failure looks impossible, `rm -rf .dart_tool/build` and retry.
+
+---
+
+## 7. Pinned versions — do not bump blindly
+
+- **`build_web_compilers: >=4.4.19 <4.5.0`.** It compiles the `@client` components to JS.
+  Without it, `main.client.dart.js` is never emitted, the `<script>` 404s, and the site
+  renders but never hydrates. From 4.5.0 it inlines the `build_modules` builders, which
+  collide with the copy `jaspr_tailwind` pulls in
+  (`outputs collide: package:collection/collection.module.library`). Unpin only once
+  `jaspr_tailwind` drops its `build_modules` dependency.
+- `dartz` is **not** usable — its constraint is `<3.0.0` and this project is on Dart 3.12.
+  `fpdart` provides `Either` instead.
+
+---
+
+## 8. Conventions
+
+Files `snake_case.dart`; generated `*.g.dart` never hand-edited.
+
+| Artifact | Pattern | Example |
+|---|---|---|
+| Page | `*_page.dart` → `*Page` | `projects_page.dart` |
+| Section block | `*_section.dart` | `hero_section.dart` |
+| Card | `*_card.dart` | `project_card.dart` |
+| Controller | `*_controller.dart` → `*Controller` | `theme_controller.dart` |
+| Abstract repo | `*_repository.dart` → `*Repository` | `projects_repository.dart` |
+| Live impl | `*_repository_impl.dart` | `projects_repository_impl.dart` |
+| Mock impl | `*_mock_repository.dart` | `projects_mock_repository.dart` |
+| Datasource | `*_datasource.dart` | `projects_local_datasource.dart` |
+| Model | `*_model.dart` → `*Model` | `project_model.dart` |
+| Enum | `*_status.dart` → `*Status` | `project_status.dart` |
+
+**Tailwind:** classes must be **string literals** — the scanner reads `.dart` source, so a
+class built by concatenation gets purged. Design tokens live in `web/styles.tw.css`; change
+`--color-star-400` and the accent moves everywhere.
+
+**Copy:** warm and human, never system-speak. "This page drifted off", not "Error 404".
+
+---
+
+## Spec deviations
+
+From `~/.claude/flutter_architecture_spec.md`, and why:
+
+| Spec | Here | Why |
+|---|---|---|
+| Riverpod everywhere | Client islands only | Cannot resolve during pre-render — §1. Kills SEO. |
+| `ConsumerWidget` + `ref` | `context.watch/read` | `jaspr_riverpod` has no `WidgetRef`. |
+| `dartz` for `Either` | `fpdart` | `dartz` caps at Dart `<3.0.0`. |
+| `go_router` | `jaspr_router` | Jaspr's own router; drives static page enumeration. |
+| `get_it` + Riverpod DI | `core/di/locator.dart` | Providers are unreachable in the content path; one flat composition root instead. |
+| `dio` | none yet | No network calls. Slots in behind `ProjectsRepository` unchanged. |
+| `ThemeExtension<AppColors>` | Tailwind `@theme` in `web/styles.tw.css` | CSS tokens are the web equivalent. |
+| Hive / secure storage / `flutter_animate` / `JourneyStepper` | n/a | No Flutter runtime. |
