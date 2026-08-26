@@ -2,18 +2,19 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-import '../models/project.dart';
-import 'icons.dart';
+import '../../../../core/presentation/components/app_icons.dart';
+import '../../../../core/routing/route_paths.dart';
+import '../../domain/model/project_model.dart';
 
 class ProjectCard extends StatelessComponent {
   const ProjectCard({required this.project, super.key});
 
-  final Project project;
+  final ProjectModel project;
 
   @override
   Component build(BuildContext context) {
     return Link(
-      to: '/projects/${project.slug}',
+      to: RoutePaths.projectDetail(project.slug),
       classes: 'group relative flex flex-col overflow-hidden rounded-2xl border '
           'border-ink-200/70 bg-white/60 transition-all duration-500 ease-expo '
           'hover:-translate-y-1 hover:border-star-400/60 hover:shadow-xl '
@@ -27,14 +28,13 @@ class ProjectCard extends StatelessComponent {
             if (project.coverImage != null)
               img(
                 src: '/${project.coverImage}',
-                alt: '${project.name} screenshot',
+                alt: '${project.name} — ${project.tagline}',
+                // Cards sit below the fold on every page that uses them.
+                attributes: const {'loading': 'lazy', 'decoding': 'async'},
                 classes: 'h-full w-full object-cover',
               )
             else
-              const div(
-                classes: 'starfield absolute inset-0 opacity-70',
-                [],
-              ),
+              const div(classes: 'starfield absolute inset-0 opacity-70', []),
           ],
         ),
         div(
@@ -77,7 +77,7 @@ class ProjectCard extends StatelessComponent {
                 const Component.text('Case study'),
                 span(
                   classes: 'transition-transform duration-300 group-hover:translate-x-1',
-                  [Icons.arrow()],
+                  [AppIcons.arrow()],
                 ),
               ],
             ),
