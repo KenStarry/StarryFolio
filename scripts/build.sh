@@ -95,4 +95,21 @@ npx --yes wrangler@4 pages functions build --outdir="$OUT/_worker.js/"
 printf '_worker.js\n' > "$OUT/.assetsignore"
 echo "→ wrote .assetsignore"
 
+# ── Fail loudly if anything expected is missing ───────────────────────────────
+# `wrangler deploy` reports a missing build only as "Missing entry-point to
+# Worker script or to assets directory", which reads like a config error and
+# sends you looking in the wrong file. Assert here instead, where the real
+# cause is obvious.
+missing=0
+for required in "$OUT/index.html" "$OUT/styles.css" "$OUT/_worker.js/index.js" "$OUT/.assetsignore"; do
+  if [ ! -e "$required" ]; then
+    echo "✗ expected output missing: $required" >&2
+    missing=1
+  fi
+done
+[ "$missing" -eq 0 ] || {
+  echo "✗ build did not produce a deployable tree — not proceeding" >&2
+  exit 1
+}
+
 echo "✓ $(find "$OUT" -type f | wc -l | tr -d ' ') files, $(du -sh "$OUT" | cut -f1)"
