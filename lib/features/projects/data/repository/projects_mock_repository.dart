@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 
+import '../../domain/enum/project_category.dart';
 import '../../domain/enum/project_status.dart';
 import '../../domain/model/project_model.dart';
 import '../../domain/repository/projects_repository.dart';
@@ -21,6 +22,7 @@ class ProjectsMockRepository implements ProjectsRepository {
       tagline: 'Canned data for UI work.',
       year: '2026',
       status: ProjectStatus.building,
+      category: ProjectCategory.personal,
       stack: ['Flutter'],
       summary: ['Stand-in copy so layouts can be checked without real content.'],
     ),

@@ -11,9 +11,13 @@ import 'portrait_frame.dart';
 /// Above-the-fold hero. Owns the page's only `<h1>`.
 ///
 /// Three columns, as in the reference: the name at display size on the left,
-/// the portrait in the middle, and a narrow introduction column on the right.
-/// Below `lg` it collapses to a single column with the portrait last, so the
-/// name and the introduction stay adjacent on a phone.
+/// the card stack in the middle, and a narrow introduction column on the right.
+/// Below `lg` it collapses to one column with the stack last, so the name and
+/// the introduction stay adjacent on a phone.
+///
+/// Entrances here are time-based (`.rise` + `.d-N`) rather than scroll-driven:
+/// this content is already in view on load, so a scroll timeline would have
+/// nothing to advance it and the hero would sit at its start state forever.
 class HeroSection extends StatelessComponent {
   const HeroSection({super.key});
 
@@ -32,11 +36,13 @@ class HeroSection extends StatelessComponent {
               [
                 // ── Name ──
                 div(
-                  classes: 'reveal lg:pb-6',
+                  classes: 'lg:pb-6',
                   [
+                    if (SiteConfig.available) _availability(),
+
                     const h1(
-                      classes: 'type-display font-display font-extrabold '
-                          'text-ink-100',
+                      classes: 'rise d-2 type-display mt-7 font-display '
+                          'font-extrabold text-ink-100',
                       [
                         Component.text(SiteConfig.firstName),
                         br(),
@@ -44,26 +50,33 @@ class HeroSection extends StatelessComponent {
                       ],
                     ),
 
-                    // The short rule under the name, straight from the
-                    // reference. It replaces what was an amber bar there.
-                    const div(classes: 'mt-8 h-1 w-16 bg-ink-200', []),
+                    // The mark under the name. Two weights of the same accent
+                    // rather than one bar — it reads as a considered detail at
+                    // the exact place the eye lands after the name.
+                    const div(
+                      classes: 'rise d-3 mt-8 flex items-center gap-2',
+                      [
+                        span(classes: 'h-1 w-14 bg-iris-400', []),
+                        span(classes: 'h-1 w-2.5 bg-iris-600', []),
+                      ],
+                    ),
 
                     _socials(),
                   ],
                 ),
 
-                // ── Portrait ──
+                // ── Card stack ──
                 // `order-last` on small screens keeps the reading order
                 // name → introduction → portrait, while the DOM order stays
                 // name → portrait → introduction for the desktop grid.
                 const div(
-                  classes: 'reveal order-last lg:order-none',
+                  classes: 'rise d-5 order-last lg:order-none',
                   [PortraitFrame()],
                 ),
 
                 // ── Introduction ──
                 const div(
-                  classes: 'reveal lg:pb-6',
+                  classes: 'rise d-4 lg:pb-6',
                   [
                     Eyebrow('Introduction'),
                     p(
@@ -95,8 +108,24 @@ class HeroSection extends StatelessComponent {
     );
   }
 
+  /// Availability marker. The breathing dot is the page's only looping
+  /// animation — one live element reads as a signal, several read as noise.
+  static Component _availability() => const div(
+        classes: 'rise d-1 inline-flex items-center gap-2.5',
+        [
+          span(
+            classes: 'h-1.5 w-1.5 rounded-full bg-iris-400 dot-live',
+            [],
+          ),
+          span(
+            classes: 'type-eyebrow font-mono text-ink-400',
+            [Component.text(SiteConfig.availabilityLabel)],
+          ),
+        ],
+      );
+
   static Component _socials() => div(
-        classes: 'mt-12 flex items-center gap-5',
+        classes: 'rise d-6 mt-12 flex items-center gap-5',
         [
           for (final social in SiteConfig.socials)
             a(
@@ -107,7 +136,7 @@ class HeroSection extends StatelessComponent {
                 'aria-label': '${social.label} — ${social.handle}',
               },
               classes: 'text-ink-400 transition-colors duration-300 '
-                  'hover:text-ink-100',
+                  'hover:text-iris-400',
               [AppIcons.social(social.label, classes: 'h-[1.15rem] w-[1.15rem]')],
             ),
         ],

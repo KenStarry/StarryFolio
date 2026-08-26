@@ -88,8 +88,12 @@ class SectionBlock extends StatelessComponent {
                     ),
                 ],
               ),
+            // The motif: a hairline that starts on the accent and fades out
+            // rather than running edge to edge. Rendered once here so every
+            // section inherits it and none can drift.
+            if (hasHead) const div(classes: 'divider mt-12', []),
             div(
-              classes: hasHead ? 'mt-14 sm:mt-20 $bodyClasses' : bodyClasses,
+              classes: hasHead ? 'mt-12 sm:mt-16 $bodyClasses' : bodyClasses,
               children,
             ),
           ],

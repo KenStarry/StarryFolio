@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img" aria-label="Portrait placeholder">
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B3D52"/>
+      <stop offset="1" stop-color="#2E2D3F"/>
+    </linearGradient>
+    <linearGradient id="figure" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#565A78"/>
+      <stop offset="1" stop-color="#43465A"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.34" r="0.42">
+      <stop offset="0" stop-color="#8B8FF5" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#8B8FF5" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="frame"><rect width="800" height="1000"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="800" height="1000" fill="url(#ground)"/>
+    <circle cx="400" cy="340" r="330" fill="url(#halo)"/>
+
+    <!-- Accent arc behind the head. -->
+    <circle cx="400" cy="352" r="176" fill="none" stroke="#8B8FF5" stroke-opacity="0.5" stroke-width="2"/>
+    <circle cx="400" cy="352" r="212" fill="none" stroke="#8B8FF5" stroke-opacity="0.18" stroke-width="1.5" stroke-dasharray="5 9"/>
+
+    <!-- Head and shoulders. -->
+    <circle cx="400" cy="352" r="132" fill="url(#figure)"/>
+    <path d="M400 512c136 0 246 104 246 233v255H154V745c0-129 110-233 246-233z" fill="url(#figure)"/>
+
+    <!-- Collar, to keep the silhouette from reading as one flat blob. -->
+    <path d="M400 512c34 0 66 6 96 18l-96 116-96-116c30-12 62-18 96-18z" fill="#2E2D3F" fill-opacity="0.55"/>
+  </g>
+</svg>

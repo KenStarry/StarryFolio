@@ -1,3 +1,4 @@
+import '../enum/project_category.dart';
 import '../enum/project_status.dart';
 
 /// A case study.
@@ -11,6 +12,7 @@ class ProjectModel {
     required this.tagline,
     required this.year,
     required this.status,
+    required this.category,
     required this.stack,
     required this.summary,
     this.highlights = const [],
@@ -26,6 +28,10 @@ class ProjectModel {
   final String tagline;
   final String year;
   final ProjectStatus status;
+
+  /// Grouping for the filter pills on the work section.
+  final ProjectCategory category;
+
   final List<String> stack;
 
   /// Paragraphs shown on the detail page.
@@ -50,6 +56,7 @@ class ProjectModel {
         tagline: map['tagline']?.toString() ?? '',
         year: map['year']?.toString() ?? '',
         status: ProjectStatus.fromName(map['status']?.toString()),
+        category: ProjectCategory.fromName(map['category']?.toString()),
         stack: _stringList(map['stack']),
         summary: _stringList(map['summary']),
         highlights: _stringList(map['highlights']),
@@ -65,6 +72,7 @@ class ProjectModel {
         'tagline': tagline,
         'year': year,
         'status': status.name,
+        'category': category.name,
         'stack': stack,
         'summary': summary,
         'highlights': highlights,

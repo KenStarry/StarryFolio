@@ -30,7 +30,22 @@
   --color-ink-200: #d0d4ed;
   --color-ink-100: #e9ebf7;
 
+  /* ── Iris — the accent ──
+     A periwinkle sitting in the same hue family as the ground (both ~250°),
+     so it reads as light coming *out of* the slate rather than a colour laid
+     on top. That adjacency is the whole trick: a complementary accent would
+     pop but never blend.
+
+     Signal only — rules, underlines, markers, focus, hairline glows. It is
+     never a large fill. `.card-invert` stays pale; the moment iris covers a
+     whole card it stops being a signal and starts being decoration. */
+  --color-iris-300: #c3c5ff;
+  --color-iris-400: #a5a8ff;
+  --color-iris-500: #8b8ff5;
+  --color-iris-600: #6f74e8;
+
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -52,11 +67,11 @@
   }
 
   ::selection {
-    @apply bg-ink-200 text-ink-900;
+    @apply bg-iris-400 text-ink-900;
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-ink-200;
+    @apply outline-2 outline-offset-2 outline-iris-400;
     border-radius: 2px;
   }
 
@@ -129,7 +144,8 @@
   }
 
   .card:hover {
-    @apply bg-ink-700 border-ink-600;
+    @apply bg-ink-700;
+    border-color: color-mix(in oklab, var(--color-iris-500) 42%, transparent);
     transform: translateY(-3px);
   }
 
@@ -167,7 +183,7 @@
     right: 0;
     bottom: -4px;
     height: 1px;
-    background: currentColor;
+    background: var(--color-iris-400);
     transform: scaleX(0);
     transform-origin: right center;
     transition: transform 0.45s var(--ease-soft);
@@ -220,6 +236,192 @@
       animation-range: 0 88px;
     }
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     DIVIDERS
+
+     The hairline that opens each block. It fades out to the right rather than
+     running edge to edge — a full-width rule reads as a table border, a fading
+     one reads as a considered mark. This is the motif the whole page is built
+     on, so it lives here once and every section pulls from it.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-iris-500) 65%, transparent),
+      color-mix(in oklab, var(--color-ink-600) 60%, transparent) 22%,
+      transparent 92%
+    );
+  }
+
+  /* Muted variant, for dividers *inside* a block where the accent would be
+     one signal too many. */
+  .divider-quiet {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--color-ink-600),
+      color-mix(in oklab, var(--color-ink-600) 35%, transparent) 45%,
+      transparent 92%
+    );
+  }
+
+  /* Vertical counterpart, used between grid columns. */
+  .divider-v {
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-ink-600) 18%,
+      var(--color-ink-600) 82%,
+      transparent
+    );
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SCROLL PROGRESS
+
+     A hairline of accent across the very top that fills as you read. Scroll
+     timeline, so it is zero JS and cannot desync from the actual position —
+     and it degrades to simply not being there.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @keyframes progress-fill {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .scroll-progress {
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    background: linear-gradient(
+      to right,
+      var(--color-iris-600),
+      var(--color-iris-400)
+    );
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress {
+      animation: progress-fill linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     CARD STACK
+
+     Offset layers behind the hero card. The stack fans open on hover — the
+     layers push further out and the front card lifts, which is what sells it
+     as physical rather than as three rectangles.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .stack-layer {
+    transition: transform 0.7s var(--ease-soft),
+                border-color 0.7s var(--ease-soft);
+  }
+
+  .stack:hover .stack-layer-1 { transform: translate(-2.25rem, 1.5rem) rotate(-8deg); }
+  .stack:hover .stack-layer-2 { transform: translate(-1rem, 0.75rem) rotate(-4deg); }
+  .stack:hover .stack-front   { transform: translateY(-0.5rem); }
+
+  .stack-front {
+    transition: transform 0.7s var(--ease-soft);
+  }
+
+  /* A single soft accent bloom behind the stack. One, low, and large — this is
+     the only glow on the site, and it exists to seat the stack in the ground
+     rather than to be seen on its own. */
+  .bloom {
+    background: radial-gradient(
+      closest-side,
+      color-mix(in oklab, var(--color-iris-500) 26%, transparent),
+      transparent 78%
+    );
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     ENTRANCE STAGGER
+
+     Above-the-fold content cannot use a scroll timeline — there is nothing to
+     scroll yet — so the hero uses a time-based entrance instead.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .rise { opacity: 1; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rise {
+      opacity: 0;
+      animation: rise-in 0.85s var(--ease-soft) forwards;
+    }
+  }
+
+  .d-1 { animation-delay: 0.05s; }
+  .d-2 { animation-delay: 0.12s; }
+  .d-3 { animation-delay: 0.19s; }
+  .d-4 { animation-delay: 0.27s; }
+  .d-5 { animation-delay: 0.36s; }
+  .d-6 { animation-delay: 0.46s; }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     PILLS
+     ═══════════════════════════════════════════════════════════════════════ */
+  .pill {
+    @apply inline-flex items-center rounded-full border border-ink-700
+           bg-ink-800/60 px-3.5 py-1.5 text-xs text-ink-300;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft),
+                transform 0.35s var(--ease-soft);
+  }
+
+  .pill:hover {
+    @apply text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    background-color: color-mix(in oklab, var(--color-iris-500) 10%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* Slow breathing dot for the availability marker. The only looping animation
+     on the page. */
+  @keyframes breathe {
+    0%, 100% { opacity: 1;   transform: scale(1); }
+    50%      { opacity: 0.45; transform: scale(0.82); }
+  }
+
+  .dot-live {
+    animation: breathe 2.8s ease-in-out infinite;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     FLOATING CARD
+
+     The page's primary object. It sits above the ground on a soft shadow and
+     rises further on hover, with the accent taking the border. `will-change`
+     is deliberately omitted — with this many cards on screen it would pin a
+     layer per card for no measurable gain.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .float-card {
+    box-shadow:
+      0 1px 2px -1px rgb(0 0 0 / 0.4),
+      0 18px 40px -24px rgb(0 0 0 / 0.75);
+    transition: transform 0.55s var(--ease-soft),
+                border-color 0.55s var(--ease-soft),
+                box-shadow 0.55s var(--ease-soft);
+  }
+
+  .float-card:hover {
+    transform: translateY(-8px);
+    border-color: color-mix(in oklab, var(--color-iris-500) 50%, transparent);
+    box-shadow:
+      0 2px 4px -1px rgb(0 0 0 / 0.45),
+      0 34px 64px -28px rgb(0 0 0 / 0.9),
+      0 0 0 1px color-mix(in oklab, var(--color-iris-500) 12%, transparent);
+  }
+
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -235,8 +437,14 @@
     scroll-behavior: auto !important;
   }
 
-  .reveal {
+  .reveal,
+  .rise {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Left at full width rather than zero, so it does not read as a stuck bar. */
+  .scroll-progress {
+    transform: scaleX(1) !important;
   }
 }

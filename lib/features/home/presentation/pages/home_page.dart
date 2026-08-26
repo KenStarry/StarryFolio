@@ -27,7 +27,9 @@ class HomePage extends AsyncStatelessComponent {
 
   @override
   Future<Component> build(BuildContext context) async {
-    final featured = await Locator.projects.getFeaturedProjects();
+    // Every project, not just a teaser: the work section renders the newest
+    // as a feature card and the full set as its filterable index.
+    final featured = await Locator.projects.getProjects();
     final services = await Locator.services.getServices();
 
     return Component.fragment([

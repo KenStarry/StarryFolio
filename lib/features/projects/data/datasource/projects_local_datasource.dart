@@ -1,7 +1,12 @@
+import '../../domain/enum/project_category.dart';
 import '../../domain/enum/project_status.dart';
 import '../../domain/model/project_model.dart';
 
 /// The case studies, as compile-time constants.
+///
+/// **Everything except `criblynk`, `flow` and `eduflow` is sample content**
+/// added to fill out the sections — replace that copy with real work before
+/// launch. Categories drive which section a project lands in.
 ///
 /// **Add a project here** and it appears on the home page, the projects index,
 /// and gets its own statically generated `/projects/<slug>` page.
@@ -19,6 +24,7 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Rentals, minus the WhatsApp chaos.',
       year: '2026',
       status: ProjectStatus.building,
+      category: ProjectCategory.commercial,
       stack: ['Flutter', 'Riverpod', 'Firebase', 'Google Maps'],
       summary: [
         'A marketplace that connects tenants with verified landlords — listings, '
@@ -40,6 +46,7 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'A money tracker that does not nag.',
       year: '2025',
       status: ProjectStatus.shipped,
+      category: ProjectCategory.personal,
       stack: ['Flutter', 'BLoC', 'Isar', 'fl_chart'],
       summary: [
         'Personal finance for people who bounce off budgeting apps. Flow logs '
@@ -61,6 +68,7 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Junior-secondary school operations in one app.',
       year: '2025',
       status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
       stack: ['Flutter', 'Clean Architecture', 'REST', 'Hive'],
       summary: [
         'Attendance, grade books and parent comms for Kenyan junior secondary '
@@ -74,6 +82,154 @@ abstract final class ProjectsLocalDatasource {
         'Role-based UI shell shared by teachers, admins and parents',
         'Localised for English and Kiswahili',
       ],
+    ),
+    ProjectModel(
+      slug: 'tuza',
+      name: 'Tuza',
+      tagline: 'Group savings that settle themselves.',
+      year: '2024',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.commercial,
+      stack: ['Flutter', 'Riverpod', 'Firebase', 'M-Pesa Daraja'],
+      summary: [
+        'A chama app for the way Kenyan savings groups already work — rotating '
+            'payouts, contribution reminders and a ledger every member can '
+            'audit without asking the treasurer.',
+        'The hard part was reconciliation. Mobile money callbacks arrive late, '
+            'twice, or not at all, so the ledger is built to be replayed rather '
+            'than corrected.',
+      ],
+      highlights: [
+        'Idempotent payment reconciliation against Daraja callbacks',
+        'Offline ledger that replays cleanly once the network returns',
+        'Per-member statements exportable as PDF',
+      ],
+    ),
+    ProjectModel(
+      slug: 'njia',
+      name: 'Njia',
+      tagline: 'Fleet visibility without the dashboard tax.',
+      year: '2024',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
+      stack: ['Flutter', 'BLoC', 'Mapbox', 'WebSockets'],
+      summary: [
+        'Live vehicle tracking for a distribution business running 40 vehicles '
+            'across three counties — dispatch, proof of delivery and route '
+            'history in one app for drivers and controllers alike.',
+        'Built around intermittent connectivity: the driver app is the source '
+            'of truth and the server catches up, not the other way round.',
+      ],
+      highlights: [
+        'Single codebase serving both the driver and controller roles',
+        'Batched location sync that survives hours without signal',
+        'Proof-of-delivery capture with signature and geotag',
+      ],
+    ),
+    ProjectModel(
+      slug: 'pulse',
+      name: 'Pulse',
+      tagline: 'Habits, without the streak guilt.',
+      year: '2023',
+      status: ProjectStatus.archived,
+      category: ProjectCategory.personal,
+      stack: ['Flutter', 'Drift', 'Riverpod', 'Health Connect'],
+      summary: [
+        'A habit tracker built on the idea that missing a day is data, not '
+            'failure. No streaks to break — just an honest picture of what you '
+            'actually do.',
+        'Shelved once the idea was proven, but the motion and charting work in '
+            'it went straight into Flow.',
+      ],
+      highlights: [
+        'Health Connect and HealthKit ingestion behind one interface',
+        'Custom chart rendering on raw canvas for 60fps scrubbing',
+        'Fully local — no account, no sync, no telemetry',
+      ],
+    ),
+    ProjectModel(
+      slug: 'rafiki',
+      name: 'Rafiki',
+      tagline: 'Field data collection that works off-grid.',
+      year: '2023',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
+      stack: ['Flutter', 'Isar', 'Clean Architecture', 'REST'],
+      summary: [
+        'A survey tool for NGO field officers working days away from a signal — '
+            'forms, photos and GPS captured offline and reconciled in bulk once '
+            'a device gets back to town.',
+        'Form definitions ship as data rather than code, so a programme lead '
+            'can change a questionnaire without waiting on a release.',
+      ],
+      highlights: [
+        'Server-driven forms rendered from a JSON schema',
+        'Multi-day offline capture with conflict-free bulk sync',
+        'Battery-aware GPS sampling for all-day fieldwork',
+      ],
+    ),
+    ProjectModel(
+      slug: 'mavuno',
+      name: 'Mavuno',
+      tagline: 'Produce, straight from the farm gate.',
+      year: '2023',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.commercial,
+      stack: ['Flutter', 'Riverpod', 'Supabase', 'Stripe'],
+      summary: [
+        'A marketplace putting smallholder farmers in front of restaurant '
+            'buyers directly — listings, cold-chain logistics and settlement in '
+            'one place.',
+        'Two very different users share one codebase: a farmer on a budget '
+            'Android phone and a chef on an iPad.',
+      ],
+      highlights: [
+        'Role-aware shell serving farmers and buyers from one build',
+        'Image pipeline that keeps uploads usable on 3G',
+        'Settlement ledger reconciled against the payment provider nightly',
+      ],
+    ),
+    ProjectModel(
+      slug: 'duka',
+      name: 'Duka',
+      tagline: 'A till that survives the power cut.',
+      year: '2022',
+      status: ProjectStatus.archived,
+      category: ProjectCategory.commercial,
+      stack: ['Flutter', 'BLoC', 'SQLite', 'Bluetooth'],
+      summary: [
+        'Point of sale for small retailers — stock, receipts and daily takings '
+            'on a phone plus a Bluetooth printer, with no server required.',
+        'Designed for shops where the network and the mains are both optional. '
+            'Everything is local, and the backup is a file you can copy.',
+      ],
+      highlights: [
+        'Entirely offline — no account, no server, no subscription',
+        'ESC/POS receipt printing over Bluetooth',
+        'Day-close report that reconciles cash against recorded sales',
+      ],
+    ),
+    ProjectModel(
+      slug: 'orbit',
+      name: 'Orbit',
+      tagline: 'Motion primitives for Flutter.',
+      year: '2022',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.personal,
+      stack: ['Dart', 'Flutter', 'CustomPainter'],
+      summary: [
+        'A small open-source package of the transitions I kept rewriting — '
+            'staggered reveals, shared-axis routes and a spring curve that does '
+            'not overshoot into ugliness.',
+        'Written mostly to force myself to document motion decisions instead of '
+            'copying magic numbers between projects.',
+      ],
+      highlights: [
+        'Zero dependencies beyond the Flutter SDK',
+        'Every curve documented with a rationale, not just a name',
+        'Golden tests pinning the visual output of each transition',
+      ],
+      repoUrl: 'https://github.com/KenStarry/orbit',
     ),
   ];
 

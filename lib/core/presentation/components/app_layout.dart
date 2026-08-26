@@ -21,6 +21,14 @@ class AppLayout extends StatelessComponent {
       id: 'top',
       classes: 'flex min-h-screen flex-col overflow-x-clip',
       [
+        // Reading progress. Pinned above the nav's own stacking level, driven
+        // by a scroll timeline so it can never desync from the real position
+        // and costs no JavaScript.
+        const div(
+          classes: 'fixed inset-x-0 top-0 z-[60] h-0.5 scroll-progress',
+          attributes: {'aria-hidden': 'true'},
+          [],
+        ),
         const NavBar(),
         main_(classes: 'flex-1', [child]),
         const SiteFooter(),

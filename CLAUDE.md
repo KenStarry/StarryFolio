@@ -255,6 +255,18 @@ regression, not an enhancement: that is precisely what the first pass got wrong.
 **Dark only.** There is no light palette, no `dark:` variant and no theme
 toggle. `#282739` *is* the design.
 
+**No vertical lists of projects.** Projects are always large boxy floating cards
+(`.float-card`) — a cover, a hairline, a solid caption panel, mirroring the hero's
+portrait card. Home shows **at most three**, vertically staggered; `/projects`
+shows a full-width feature card plus a bento grid whose six-column span pattern
+repeats every six cards. A list layout is a regression.
+
+**Filtering is CSS-only.** The category pills are `<label>`s for visually-hidden
+radios, and sibling selectors hide non-matching cards (`#pf-*` in
+`web/styles.tw.css`). This is not a stylistic choice — a Riverpod-filtered grid
+would ship crawlers one category and hide the rest behind JS, which §0 forbids.
+Every card stays in the document; `display:none` is presentational.
+
 **Tailwind:** classes must be **string literals** — the scanner reads `.dart`
 source, so a class built by concatenation gets purged. Design tokens live in
 `web/styles.tw.css`; change `--color-ink-200` and the pale moves everywhere.

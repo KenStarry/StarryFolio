@@ -61,7 +61,7 @@ class ContactSection extends StatelessComponent {
                           'text-ink-100 transition-colors duration-300 '
                           'sm:text-2xl',
                       [
-                        AppIcons.mail(classes: 'h-5 w-5 text-ink-400'),
+                        AppIcons.mail(classes: 'h-5 w-5 text-iris-400'),
                         const span(
                           classes: 'break-all',
                           [Component.text(SiteConfig.email)],
@@ -92,7 +92,7 @@ class ContactSection extends StatelessComponent {
                               'aria-label': '${social.label} — ${social.handle}',
                             },
                             classes: 'text-ink-400 transition-colors '
-                                'duration-300 hover:text-ink-100',
+                                'duration-300 hover:text-iris-400',
                             [AppIcons.social(social.label,
                                 classes: 'h-[1.15rem] w-[1.15rem]')],
                           ),

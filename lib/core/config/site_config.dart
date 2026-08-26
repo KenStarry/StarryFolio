@@ -41,17 +41,20 @@ class SiteConfig {
 
   // ── Hero ──────────────────────────────────────────────────────────────────
 
-  /// Cutout portrait for the hero, as a path under `web/`.
+  /// Portrait for the hero card, as a path under `web/`.
   ///
-  /// **To finish the hero:** drop a background-removed PNG (transparent,
-  /// roughly 1200×1500, subject bottom-aligned) into `web/images/` and set this
-  /// to e.g. `'images/ken.png'`. While it is `null` the hero renders the
-  /// monogram on the same pale block, at the same proportions and baseline, so
-  /// nothing shifts when the photo lands.
-  static const String? portrait = null;
+  /// Currently a placeholder SVG drawn in the site palette. **To finish the
+  /// hero:** drop a real 4:5 portrait into `web/images/` and point this at it —
+  /// the card stack, its proportions and every offset stay identical, so
+  /// swapping the file shifts no layout.
+  static const String portrait = 'images/portrait-placeholder.svg';
 
   static const String portraitAlt =
       '$name — $role, based in $location';
+
+  /// Named in the About section's "Currently" panel. Kept here so the panel
+  /// never has to hard-code a project name that could go stale.
+  static const String currentSideProject = 'CribLynk';
 
   static const bool available = true;
   static const String availabilityLabel = 'Available for select work';

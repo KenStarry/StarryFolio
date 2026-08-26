@@ -55,7 +55,7 @@ class SiteFooter extends StatelessComponent {
                         'text-sm text-ink-200 transition-colors '
                         'hover:text-ink-100',
                     [
-                      AppIcons.mail(classes: 'h-4 w-4 text-ink-400'),
+                      AppIcons.mail(classes: 'h-4 w-4 text-iris-400'),
                       const Component.text(SiteConfig.email),
                     ],
                   ),
@@ -108,7 +108,7 @@ class SiteFooter extends StatelessComponent {
                               [
                                 span(
                                   classes: 'text-ink-500 transition-colors '
-                                      'group-hover:text-ink-300',
+                                      'group-hover:text-iris-400',
                                   [AppIcons.social(social.label)],
                                 ),
                                 Component.text(social.label),

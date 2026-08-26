@@ -118,7 +118,7 @@ class _NavBarView extends StatelessComponent {
                       context.read(navMenuControllerProvider.notifier).close(),
                   [
                     Component.text(link.label),
-                    AppIcons.arrowUpRight(classes: 'h-4 w-4 text-ink-400'),
+                    AppIcons.arrowUpRight(classes: 'h-4 w-4 text-iris-400'),
                   ],
                 ),
               div(
