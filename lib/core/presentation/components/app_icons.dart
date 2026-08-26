@@ -97,6 +97,18 @@ class AppIcons {
         '</svg>',
       );
 
+  static Component monitor({String classes = 'h-6 w-6'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" $_s>'
+        '<rect x="2.5" y="3.5" width="19" height="13" rx="2"/>'
+        '<path d="M8.5 20.5h7M12 16.5v4"/></svg>',
+      );
+
+  static Component compass({String classes = 'h-6 w-6'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" $_s>'
+        '<circle cx="12" cy="12" r="9"/>'
+        '<path d="M15.6 8.4l-2.05 5.15-5.15 2.05 2.05-5.15z"/></svg>',
+      );
+
   /// Resolves an [AppLinkType.icon] or [ServiceModel.icon] key to its glyph. Falls back rather than
   /// throwing, so a service added with an unknown icon still renders a card.
   static Component byName(String name, {String classes = 'h-6 w-6'}) =>
@@ -104,6 +116,8 @@ class AppIcons {
         'device' => device(classes: classes),
         'layers' => layers(classes: classes),
         'rocket' => rocket(classes: classes),
+        'monitor' => monitor(classes: classes),
+        'compass' => compass(classes: classes),
         'apple' => apple(classes: classes),
         'play' => play(classes: classes),
         'globe' => globe(classes: classes),

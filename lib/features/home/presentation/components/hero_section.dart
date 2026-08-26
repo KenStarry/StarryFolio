@@ -81,7 +81,7 @@ class HeroSection extends StatelessComponent {
                         ),
                         CtaButton(
                           label: 'My story',
-                          href: '${RoutePaths.home}#about',
+                          href: RoutePaths.about,
                           variant: CtaVariant.quiet,
                         ),
                       ],

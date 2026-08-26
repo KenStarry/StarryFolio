@@ -5,6 +5,7 @@ import '../../../../core/di/locator.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
 import '../../../../core/seo/structured_data.dart';
+import '../../../about/domain/model/about_profile.dart';
 import '../components/about_section.dart';
 import '../components/contact_section.dart';
 import '../components/hero_section.dart';
@@ -13,9 +14,10 @@ import '../components/work_section.dart';
 
 /// The landing page.
 ///
-/// Async because the work teaser and the services row read repositories. The
-/// awaits happen here, once, and the resolved lists are handed down — so the
-/// entire page, cards included, is present in the pre-rendered HTML. Fetching
+/// Async because the work teaser, the services row and the about band all read
+/// repositories. The awaits happen here, once, and the resolved data is handed
+/// down — so the entire page, cards included, is present in the pre-rendered
+/// HTML. Fetching
 /// inside the sections instead would either serve crawlers a loading state or
 /// throw, depending on how it was reached for; see CLAUDE.md §1.
 ///
@@ -31,6 +33,12 @@ class HomePage extends AsyncStatelessComponent {
     // as a feature card and the full set as its filterable index.
     final featured = await Locator.projects.getProjects();
     final services = await Locator.services.getServices();
+    final about = await Locator.about.getProfile();
+
+    // Resolved once: the profile feeds both the About band and the `knowsAbout`
+    // claim in the Person JSON-LD, and those two must describe the same person.
+    final profile = about.getOrElse((_) => const AboutProfile());
+    final aboutError = about.fold<String?>((message) => message, (_) => null);
 
     return Component.fragment([
       const PageMeta(
@@ -38,11 +46,17 @@ class HomePage extends AsyncStatelessComponent {
         title: '${SiteConfig.name} — ${SiteConfig.role}',
         description: SiteConfig.tagline,
       ),
-      StructuredData(id: 'ld-person', SchemaOrg.person()),
+      StructuredData(
+        id: 'ld-person',
+        SchemaOrg.person(knowsAbout: profile.skillNames),
+      ),
       StructuredData(id: 'ld-website', SchemaOrg.website()),
 
       const HeroSection(),          // base
-      const AboutSection(),         // base  (own ground)
+      AboutSection(                 // base  (own ground)
+        profile: profile,
+        error: aboutError,
+      ),
 
       // A failure in either repository must not blank the page — everything
       // around it is static content that still deserves to be indexed. The

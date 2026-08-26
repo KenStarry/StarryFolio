@@ -3,8 +3,8 @@ import 'package:jaspr/jaspr.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
-import '../../../../core/presentation/components/cta_button.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../contact/presentation/components/contact_form.dart';
 
 /// The closing call to action.
 ///
@@ -57,9 +57,8 @@ class ContactSection extends StatelessComponent {
                     a(
                       href: 'mailto:${SiteConfig.email}',
                       classes: 'link-line group inline-flex w-fit items-center '
-                          'gap-3 font-display text-xl font-bold tracking-tight '
-                          'text-ink-100 transition-colors duration-300 '
-                          'sm:text-2xl',
+                          'gap-3 font-display text-lg font-bold tracking-tight '
+                          'text-ink-100 transition-colors duration-300',
                       [
                         AppIcons.mail(classes: 'h-5 w-5 text-iris-400'),
                         const span(
@@ -71,12 +70,7 @@ class ContactSection extends StatelessComponent {
 
                     const div(
                       classes: 'mt-10',
-                      [
-                        CtaButton(
-                          label: 'Start a project',
-                          href: 'mailto:${SiteConfig.email}',
-                        ),
-                      ],
+                      [ContactForm()],
                     ),
 
                     div(
