@@ -4,7 +4,8 @@ import 'package:jaspr/jaspr.dart';
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
-import '../../../contact/presentation/components/contact_form.dart';
+import '../../../../core/routing/route_paths.dart';
+import '../../../../core/presentation/components/cta_button.dart';
 
 /// The closing call to action.
 ///
@@ -68,9 +69,18 @@ class ContactSection extends StatelessComponent {
                       ],
                     ),
 
+                    // The form itself lives on /contact, which has the room
+                    // for it alongside every other channel. Two copies of the
+                    // same island would leave a visitor wondering which is the
+                    // real one.
                     const div(
-                      classes: 'mt-10',
-                      [ContactForm()],
+                      classes: 'mt-10 flex flex-wrap items-center gap-4',
+                      [
+                        CtaButton(
+                          label: 'Start a conversation',
+                          href: RoutePaths.contact,
+                        ),
+                      ],
                     ),
 
                     div(

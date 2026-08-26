@@ -9,6 +9,7 @@ class RoutePaths {
   static const String home = '/';
   static const String projects = '/projects';
   static const String services = '/services';
+  static const String contact = '/contact';
   static const String about = '/about';
   static const String thanks = '/thanks';
   static const String notFound = '/404';

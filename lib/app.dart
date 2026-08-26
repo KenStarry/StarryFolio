@@ -6,6 +6,7 @@ import 'core/presentation/components/app_layout.dart';
 import 'core/routing/route_paths.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/about/presentation/pages/about_page.dart';
+import 'features/contact/presentation/pages/contact_page.dart';
 import 'features/contact/presentation/pages/thanks_page.dart';
 import 'features/not_found/presentation/pages/not_found_page.dart';
 import 'features/projects/data/datasource/projects_local_datasource.dart';
@@ -51,6 +52,12 @@ class App extends StatelessComponent {
           title: 'Services — ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ServicesPage()),
+        ),
+        Route(
+          path: RoutePaths.contact,
+          title: 'Contact — ${SiteConfig.name}',
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const ContactPage()),
         ),
         for (final slug in ProjectsLocalDatasource.slugs)
           Route(

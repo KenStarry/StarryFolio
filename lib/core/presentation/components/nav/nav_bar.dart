@@ -14,7 +14,7 @@ const _links = <({String label, String href})>[
   (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
   (label: 'About', href: RoutePaths.about),
-  (label: 'Contact', href: '${RoutePaths.home}#contact'),
+  (label: 'Contact', href: RoutePaths.contact),
 ];
 
 /// Sticky top navigation.

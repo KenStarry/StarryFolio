@@ -10,7 +10,7 @@ const _footerLinks = <({String label, String href})>[
   (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
   (label: 'About', href: RoutePaths.about),
-  (label: 'Contact', href: '${RoutePaths.home}#contact'),
+  (label: 'Contact', href: RoutePaths.contact),
 ];
 
 /// Page footer, on the deepest tone so the page closes darker than it opened.

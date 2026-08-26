@@ -90,6 +90,7 @@ abstract final class AboutLocalDatasource {
       kind: 'Full-time',
       location: 'Nairobi',
       draft: true,
+      projectSlug: 'britam-app',
       summary: 'Insurance on mobile, where a mistyped field has a financial '
           'consequence.',
       highlights: [

@@ -1,6 +1,7 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
+import 'package:universal_web/js_interop.dart';
 import 'package:universal_web/web.dart' as web;
 
 import '../../../../core/presentation/components/app_icons.dart';
@@ -50,15 +51,27 @@ class _ContactFormView extends StatelessComponent {
       events: {
         'submit': (event) {
           if (!kIsWeb) return;
+
+          // `is` on a JS interop type is always true and checks nothing —
+          // `isA` is what actually interrogates the underlying JS object.
+          final target = event.target;
+          if (target == null || !target.isA<web.HTMLFormElement>()) return;
+          final element = target as web.HTMLFormElement;
+
+          // Read the fields *before* taking over the submit. If anything here
+          // throws, returning without calling `preventDefault` lets the browser
+          // perform its native POST — the enquiry still arrives and the visitor
+          // lands on /thanks. Calling `preventDefault` first, as this did
+          // originally, meant a failure here swallowed the submit entirely: the
+          // button appeared to do nothing and no mail was ever sent.
+          final Map<String, String> fields;
+          try {
+            fields = _readFields(element);
+          } catch (_) {
+            return;
+          }
+
           event.preventDefault();
-
-          final element = event.target as web.HTMLFormElement;
-          final data = web.FormData(element);
-          final fields = <String, String>{
-            for (final key in ['name', 'email', 'service', 'message', 'company'])
-              key: (data.get(key)?.toString() ?? '').trim(),
-          };
-
           context.read(contactFormControllerProvider.notifier).submit(fields);
         },
       },
@@ -143,6 +156,24 @@ class _ContactFormView extends StatelessComponent {
       ],
     );
   }
+
+  /// Pulls the form's values out of a `FormData`.
+  ///
+  /// `FormData.get` is typed as `JSAny?` — the DOM union of `File` and string —
+  /// so `toString()` on it is not the field's text and cannot be relied on.
+  /// Narrowing to `JSString` and converting is the only correct read.
+  static Map<String, String> _readFields(web.HTMLFormElement element) {
+    final data = web.FormData(element);
+    return {
+      for (final key in ['name', 'email', 'service', 'message', 'company'])
+        key: _text(data.get(key)),
+    };
+  }
+
+  static String _text(JSAny? value) =>
+      value != null && value.isA<JSString>()
+          ? (value as JSString).toDart.trim()
+          : '';
 
   static Component _field({
     required String name,

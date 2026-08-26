@@ -222,6 +222,25 @@ class SchemaOrg {
         },
       };
 
+  /// The contact page.
+  ///
+  /// `ContactPage` is the type search engines expect for a page whose purpose
+  /// *is* getting in touch, and pointing `mainEntity` at the existing person
+  /// `@id` keeps this from describing a second, identically-named Ken.
+  static Map<String, Object?> contactPage() => {
+        '@context': _context,
+        '@type': 'ContactPage',
+        'url': SiteConfig.absolute(RoutePaths.contact),
+        'name': 'Contact ${SiteConfig.name}',
+        'mainEntity': {
+          '@type': 'Person',
+          '@id': personId,
+          'name': SiteConfig.name,
+          'email': 'mailto:${SiteConfig.email}',
+          'url': SiteConfig.siteUrl,
+        },
+      };
+
   /// Trail shown under the result title in search. [crumbs] is ordered
   /// root-first as `(label, path)`.
   static Map<String, Object?> breadcrumbs(

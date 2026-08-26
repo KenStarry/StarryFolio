@@ -129,6 +129,20 @@ class SiteConfig {
     Company(name: 'Podii', role: 'Product engineering'),
   ];
 
+  /// WhatsApp number in international format, digits only — no `+`, spaces or
+  /// dashes, because `wa.me` rejects them.
+  ///
+  /// Empty until provided; the channel tile is omitted rather than rendering a
+  /// link to `wa.me/` that opens WhatsApp on nothing.
+  static const String whatsappNumber = '';
+
+  /// Buy Me a Coffee username, the part after `buymeacoffee.com/`. Empty hides
+  /// the support section entirely.
+  static const String buyMeACoffee = '';
+
+  static String get whatsappUrl => 'https://wa.me/$whatsappNumber';
+  static String get buyMeACoffeeUrl => 'https://buymeacoffee.com/$buyMeACoffee';
+
   static const List<SocialLink> socials = [
     SocialLink(label: 'GitHub', handle: '@KenStarry', url: 'https://github.com/KenStarry'),
     SocialLink(label: 'LinkedIn', handle: 'Ken Starry', url: 'https://www.linkedin.com/in/kenstarry/'),
