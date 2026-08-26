@@ -1,0 +1,24 @@
+name: starry
+description: Starry — Ken Starry's personal portfolio for kenstarry.com. Built with Jaspr.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  jaspr: ^0.23.0
+  jaspr_router: ^0.9.0
+  universal_web: ^1.0.0
+
+dev_dependencies:
+  build_runner: ^2.4.13
+  build_web_compilers: ">=4.4.19 <4.5.0"
+  jaspr_builder: ^0.23.0
+  jaspr_tailwind: ^0.3.6
+  lints: ^5.0.0
+
+# Jaspr project configuration.
+# mode: static  -> pre-renders every route to HTML at build time (best SEO, cheapest hosting)
+jaspr:
+  mode: static

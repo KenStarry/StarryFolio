@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: we toggle `.dark` on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Ink — the night sky */
+  --color-ink-950: #07070b;
+  --color-ink-900: #0c0c14;
+  --color-ink-800: #13131f;
+  --color-ink-700: #1c1c2b;
+  --color-ink-600: #2a2a3d;
+  --color-ink-500: #43435c;
+  --color-ink-400: #6c6c88;
+  --color-ink-300: #9a9ab0;
+  --color-ink-200: #c9c9d8;
+  --color-ink-100: #e9e9f2;
+  --color-ink-50:  #f7f7fb;
+
+  /* Star — the accent */
+  --color-star-300: #ffdf8e;
+  --color-star-400: #f6c85a;
+  --color-star-500: #e5a92c;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-800 font-sans antialiased;
+    @apply dark:bg-ink-950 dark:text-ink-200;
+  }
+
+  ::selection {
+    @apply bg-star-400/30;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-star-400;
+  }
+}
+
+@layer components {
+  /* Subtle starfield wash behind the hero. */
+  .starfield {
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgb(255 255 255 / 0.6) 50%, transparent 50%),
+      radial-gradient(1px 1px at 70% 15%, rgb(255 255 255 / 0.45) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 45% 70%, rgb(246 200 90 / 0.5) 50%, transparent 50%),
+      radial-gradient(1px 1px at 85% 55%, rgb(255 255 255 / 0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 10% 80%, rgb(255 255 255 / 0.3) 50%, transparent 50%);
+    background-size: 100% 100%;
+  }
+}
+
+/* Respect users who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
