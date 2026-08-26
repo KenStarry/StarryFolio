@@ -1,25 +1,27 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
-import '../../../../core/presentation/components/cta_button.dart';
+import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../projects/domain/model/project_model.dart';
 import '../../../projects/presentation/components/project_card.dart';
+import '../../../projects/presentation/components/project_showcase.dart';
 
-/// Selected-work showcase — the page's centrepiece.
+/// Selected-work teaser — one flagship, then two supporting projects.
 ///
-/// Three large cards at most, arranged as a **spotlight arch**: the centre card
-/// sits higher than the two flanking it. A running stagger looked like a
-/// mistake at this count, but a symmetrical arch reads as deliberate — it
-/// points at the middle of the row and tells you this section is the highlight.
+/// The flagship is presented **flat**, exactly like on `/projects`, just at
+/// teaser density: no meta table, a larger mockup, store badges included. An
+/// earlier pass enclosed it in a bordered card, which fought the flat language
+/// the rest of the page is built on and forced the mockup to bleed awkwardly
+/// past the card edge.
 ///
-/// Implemented by pushing the *outer* cards down rather than pulling the centre
-/// up, so the section's top edge stays where the grid put it and the heading
-/// spacing above is unaffected.
-///
-/// Deliberately not a grid-plus-list: the home page shows a handful of things
-/// properly and sends you to `/projects` for the whole catalogue.
+/// Supporting work sits in a three-column row — two cards and the call to
+/// action occupying the third cell. Putting the CTA *in* the grid rather than
+/// floating it underneath completes the row, and it is what lets the cards be
+/// a third of the width rather than half, so they read as supporting rather
+/// than competing with the flagship above.
 class WorkSection extends StatelessComponent {
   const WorkSection({required this.projects, super.key});
 
@@ -27,9 +29,20 @@ class WorkSection extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    // Three is the ceiling — a fourth breaks the stagger rhythm and makes the
-    // section compete with the projects page.
-    final shown = projects.take(3).toList(growable: false);
+    // The flagship needs a mockup — the flat treatment is built around one.
+    final feature = projects
+        .where((item) => item.featured && item.mockupImage != null)
+        .firstOrNull;
+
+    // Skip every flagship: a second one shrunk into a small card undersells
+    // it, and `/projects` gives each a full band anyway.
+    final supporting = projects
+        .where((item) => item != feature && !item.featured)
+        .take(2)
+        .toList(growable: false);
+
+    final shown = (feature == null ? 0 : 1) + supporting.length;
+    final remaining = projects.length - shown;
 
     return SectionBlock(
       id: 'work',
@@ -38,47 +51,71 @@ class WorkSection extends StatelessComponent {
       lead: 'Products where I owned the whole surface — design system, '
           'architecture, release.',
       children: [
-        if (shown.isNotEmpty)
+        if (feature != null)
           div(
-            classes: 'grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3 '
-                'lg:gap-7',
-            [
-              for (final (i, project) in shown.indexed)
-                ProjectCard(
-                  project: project,
-                  classes: 'reveal ${_archOffset(i, shown.length)}',
-                ),
-            ],
+            classes: 'reveal',
+            [ProjectShowcase(project: feature, compact: true)],
           ),
 
-        div(
-          classes: 'reveal mt-16 flex flex-wrap items-center gap-6',
-          [
-            const CtaButton(
-              label: 'Show more projects',
-              href: RoutePaths.projects,
-            ),
-            if (projects.length > shown.length)
-              p(
-                classes: 'font-mono text-[11px] text-ink-500',
-                [
-                  Component.text(
-                    '${projects.length - shown.length} more in the archive',
-                  ),
-                ],
-              ),
-          ],
-        ),
+        if (supporting.isNotEmpty)
+          div(
+            classes: 'mt-20 grid items-stretch gap-6 sm:grid-cols-2 '
+                'lg:grid-cols-3',
+            [
+              for (final project in supporting)
+                ProjectCard(project: project, classes: 'reveal'),
+              _moreTile(remaining),
+            ],
+          ),
       ],
     );
   }
 
-  /// Drops every card except the middle one of a three-card row. Any other
-  /// count has no meaningful centre, so the row stays flat rather than
-  /// guessing — two cards would give a lopsided arch and one would be absurd.
+  /// The archive tile that closes the row.
   ///
-  /// The offset is a literal utility because Tailwind's scanner reads `.dart`
-  /// source; a computed class would be purged.
-  static String _archOffset(int index, int total) =>
-      (total == 3 && index != 1) ? 'lg:mt-12' : '';
+  /// Sized by the grid rather than by its own content, so it matches the cards
+  /// beside it without hard-coding their height.
+  static Component _moreTile(int remaining) => Link(
+        to: RoutePaths.projects,
+        classes: 'reveal group flex flex-col justify-between border '
+            'border-dashed border-ink-700 p-7 transition-colors duration-500 '
+            'ease-soft hover:border-iris-500/50 hover:bg-ink-850',
+        children: [
+          div([
+            const p(
+              classes: 'type-eyebrow font-mono text-ink-500',
+              [Component.text('The archive')],
+            ),
+            p(
+              classes: 'mt-6 font-display text-5xl font-extrabold leading-none '
+                  'text-ink-700 transition-colors duration-500 '
+                  'group-hover:text-iris-500/60',
+              [Component.text(remaining.toString().padLeft(2, '0'))],
+            ),
+            p(
+              classes: 'mt-4 max-w-[14rem] text-sm leading-relaxed text-ink-400',
+              [
+                Component.text(
+                  remaining == 1
+                      ? 'One more project, with its full case study.'
+                      : 'More projects, each with its own case study.',
+                ),
+              ],
+            ),
+          ]),
+          div(
+            classes: 'mt-8 flex items-center gap-2.5 text-sm font-medium '
+                'text-ink-200 transition-colors duration-300 '
+                'group-hover:text-iris-300',
+            [
+              const Component.text('Show more projects'),
+              span(
+                classes: 'transition-transform duration-500 ease-soft '
+                    'group-hover:translate-x-1.5',
+                [AppIcons.arrow()],
+              ),
+            ],
+          ),
+        ],
+      );
 }

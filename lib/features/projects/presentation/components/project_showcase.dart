@@ -21,6 +21,7 @@ class ProjectShowcase extends StatelessComponent {
   const ProjectShowcase({
     required this.project,
     this.reversed = false,
+    this.compact = false,
     super.key,
   });
 
@@ -35,13 +36,21 @@ class ProjectShowcase extends StatelessComponent {
   /// heading-then-image regardless of which side the image is on.
   final bool reversed;
 
+  /// Teaser density, used on the home page.
+  ///
+  /// Drops the ruled meta table and trades that space for a larger mockup: the
+  /// home section is an invitation, so it should be image-forward and let
+  /// `/projects` carry the detail. Same object, two densities — not a second
+  /// component to keep in sync.
+  final bool compact;
+
   @override
   Component build(BuildContext context) {
     final mockup = project.mockupImage;
 
     return div(
       classes: 'grid items-center gap-14 lg:gap-16 '
-          '${reversed ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'lg:grid-cols-[0.95fr_1.05fr]'}',
+          '${compact ? 'lg:grid-cols-[0.85fr_1.15fr]' : (reversed ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'lg:grid-cols-[0.95fr_1.05fr]')}',
       [
         // ── Copy ──
         div(
@@ -80,16 +89,23 @@ class ProjectShowcase extends StatelessComponent {
                 [Component.text(project.summary.first)],
               ),
 
-            // Ruled meta, borrowed from a spec sheet rather than a card. Flat
-            // rows keep the whole block in the same register as the mockup.
-            div(
-              classes: 'mt-10 max-w-md border-b border-ink-700',
-              [
-                _meta('Year', project.year),
-                _meta('Role', 'Design system · Architecture · Release'),
-                _meta('Stack', project.stack.join('  ·  ')),
-              ],
-            ),
+            if (!compact)
+              div(
+                classes: 'mt-10 max-w-md border-b border-ink-700',
+                [
+                  _meta('Year', project.year),
+                  _meta('Role', 'Design system · Architecture · Release'),
+                  _meta('Stack', project.stack.join('  ·  ')),
+                ],
+              )
+            else
+              div(
+                classes: 'mt-8 flex flex-wrap gap-2',
+                [
+                  for (final tech in project.stack.take(4))
+                    span(classes: 'pill', [Component.text(tech)]),
+                ],
+              ),
 
             if (project.links.isNotEmpty)
               StoreBadgeRow(
@@ -163,8 +179,8 @@ class ProjectShowcase extends StatelessComponent {
                   'width': '914',
                   'height': '1200',
                 },
-                classes: 'showcase-device relative w-full max-w-md '
-                    'lg:max-w-lg',
+                classes: 'showcase-device relative w-full '
+                    '${compact ? 'max-w-md lg:max-w-xl' : 'max-w-md lg:max-w-lg'}',
               ),
           ],
         ),
