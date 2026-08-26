@@ -25,6 +25,20 @@
   // Produced by `scripts/build.sh`, which must run before `wrangler deploy`.
   "main": "./build/jaspr/_worker.js",
 
+  // These must live here, not in the dashboard. `wrangler deploy` defaults to
+  // `--keep-vars false`, which **deletes every plain-text var** before applying
+  // the ones it finds in this file — so anything typed into the dashboard is
+  // wiped by the next deploy. Secrets are exempt, which is why RESEND_API_KEY
+  // survives there and these two did not.
+  //
+  // Neither is sensitive: CONTACT_TO is already printed on every page of the
+  // site, and CONTACT_FROM is a public sender address. The API key stays a
+  // dashboard secret and must never appear in this file.
+  "vars": {
+    "CONTACT_TO": "starrycodes@gmail.com",
+    "CONTACT_FROM": "Ken Starry <hello@kenstarry.com>"
+  },
+
   "assets": {
     "directory": "./build/jaspr",
     "binding": "ASSETS",
