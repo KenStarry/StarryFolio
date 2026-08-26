@@ -38,8 +38,23 @@ class SiteConfig {
   static const String siteUrl = 'https://kenstarry.com';
   static const String email = 'starrycodes@gmail.com';
 
-  /// Fallback share image. 1200x630, lives at `web/images/og.png`.
-  static const String defaultOgImage = '/images/og.png';
+  /// Fallback share image, 1200×630 at `web/images/og.jpg`.
+  ///
+  /// JPEG rather than PNG: the card contains a photographic avatar, which PNG
+  /// stores badly — the same image is 92 KB here against 347 KB as a PNG, with
+  /// no visible difference at the size a feed renders it.
+  ///
+  /// Regenerate with `tools/og-card.html` — see the note at the top of that
+  /// file.
+  static const String defaultOgImage = '/images/og.jpg';
+
+  /// Declared alongside the image so a scraper can lay out the preview before
+  /// it has finished downloading it.
+  static const String ogImageWidth = '1200';
+  static const String ogImageHeight = '630';
+
+  static const String ogImageAlt =
+      '$name — $role. Apps people actually reopen.';
 
   // ── Hero ──────────────────────────────────────────────────────────────────
 

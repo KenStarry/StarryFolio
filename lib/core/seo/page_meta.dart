@@ -65,11 +65,40 @@ class PageMeta extends StatelessComponent {
             'content': SiteConfig.absolute(image),
           },
         ),
+        // Dimensions let a scraper reserve the right box before the image has
+        // downloaded, so the preview does not reflow. `og:image:alt` is what
+        // gets read aloud when the card is announced.
+        const meta(
+          id: 'og-image-w',
+          attributes: {
+            'property': 'og:image:width',
+            'content': SiteConfig.ogImageWidth,
+          },
+        ),
+        const meta(
+          id: 'og-image-h',
+          attributes: {
+            'property': 'og:image:height',
+            'content': SiteConfig.ogImageHeight,
+          },
+        ),
+        const meta(
+          id: 'og-image-alt',
+          attributes: {
+            'property': 'og:image:alt',
+            'content': SiteConfig.ogImageAlt,
+          },
+        ),
         // Twitter reads og:* for everything except the alt text, which it
         // wants under its own namespace.
         meta(id: 'tw-title', name: 'twitter:title', content: title),
         meta(id: 'tw-description', name: 'twitter:description', content: description),
         meta(id: 'tw-image', name: 'twitter:image', content: SiteConfig.absolute(image)),
+        const meta(
+          id: 'tw-image-alt',
+          name: 'twitter:image:alt',
+          content: SiteConfig.ogImageAlt,
+        ),
       ],
     );
   }
