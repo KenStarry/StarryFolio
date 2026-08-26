@@ -1,6 +1,7 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../../../../core/routing/route_paths.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/model/project_model.dart';
 
@@ -18,17 +19,20 @@ class SectionJumpNav extends StatelessComponent {
   const SectionJumpNav({
     required this.projects,
     required this.featured,
-    required this.postCount,
+    required this.path,
     super.key,
   });
+
+  /// Path of the page these anchors live on. Required because `<base href="/">`
+  /// makes a bare fragment resolve against the site root — see
+  /// [RoutePaths.anchor].
+  final String path;
 
   /// Projects grouped into category bands.
   final List<ProjectModel> projects;
 
   /// Featured projects, each of which has its own band anchored on its slug.
   final List<ProjectModel> featured;
-
-  final int postCount;
 
   @override
   Component build(BuildContext context) {
@@ -47,15 +51,16 @@ class SectionJumpNav extends StatelessComponent {
       attributes: const {'aria-label': 'Jump to a section'},
       [
         // Flagships lead, since they are what the page is built around.
-        for (final item in featured) _pill(item.slug, item.name, 1),
-        for (final cat in present) _pill(cat.slug, cat.title, counts[cat]!),
-        if (postCount > 0) _pill('writing', 'Writing', postCount),
+        for (final item in featured)
+          _pill(path, item.slug, item.name, 1),
+        for (final cat in present)
+          _pill(path, cat.slug, cat.title, counts[cat]!),
       ],
     );
   }
 
-  static Component _pill(String anchor, String text, int count) => a(
-        href: '#$anchor',
+  static Component _pill(String path, String anchor, String text, int count) => a(
+        href: RoutePaths.anchor(path, anchor),
         classes: 'jump-pill',
         [
           span([Component.text(text)]),

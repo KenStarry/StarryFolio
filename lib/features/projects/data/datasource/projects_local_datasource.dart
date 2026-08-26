@@ -6,8 +6,9 @@ import '../../domain/model/project_model.dart';
 
 /// The case studies, as compile-time constants.
 ///
-/// `healthx` and `flow` are the real featured builds. **Everything except
-/// `healthx`, `flow`, `criblynk` and `eduflow` is sample content**
+/// `healthx`, `rezq` and `flow` are the real featured builds, and appear as
+/// full-width showcases in that order. **Everything except those three plus
+/// `criblynk` and `eduflow` is sample content**
 /// added to fill out the sections — replace that copy with real work before
 /// launch. Categories drive which section a project lands in.
 ///
@@ -92,6 +93,49 @@ abstract final class ProjectsLocalDatasource {
       ],
       links: [
         AppLink(type: AppLinkType.repo, url: 'https://github.com/KenStarry/CribLynk'),
+      ],
+    ),
+    ProjectModel(
+      slug: 'rezq',
+      name: 'RezQ',
+      tagline: 'Resume building, the right way round.',
+      year: '2026',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.personal,
+      mockupImage: 'images/rezq-mockup.webp',
+      featured: true,
+      stack: [
+        'Flutter',
+        'Riverpod 3',
+        'GoRouter',
+        'Hive',
+        'pdf / printing',
+      ],
+      summary: [
+        'Most resume tools have you edit one document per application. RezQ '
+            'inverts that: you build a master profile once in the Workshop, cut '
+            'role-specific snapshots from it, and generate a polished PDF from '
+            'any role using interchangeable templates.',
+        'The interesting half is the PDF engine. Each section dispatches its own '
+            'rendering per template, so adding a template is a new builder '
+            'rather than a rewrite of every section.',
+      ],
+      highlights: [
+        'Master profile → role snapshot → PDF, instead of a document per job',
+        'Three interchangeable templates, each with its own typographic ramp '
+            'and PdfColor palette',
+        'Strategy-dispatch section enum, so a new template does not touch '
+            'existing section code',
+        'A borderless design system — depth carried by a three-level shadow '
+            'ramp and surface contrast, never by lines',
+        'Local-first on Hive, with PDF thumbnails rastered on device',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.playStore,
+          url: 'https://play.google.com/store/apps/details'
+              '?id=com.kenstarry.rezq&pcampaignid=web_share',
+        ),
       ],
     ),
     ProjectModel(

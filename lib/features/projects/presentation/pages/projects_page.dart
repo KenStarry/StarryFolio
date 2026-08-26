@@ -3,15 +3,14 @@ import 'package:jaspr/server.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
-import '../../../../core/presentation/components/cta_button.dart';
 import '../../../../core/presentation/components/error_notice.dart';
+import '../../../../core/presentation/components/company_marquee.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../../core/presentation/components/section_rail.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
 import '../../../../core/seo/structured_data.dart';
-import '../../../writing/domain/model/post_model.dart';
-import '../../../writing/presentation/components/post_card.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/model/project_model.dart';
 import '../components/project_bento.dart';
@@ -37,7 +36,6 @@ class ProjectsPage extends AsyncStatelessComponent {
   @override
   Future<Component> build(BuildContext context) async {
     final result = await Locator.projects.getProjects();
-    final posts = await Locator.writing.getPosts();
 
     return result.fold(
       (error) => Component.fragment([
@@ -50,7 +48,6 @@ class ProjectsPage extends AsyncStatelessComponent {
         ),
       ]),
       (projects) {
-        final postList = posts.getOrElse((_) => const []);
 
         // A featured project needs a mockup — the flat showcase is built around
         // one and has nothing to render without it. Anything flagged but
@@ -78,25 +75,40 @@ class ProjectsPage extends AsyncStatelessComponent {
         // Interleaving is what stops the page reading as one feature followed
         // by a long uniform tail.
         final blocks = <Component>[];
+        final stops = <RailStop>[];
         var f = 0, b = 0, n = 1;
+
+        // `tl-N` classes come from a fixed pool in the stylesheet, since CSS
+        // timeline names cannot be generated at runtime. Past the pool a band
+        // still renders — its rail dot just does not self-highlight.
+        String slot() => blocks.length < SectionRail.maxTracked
+            ? 'tl-${blocks.length + 1}'
+            : '';
+
         while (f < featured.length || b < bands.length) {
           if (f < featured.length) {
+            final item = featured[f];
             blocks.add(_Showcase(
-              project: featured[f],
+              project: item,
               index: n++,
               // Every other showcase mirrors, so the eye zig-zags down.
               reversed: f.isOdd,
               raised: n.isEven,
+              timeline: slot(),
             ));
+            stops.add((anchor: item.slug, label: item.name));
             f++;
           }
           if (b < bands.length) {
+            final band = bands[b];
             blocks.add(_CategoryBand(
-              category: bands[b].category,
-              projects: bands[b].items,
+              category: band.category,
+              projects: band.items,
               index: n++,
               raised: n.isEven,
+              timeline: slot(),
             ));
+            stops.add((anchor: band.category.slug, label: band.category.title));
             b++;
           }
         }
@@ -121,10 +133,20 @@ class ProjectsPage extends AsyncStatelessComponent {
             count: projects.length,
             jumpProjects: rest,
             featured: featured,
-            postCount: postList.length,
           ),
-          ...blocks,
-          _WritingBand(posts: postList, index: n),
+          // `timeline-scope` publishes the bands' timeline names to this
+          // element's **subtree** only — so the rail has to live inside the
+          // same wrapper as the bands, not beside it, or its dots would
+          // reference names they cannot see. The rail is `position: fixed` and
+          // this wrapper sets no transform or filter, so nesting it here does
+          // not change where it renders.
+          div(
+            classes: 'rail-scope',
+            [
+              ...blocks,
+              SectionRail(stops: stops, path: RoutePaths.projects),
+            ],
+          ),
         ]);
       },
     );
@@ -201,7 +223,6 @@ class _Header extends StatelessComponent {
     required this.count,
     required this.jumpProjects,
     required this.featured,
-    required this.postCount,
   });
 
   final int count;
@@ -212,8 +233,6 @@ class _Header extends StatelessComponent {
 
   /// Featured projects, which each get their own band anchored on their slug.
   final List<ProjectModel> featured;
-
-  final int postCount;
 
   @override
   Component build(BuildContext context) {
@@ -264,7 +283,7 @@ class _Header extends StatelessComponent {
                 SectionJumpNav(
                   projects: jumpProjects,
                   featured: featured,
-                  postCount: postCount,
+                  path: RoutePaths.projects,
                 ),
               ],
             ),
@@ -296,6 +315,7 @@ class _Showcase extends StatelessComponent {
     required this.index,
     required this.reversed,
     required this.raised,
+    required this.timeline,
   });
 
   final ProjectModel project;
@@ -303,12 +323,16 @@ class _Showcase extends StatelessComponent {
   final bool reversed;
   final bool raised;
 
+  /// `tl-N` utility naming this band's view-timeline, which the matching rail
+  /// dot animates on.
+  final String timeline;
+
   @override
   Component build(BuildContext context) {
     return section(
       id: project.slug,
-      classes: 'relative ${raised ? 'bg-ink-800' : 'bg-ink-900'} '
-          'py-20 sm:py-28',
+      classes: '$timeline relative '
+          '${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-28',
       [
         div(
           classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
@@ -339,11 +363,15 @@ class _CategoryBand extends StatelessComponent {
     required this.projects,
     required this.index,
     required this.raised,
+    required this.timeline,
   });
 
   final ProjectCategory category;
   final List<ProjectModel> projects;
   final int index;
+
+  /// `tl-N` utility naming this band's view-timeline.
+  final String timeline;
 
   /// Alternates the ground so consecutive bands stay visually separate.
   final bool raised;
@@ -352,8 +380,8 @@ class _CategoryBand extends StatelessComponent {
   Component build(BuildContext context) {
     return section(
       id: category.slug,
-      classes: 'relative ${raised ? 'bg-ink-800' : 'bg-ink-900'} '
-          'py-20 sm:py-28',
+      classes: '$timeline relative '
+          '${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-28',
       [
         div(
           classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
@@ -366,63 +394,30 @@ class _CategoryBand extends StatelessComponent {
               count: projects.length,
               countLabel: projects.length == 1 ? 'project' : 'projects',
             ),
+
+            // The enterprise band gets the client strip: the names are the
+            // credential the section's projects are trading on, so they belong
+            // above the work rather than buried in an about page.
+            if (category == ProjectCategory.enterprise) ...[
+              const div(
+                classes: 'reveal mt-12 flex items-center gap-4',
+                [
+                  span(
+                    classes: 'type-eyebrow shrink-0 font-mono text-ink-500',
+                    [Component.text('Built for')],
+                  ),
+                  span(classes: 'h-px flex-1 bg-ink-700', []),
+                ],
+              ),
+              const div(
+                classes: 'reveal mt-6',
+                [CompanyMarquee()],
+              ),
+            ],
+
             div(
               classes: 'mt-12',
               [ProjectBento(projects: projects)],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// Writing. Deliberately the last band and deliberately the odd one out — text
-/// cards on the deepest ground, so it reads as a different kind of content
-/// rather than more projects.
-class _WritingBand extends StatelessComponent {
-  const _WritingBand({required this.posts, required this.index});
-
-  final List<PostModel> posts;
-  final int index;
-
-  @override
-  Component build(BuildContext context) {
-    if (posts.isEmpty) return const div([]);
-
-    return section(
-      id: 'writing',
-      classes: 'relative bg-ink-950 py-20 sm:py-28',
-      [
-        div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
-          [
-            _BandHeading(
-              index: index,
-              eyebrow: 'Writing',
-              title: 'Notes from the build.',
-              lead: 'Occasional posts on Flutter architecture, motion and the '
-                  'unglamorous last 10% that decides whether a product feels '
-                  'finished.',
-              count: posts.length,
-              countLabel: posts.length == 1 ? 'post' : 'posts',
-            ),
-            div(
-              classes: 'mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3',
-              [
-                for (final (i, post) in posts.indexed)
-                  PostCard(post: post, index: i),
-              ],
-            ),
-            const div(
-              classes: 'reveal mt-14',
-              [
-                CtaButton(
-                  label: 'Start a project',
-                  href: 'mailto:${SiteConfig.email}',
-                  variant: CtaVariant.outline,
-                ),
-              ],
             ),
           ],
         ),

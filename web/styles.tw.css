@@ -553,6 +553,179 @@
   .store-badge-title {
     @apply mt-1 font-display text-[0.95rem] font-bold tracking-tight;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MARQUEE
+
+     The track holds its contents twice and translates -50%, landing exactly on
+     the start of the duplicate so the loop has no seam. Deliberately slow: at
+     a readable speed a ticker reads as a considered detail, and at any faster
+     it reads as a banner ad.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @keyframes marquee-run {
+    to { transform: translateX(-50%); }
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-run 42s linear infinite;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Fades the strip into the page at both ends rather than letting items
+     hard-clip at the container edge. */
+  .edge-fade {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     NAV LINKS
+
+     The active tab is not just recoloured — it carries a drawn underline and a
+     soft accent glow, so it reads as "you are here" rather than as a hover
+     state that got stuck.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .nav-link {
+    @apply relative text-ink-400;
+    transition: color 0.35s var(--ease-soft);
+  }
+
+  .nav-link:hover { @apply text-ink-100; }
+
+  .nav-link-active {
+    @apply text-iris-300;
+    text-shadow: 0 0 18px color-mix(in oklab, var(--color-iris-400) 45%, transparent);
+  }
+
+  /* The underline under the active tab. Drawn rather than hover-triggered, and
+     given its own glow so it reads as lit rather than painted. */
+  .nav-link-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1.5px;
+    background: var(--color-iris-400);
+    box-shadow: 0 0 10px 1px color-mix(in oklab, var(--color-iris-400) 70%, transparent);
+    transform-origin: left center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-link-active::after {
+      animation: nav-underline 0.6s var(--ease-soft) both;
+    }
+  }
+
+  @keyframes nav-underline {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SECTION RAIL
+
+     A fixed column of dots that tracks which band is on screen and lets you
+     hop between them.
+
+     The highlight is driven by CSS **named view-timelines**, not JavaScript.
+     Each band declares `view-timeline-name`, an ancestor publishes those names
+     via `timeline-scope`, and each dot animates on the timeline belonging to
+     its band. No scroll listener, no IntersectionObserver, nothing to hydrate,
+     and it cannot drift out of sync with the real scroll position.
+
+     Timeline names cannot be generated at runtime, so there is a fixed pool of
+     eight — comfortably more bands than this page will ever have. A ninth band
+     simply gets an un-highlighting dot that still works as a link.
+
+     Where `timeline-scope` is unsupported (Safari and Firefox today) the whole
+     block is skipped and the rail stays a plain, perfectly usable list of
+     anchors at rest opacity.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .tl-1 { view-timeline-name: --sec-1; }
+  .tl-2 { view-timeline-name: --sec-2; }
+  .tl-3 { view-timeline-name: --sec-3; }
+  .tl-4 { view-timeline-name: --sec-4; }
+  .tl-5 { view-timeline-name: --sec-5; }
+  .tl-6 { view-timeline-name: --sec-6; }
+  .tl-7 { view-timeline-name: --sec-7; }
+  .tl-8 { view-timeline-name: --sec-8; }
+
+  .rail-dot {
+    @apply block h-1.5 w-1.5 rounded-full bg-ink-600;
+    transition: background-color 0.4s var(--ease-soft),
+                transform 0.4s var(--ease-soft);
+  }
+
+  .rail-item:hover .rail-dot {
+    @apply bg-iris-400;
+    transform: scale(1.5);
+  }
+
+  .rail-label {
+    @apply pointer-events-none absolute right-6 top-1/2 -translate-y-1/2
+           whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em]
+           text-ink-400;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-soft);
+  }
+
+  .rail-item:hover .rail-label { opacity: 1; }
+
+  @supports (timeline-scope: --a) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* Published by the page wrapper so the fixed rail, which is nowhere near
+         the bands in the tree, can still reference their timelines. */
+      .rail-scope {
+        timeline-scope: --sec-1, --sec-2, --sec-3, --sec-4,
+                        --sec-5, --sec-6, --sec-7, --sec-8;
+      }
+
+      .rail-dot {
+        animation: rail-dot-active linear both;
+        animation-range: cover 0% cover 100%;
+      }
+
+      .rail-label {
+        animation: rail-label-active linear both;
+        animation-range: cover 0% cover 100%;
+      }
+
+    .rail-1 .rail-dot,
+    .rail-1 .rail-label { animation-timeline: --sec-1; }
+    .rail-2 .rail-dot,
+    .rail-2 .rail-label { animation-timeline: --sec-2; }
+    .rail-3 .rail-dot,
+    .rail-3 .rail-label { animation-timeline: --sec-3; }
+    .rail-4 .rail-dot,
+    .rail-4 .rail-label { animation-timeline: --sec-4; }
+    .rail-5 .rail-dot,
+    .rail-5 .rail-label { animation-timeline: --sec-5; }
+    .rail-6 .rail-dot,
+    .rail-6 .rail-label { animation-timeline: --sec-6; }
+    .rail-7 .rail-dot,
+    .rail-7 .rail-label { animation-timeline: --sec-7; }
+    .rail-8 .rail-dot,
+    .rail-8 .rail-label { animation-timeline: --sec-8; }
+    }
+  }
+
+  /* Held at the lit state across the middle of the band, so the dot is not
+     brightest only at the exact moment the band is half-scrolled. */
+  @keyframes rail-dot-active {
+    0%, 100%  { background-color: var(--color-ink-600); transform: scale(1); }
+    22%, 78%  { background-color: var(--color-iris-400); transform: scale(1.6); }
+  }
+
+  @keyframes rail-label-active {
+    0%, 100%  { opacity: 0; }
+    22%, 78%  { opacity: 0.75; }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -577,5 +750,10 @@
   /* Left at full width rather than zero, so it does not read as a stuck bar. */
   .scroll-progress {
     transform: scaleX(1) !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 }

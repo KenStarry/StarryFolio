@@ -1,3 +1,4 @@
+import '../domain/model/company.dart';
 import '../domain/model/social_link.dart';
 
 /// Build-time identity for the whole site.
@@ -97,6 +98,17 @@ class SiteConfig {
     (value: '5+', label: 'years in Flutter'),
     (value: '2', label: 'app stores shipped to'),
     (value: '100%', label: 'of the mobile stack owned'),
+  ];
+
+  /// Places the work has been done. Rendered as the marquee in the enterprise
+  /// band. **Logos to come** — drop monochrome or white SVGs into `web/images/`
+  /// and set `logo:` on each entry; the marquee falls back to a wordmark until
+  /// then and its layout does not change when they land.
+  static const List<Company> companies = [
+    Company(name: 'Britam', role: 'Insurance · mobile'),
+    Company(name: 'Dentsu', role: 'Digital product'),
+    Company(name: 'HealthX', role: 'Telehealth · full mobile lifecycle'),
+    Company(name: 'Podii', role: 'Product engineering'),
   ];
 
   static const List<SocialLink> socials = [

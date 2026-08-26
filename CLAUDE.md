@@ -255,6 +255,22 @@ regression, not an enhancement: that is precisely what the first pass got wrong.
 **Dark only.** There is no light palette, no `dark:` variant and no theme
 toggle. `#282739` *is* the design.
 
+**The ghost-wordmark motif — the golden standard.** Behind the featured
+showcase, the project's own name is set enormous (`clamp(5rem, 17vw, 13rem)`) at
+`text-ink-100/[0.035]`, `aria-hidden`, `select-none`, sitting under the device.
+It is the single detail that makes the section read as premium rather than
+merely tidy, and it is the pattern to reach for when a section needs depth:
+
+- **Texture, never content.** Always `aria-hidden` and `select-none` — it must
+  never enter the document outline or be read aloud. It repeats text that is
+  already a real heading nearby.
+- **Barely there.** 3–4% opacity. If you can consciously read it, it is too
+  strong and starts competing with the copy.
+- **Anchored to something real.** It echoes the adjacent heading or name. A
+  decorative word with no referent is just noise.
+
+The footer wordmark is the same idea at page scale.
+
 **No vertical lists of projects.** Projects are always large boxy floating cards
 (`.float-card`) — a cover, a hairline, a solid caption panel, mirroring the hero's
 portrait card. Home shows **at most three**, vertically staggered; `/projects`

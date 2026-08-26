@@ -26,16 +26,35 @@ const _links = <({String label, String href})>[
 /// an ancestor that does not exist in the client tree.
 @client
 class NavBar extends StatelessComponent {
-  const NavBar({super.key});
+  const NavBar({this.path = '/', super.key});
+
+  /// Current route location, passed down from `AppLayout`. Jaspr serialises
+  /// `@client` parameters into the markup, so the island hydrates already
+  /// knowing which tab is active — no post-paint correction, no flash.
+  final String path;
 
   @override
   Component build(BuildContext context) {
-    return const ProviderScope(child: _NavBarView());
+    return ProviderScope(child: _NavBarView(path: path));
   }
 }
 
 class _NavBarView extends StatelessComponent {
-  const _NavBarView();
+  const _NavBarView({required this.path});
+
+  final String path;
+
+  /// Whether [href] represents the page currently being viewed.
+  ///
+  /// In-page anchors never count as active: `/#about` and `/#contact` both
+  /// point at the home page, and lighting up three tabs at once tells the user
+  /// nothing. Project detail pages keep `Works` lit, since that is the section
+  /// they belong to.
+  bool _isActive(String href) {
+    if (href.contains('#')) return false;
+    if (href == RoutePaths.home) return path == RoutePaths.home;
+    return path == href || path.startsWith('$href/');
+  }
 
   @override
   Component build(BuildContext context) {
@@ -66,8 +85,11 @@ class _NavBarView extends StatelessComponent {
                 for (final link in _links)
                   a(
                     href: link.href,
-                    classes: 'link-line text-sm text-ink-400 '
-                        'transition-colors duration-300 hover:text-ink-100',
+                    classes: _isActive(link.href)
+                        ? 'nav-link nav-link-active text-sm'
+                        : 'nav-link link-line text-sm',
+                    attributes:
+                        _isActive(link.href) ? {'aria-current': 'page'} : null,
                     [Component.text(link.label)],
                   ),
               ],
@@ -113,7 +135,9 @@ class _NavBarView extends StatelessComponent {
                   href: link.href,
                   classes: 'flex items-center justify-between border-b '
                       'border-ink-800 py-4 font-display text-lg font-semibold '
-                      'text-ink-100',
+                      '${_isActive(link.href) ? 'text-iris-300' : 'text-ink-100'}',
+                  attributes:
+                      _isActive(link.href) ? {'aria-current': 'page'} : null,
                   onClick: () =>
                       context.read(navMenuControllerProvider.notifier).close(),
                   [

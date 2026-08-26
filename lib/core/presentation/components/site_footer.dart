@@ -15,7 +15,11 @@ const _footerLinks = <({String label, String href})>[
 
 /// Page footer, on the deepest tone so the page closes darker than it opened.
 class SiteFooter extends StatelessComponent {
-  const SiteFooter({super.key});
+  const SiteFooter({this.path = RoutePaths.home, super.key});
+
+  /// Current page path, so back-to-top targets *this* page's `#top` rather
+  /// than the home page's — see [RoutePaths.anchor].
+  final String path;
 
   @override
   Component build(BuildContext context) {
@@ -135,7 +139,7 @@ class SiteFooter extends StatelessComponent {
                   ],
                 ),
                 a(
-                  href: '#top',
+                  href: RoutePaths.anchor(path, 'top'),
                   classes: 'group inline-flex items-center gap-2 text-xs '
                       'text-ink-500 transition-colors hover:text-ink-200',
                   [

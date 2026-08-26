@@ -28,23 +28,28 @@ class App extends StatelessComponent {
         Route(
           path: RoutePaths.home,
           title: '${SiteConfig.name} — ${SiteConfig.role}',
-          builder: (context, state) => const AppLayout(child: HomePage()),
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const HomePage()),
         ),
         Route(
           path: RoutePaths.projects,
           title: 'Projects — ${SiteConfig.name}',
-          builder: (context, state) => const AppLayout(child: ProjectsPage()),
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const ProjectsPage()),
         ),
         for (final slug in ProjectsLocalDatasource.slugs)
           Route(
             path: RoutePaths.projectDetail(slug),
-            builder: (context, state) =>
-                AppLayout(child: ProjectDetailPage(slug: slug)),
+            builder: (context, state) => AppLayout(
+              path: state.location,
+              child: ProjectDetailPage(slug: slug),
+            ),
           ),
         Route(
           path: RoutePaths.notFound,
           title: 'Not found — ${SiteConfig.name}',
-          builder: (context, state) => const AppLayout(child: NotFoundPage()),
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const NotFoundPage()),
         ),
       ],
     );

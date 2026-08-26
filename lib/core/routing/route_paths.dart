@@ -11,4 +11,15 @@ class RoutePaths {
   static const String notFound = '/404';
 
   static String projectDetail(String slug) => '$projects/$slug';
+
+  /// Builds an in-page anchor href.
+  ///
+  /// **Always use this instead of a bare `'#id'`.** The document carries
+  /// `<base href="/">` — which is load-bearing, because Jaspr emits
+  /// `main.client.dart.js` as a *relative* src and hydration would 404 on any
+  /// nested route without it. A consequence is that a bare fragment resolves
+  /// against the base rather than the current URL, so `#work` on `/projects`
+  /// navigates to the **home page**, not down the page. Carrying the path
+  /// makes the target unambiguous.
+  static String anchor(String path, String id) => '$path#$id';
 }
