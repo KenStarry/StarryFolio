@@ -50,10 +50,23 @@ class SchemaOrg {
 
   static const String _context = 'https://schema.org';
 
-  /// The site owner. Rendered on the home page.
-  static Map<String, Object?> person() => {
+  /// Stable identifier for the one person this site is about. Every graph that
+  /// mentions him points here instead of describing him again.
+  static String get personId => '${SiteConfig.siteUrl}/#person';
+
+  /// The site owner. Rendered on the home page and on `/about`.
+  ///
+  /// Carries a stable `@id`, so the two pages describe *one* person rather
+  /// than two identically-named ones — [profilePage] points its `mainEntity`
+  /// at the same identifier and a crawler merges the nodes.
+  ///
+  /// [knowsAbout] is passed in rather than read from config: the skills matrix
+  /// on `/about` is the source of truth for what is claimed, and a second copy
+  /// here would be free to drift away from the one a human can actually read.
+  static Map<String, Object?> person({List<String> knowsAbout = const []}) => {
         '@context': _context,
         '@type': 'Person',
+        '@id': personId,
         'name': SiteConfig.name,
         'alternateName': SiteConfig.shortName,
         'url': SiteConfig.siteUrl,
@@ -66,9 +79,7 @@ class SchemaOrg {
           'addressLocality': SiteConfig.location.split(',').first.trim(),
           'addressCountry': SiteConfig.location.split(',').last.trim(),
         },
-        'knowsAbout': [
-          for (final group in SiteConfig.toolkit) ...group.items,
-        ],
+        if (knowsAbout.isNotEmpty) 'knowsAbout': knowsAbout,
         // `sameAs` is the property that links these profiles to this identity.
         'sameAs': [for (final s in SiteConfig.socials) s.url],
       };
@@ -127,6 +138,88 @@ class SchemaOrg {
               'url': SiteConfig.absolute(RoutePaths.projectDetail(item.slug)),
             },
         ],
+      };
+
+  /// The offerings, for the services index.
+  ///
+  /// Each entry is a `Service` rather than a bare `ListItem`, so a crawler can
+  /// tell what is actually being offered and by whom — a plain list of names
+  /// carries no meaning for a services page.
+  static Map<String, Object?> serviceList({
+    required List<({String name, String description, String slug})> items,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'ItemList',
+        'itemListElement': [
+          for (final (index, item) in items.indexed)
+            {
+              '@type': 'ListItem',
+              'position': index + 1,
+              'item': {
+                '@type': 'Service',
+                'name': item.name,
+                'description': item.description,
+                'url': '${SiteConfig.absolute(RoutePaths.services)}'
+                    '#${item.slug}',
+                'serviceType': item.name,
+                'provider': {
+                  '@type': 'Person',
+                  'name': SiteConfig.name,
+                  'url': SiteConfig.siteUrl,
+                },
+                'areaServed': SiteConfig.location,
+              },
+            },
+        ],
+      };
+
+  /// The About page itself.
+  ///
+  /// `ProfilePage` is the type Google expects for a page *about* a person, as
+  /// distinct from a page written *by* one. Its `mainEntity` is a reference to
+  /// the [person] node by `@id` plus the employment and education facts that
+  /// only this page carries — which is what lets a knowledge panel state where
+  /// someone works without having to parse the prose.
+  static Map<String, Object?> profilePage({
+    required List<({String name, String role})> employers,
+    required List<String> education,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'ProfilePage',
+        'url': SiteConfig.absolute(RoutePaths.about),
+        'name': 'About ${SiteConfig.name}',
+        'mainEntity': {
+          '@type': 'Person',
+          '@id': personId,
+          'name': SiteConfig.name,
+          'url': SiteConfig.siteUrl,
+          'jobTitle': SiteConfig.role,
+          if (employers.isNotEmpty)
+            'worksFor': {
+              '@type': 'Organization',
+              'name': employers.first.name,
+            },
+          if (employers.isNotEmpty)
+            'hasOccupation': [
+              for (final job in employers)
+                {
+                  '@type': 'Occupation',
+                  'name': job.role,
+                  'hiringOrganization': {
+                    '@type': 'Organization',
+                    'name': job.name,
+                  },
+                },
+            ],
+          if (education.isNotEmpty)
+            'alumniOf': [
+              for (final school in education)
+                {'@type': 'EducationalOrganization', 'name': school},
+            ],
+          'sameAs': [for (final s in SiteConfig.socials) s.url],
+        },
       };
 
   /// Trail shown under the result title in search. [crumbs] is ordered

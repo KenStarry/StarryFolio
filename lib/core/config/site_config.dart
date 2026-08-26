@@ -29,8 +29,9 @@ class SiteConfig {
   /// component trees, where a method call is not allowed.
   static const String wordmark = 'kenstarry';
 
-  /// Single-letter monogram for the logo tile.
-  static const String monogram = 'K';
+  /// The logo mark — a crop of the hero avatar, which is the trademark.
+  /// Replaces the letter monogram that stood in before the artwork existed.
+  static const String logoMark = 'images/logo-mark.webp';
   static const String role = 'Flutter UI/UX Engineer';
   static const String location = 'Nairobi, Kenya';
   static const String domain = 'kenstarry.com';
@@ -119,13 +120,11 @@ class SiteConfig {
     SocialLink(label: 'X', handle: '@KenStarry', url: 'https://x.com/KenStarry'),
   ];
 
-  /// Things you actually reach for, grouped for the About section.
-  static const List<({String group, List<String> items})> toolkit = [
-    (group: 'Core', items: ['Dart', 'Flutter', 'Jaspr', 'Kotlin']),
-    (group: 'Architecture', items: ['Clean Architecture', 'Riverpod', 'BLoC', 'Isar / Drift']),
-    (group: 'Craft', items: ['Design systems', 'Motion', 'Accessibility', 'Figma']),
-    (group: 'Ship', items: ['CI/CD', 'Fastlane', 'Firebase', 'Play Console & App Store Connect']),
-  ];
+  // The toolkit used to live here as a flat list of names. It now lives in
+  // `features/about/data/datasource/about_local_datasource.dart`, where each
+  // entry also carries how deeply it is held — and it is the same list the
+  // Person JSON-LD's `knowsAbout` is built from, so the machine-readable
+  // claim and the visible matrix cannot drift apart.
 
   /// Absolute URL for a site-relative [path]. Used for canonical + OG tags,
   /// which must be absolute to be honoured by crawlers and scrapers.

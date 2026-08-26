@@ -25,7 +25,19 @@ void main() {
         'color-scheme': 'dark',
       },
       head: [
-        link(rel: 'icon', href: '/favicon.svg', attributes: {'type': 'image/svg+xml'}),
+        // The mark is photographic, so these are PNG rather than the SVG that
+        // stood in before. Each is composited onto the site ground with
+        // rounded corners — a transparent favicon vanishes against browser
+        // chrome of a similar tone.
+        link(rel: 'icon', href: '/favicon-32.png', attributes: {
+          'type': 'image/png',
+          'sizes': '32x32',
+        }),
+        link(rel: 'icon', href: '/favicon-192.png', attributes: {
+          'type': 'image/png',
+          'sizes': '192x192',
+        }),
+        link(rel: 'apple-touch-icon', href: '/apple-touch-icon.png'),
         link(rel: 'preconnect', href: 'https://fonts.googleapis.com'),
         link(
           rel: 'preconnect',

@@ -7,9 +7,9 @@ import '../../routing/route_paths.dart';
 import 'app_icons.dart';
 
 const _footerLinks = <({String label, String href})>[
-  (label: 'Services', href: '${RoutePaths.home}#services'),
+  (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
-  (label: 'About', href: '${RoutePaths.home}#about'),
+  (label: 'About', href: RoutePaths.about),
   (label: 'Contact', href: '${RoutePaths.home}#contact'),
 ];
 
@@ -37,10 +37,22 @@ class SiteFooter extends StatelessComponent {
                     classes: 'flex items-center gap-3',
                     [
                       span(
-                        classes: 'flex h-9 w-9 items-center justify-center '
-                            'bg-ink-200 font-display text-sm font-extrabold '
-                            'text-ink-900',
-                        [Component.text(SiteConfig.monogram)],
+                        classes: 'flex h-9 w-9 shrink-0 overflow-hidden '
+                            'rounded-full bg-ink-800 ring-1 ring-ink-800',
+                        attributes: {'aria-hidden': 'true'},
+                        [
+                          img(
+                            src: '/${SiteConfig.logoMark}',
+                            alt: '',
+                            attributes: {
+                              'width': '256',
+                              'height': '256',
+                              'loading': 'lazy',
+                              'decoding': 'async',
+                            },
+                            classes: 'h-full w-full object-cover',
+                          ),
+                        ],
                       ),
                       span(
                         classes: 'font-display text-sm font-semibold '

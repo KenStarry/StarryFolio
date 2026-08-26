@@ -773,6 +773,210 @@
   .store-badge-sm .store-badge-title {
     @apply mt-0 text-xs;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     EXPERIENCE ENTRY
+
+     A CV is a list, and a list of jobs is the least interesting way to read
+     about a person. So an entry is drawn as a station on a line instead: a
+     hairline down the left, a node on it at the title, and the accent tracing
+     the rule from top to bottom on hover. Nothing moves on the page — the
+     light just arrives at the row you are reading.
+
+     `focus-within` matters as much as `:hover`: an entry can contain a link
+     to its case study, and a keyboard user tabbing into it should get the
+     same acknowledgement a pointer does.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .entry {
+    @apply relative border-l border-ink-700/60;
+  }
+
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-iris-400),
+      color-mix(in oklab, var(--color-iris-500) 30%, transparent) 65%,
+      transparent
+    );
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform 0.75s var(--ease-soft);
+  }
+
+  .entry:hover::before,
+  .entry:focus-within::before {
+    transform: scaleY(1);
+  }
+
+  /* The node sits *on* the rule, so it has to be pulled back by half its own
+     width — hence the compound transform on the hover state too. */
+  .entry-node {
+    @apply absolute left-0 top-1.5 block h-1.5 w-1.5 rounded-full bg-ink-600;
+    transform: translateX(-50%);
+    transition: background-color 0.5s var(--ease-soft),
+                transform 0.5s var(--ease-spring),
+                box-shadow 0.5s var(--ease-soft);
+  }
+
+  .entry:hover .entry-node,
+  .entry:focus-within .entry-node {
+    @apply bg-iris-400;
+    transform: translateX(-50%) scale(1.7);
+    box-shadow: 0 0 14px 1px color-mix(in oklab, var(--color-iris-400) 60%, transparent);
+  }
+
+  /* One outcome, as a ruled row. The marker is a rule rather than a bullet:
+     a disc reads as a list item, a rule reads as a line in a ledger. */
+  .outcome {
+    @apply grid grid-cols-[1.25rem_1fr] items-baseline gap-3 border-t
+           border-ink-700/50 py-3 text-sm leading-relaxed text-ink-300;
+  }
+
+  .outcome::before {
+    content: "";
+    @apply mt-2.5 block h-px w-3 bg-ink-600;
+    transition: background-color 0.5s var(--ease-soft), width 0.5s var(--ease-soft);
+  }
+
+  .entry:hover .outcome::before,
+  .entry:focus-within .outcome::before {
+    @apply w-4 bg-iris-500;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SKILL METER
+
+     Three dots against a fixed track of three. No percentages: a number
+     nobody can verify is a number everybody discounts, and a bar at 87%
+     invites the question of what the missing 13% is.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .meter {
+    @apply inline-flex shrink-0 items-center gap-1;
+  }
+
+  .meter-dot {
+    @apply block h-1 w-1 rounded-full bg-ink-600;
+    transition: background-color 0.4s var(--ease-soft),
+                box-shadow 0.4s var(--ease-soft);
+  }
+
+  .meter-dot-on {
+    @apply bg-iris-500;
+  }
+
+  .skill-row {
+    @apply flex items-center justify-between gap-6 border-t border-ink-700/50
+           py-2.5 text-sm text-ink-300;
+    transition: color 0.35s var(--ease-soft);
+  }
+
+  .skill-row:hover {
+    @apply text-ink-100;
+  }
+
+  .skill-row:hover .meter-dot-on {
+    @apply bg-iris-400;
+    box-shadow: 0 0 8px 0 color-mix(in oklab, var(--color-iris-400) 55%, transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MILESTONE SPINE
+
+     A vertical line the entries hang off, which *fills as you scroll it*. The
+     fill is a scroll-driven animation on a second, accent-coloured line laid
+     over the resting one — so where the timeline is unsupported the spine is
+     simply drawn complete, which is exactly what it should look like at rest.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @keyframes spine-grow {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+  .spine-fill {
+    transform-origin: top center;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-iris-400) 85%, transparent),
+      color-mix(in oklab, var(--color-iris-500) 25%, transparent)
+    );
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .spine-fill {
+        animation: spine-grow linear both;
+        animation-timeline: view();
+        animation-range: entry 15% cover 65%;
+      }
+    }
+  }
+
+  /* The dot on the spine, ringed by the section ground so the line appears to
+     pass behind it rather than through it. */
+  .spine-node {
+    @apply relative z-10 block h-2.5 w-2.5 shrink-0 rounded-full border
+           border-ink-600 bg-ink-900;
+    transition: border-color 0.5s var(--ease-soft),
+                background-color 0.5s var(--ease-soft),
+                transform 0.5s var(--ease-spring);
+  }
+
+  .milestone:hover .spine-node {
+    @apply border-iris-400 bg-iris-400;
+    transform: scale(1.25);
+    box-shadow: 0 0 16px 1px color-mix(in oklab, var(--color-iris-400) 55%, transparent);
+  }
+
+  /* The year, set enormous and faint behind its own entry. The ghost-wordmark
+     motif at the smallest scale it works at — texture, always `aria-hidden`,
+     always echoing a real label a few pixels away. */
+  .ghost-year {
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    line-height: 0.78;
+    letter-spacing: -0.05em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     PROCESS STEP
+
+     Numbered cards that read as a sequence rather than a set: each carries a
+     hairline connector to the next on wide screens, drawn with a pseudo so it
+     costs no markup and disappears with the grid at narrow widths.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .step {
+    @apply relative;
+  }
+
+  @media (min-width: 1024px) {
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 2.25rem;
+      right: -1.5rem;
+      width: 1.5rem;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        var(--color-ink-600),
+        color-mix(in oklab, var(--color-ink-600) 20%, transparent)
+      );
+    }
+  }
+
+  .step:hover .step-num {
+    @apply text-ink-100/[0.07];
+  }
+
+  .step-num {
+    @apply text-ink-100/[0.04];
+    transition: color 0.6s var(--ease-soft);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

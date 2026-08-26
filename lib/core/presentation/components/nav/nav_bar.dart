@@ -7,10 +7,13 @@ import '../../../routing/route_paths.dart';
 import '../../../state/controllers/nav_menu_controller.dart';
 import '../app_icons.dart';
 
+// `Home` earns a tab now that Services and Works are both standalone pages —
+// without it there is no labelled way back from either.
 const _links = <({String label, String href})>[
-  (label: 'Services', href: '${RoutePaths.home}#services'),
+  (label: 'Home', href: RoutePaths.home),
+  (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
-  (label: 'About', href: '${RoutePaths.home}#about'),
+  (label: 'About', href: RoutePaths.about),
   (label: 'Contact', href: '${RoutePaths.home}#contact'),
 ];
 
@@ -46,10 +49,10 @@ class _NavBarView extends StatelessComponent {
 
   /// Whether [href] represents the page currently being viewed.
   ///
-  /// In-page anchors never count as active: `/#about` and `/#contact` both
-  /// point at the home page, and lighting up three tabs at once tells the user
-  /// nothing. Project detail pages keep `Works` lit, since that is the section
-  /// they belong to.
+  /// In-page anchors never count as active: `/#contact` points at the home
+  /// page, and lighting two tabs at once tells the user nothing. Project
+  /// detail pages keep `Works` lit, since that is the section they belong
+  /// to.
   bool _isActive(String href) {
     if (href.contains('#')) return false;
     if (href == RoutePaths.home) return path == RoutePaths.home;
@@ -170,18 +173,33 @@ class _NavBarView extends StatelessComponent {
     );
   }
 
-  /// Square monogram mark. A flat pale tile with the initial knocked out —
-  /// it echoes the reference's logo block without introducing a second colour.
+  /// The brand mark — the avatar, clipped to a circle.
+  ///
+  /// `aria-hidden` on the image because the anchor already carries a label:
+  /// without it a screen reader announces the alt text *and* the label, which
+  /// reads as the name twice.
   Component _logo() => const a(
         href: RoutePaths.home,
         classes: 'group flex items-center gap-3',
         attributes: {'aria-label': '${SiteConfig.name} — home'},
         [
           span(
-            classes: 'flex h-9 w-9 items-center justify-center bg-ink-200 '
-                'font-display text-sm font-extrabold text-ink-900 '
-                'transition-colors duration-300 group-hover:bg-ink-100',
-            [Component.text(SiteConfig.monogram)],
+            classes: 'relative flex h-9 w-9 shrink-0 overflow-hidden '
+                'rounded-full bg-ink-800 ring-1 ring-ink-700 '
+                'transition-all duration-300 group-hover:ring-iris-400/60',
+            attributes: {'aria-hidden': 'true'},
+            [
+              img(
+                src: '/${SiteConfig.logoMark}',
+                alt: '',
+                attributes: {
+                  'width': '256',
+                  'height': '256',
+                  'decoding': 'async',
+                },
+                classes: 'h-full w-full object-cover',
+              ),
+            ],
           ),
           span(
             classes: 'font-display text-sm font-semibold tracking-tight '

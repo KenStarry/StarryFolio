@@ -15,7 +15,7 @@ import '../../domain/enum/project_category.dart';
 import '../../domain/model/project_model.dart';
 import '../components/project_bento.dart';
 import '../components/project_showcase.dart';
-import '../components/section_jump_nav.dart';
+import '../../../../core/presentation/components/jump_nav.dart';
 
 /// The projects index.
 ///
@@ -280,17 +280,29 @@ class _Header extends StatelessComponent {
             div(
               classes: 'mt-10',
               [
-                SectionJumpNav(
-                  projects: jumpProjects,
-                  featured: featured,
-                  path: RoutePaths.projects,
-                ),
+                JumpNav(path: RoutePaths.projects, stops: _stops()),
               ],
             ),
           ],
         ),
       ],
     );
+  }
+
+  /// Flagships lead, since they are what the page is built around, then the
+  /// categories that actually rendered a band.
+  List<JumpStop> _stops() {
+    final counts = <ProjectCategory, int>{};
+    for (final item in jumpProjects) {
+      counts[item.category] = (counts[item.category] ?? 0) + 1;
+    }
+    return [
+      for (final item in featured)
+        (anchor: item.slug, label: item.name, count: 0),
+      for (final cat in ProjectCategory.values)
+        if (counts.containsKey(cat))
+          (anchor: cat.slug, label: cat.title, count: counts[cat]!),
+    ];
   }
 
   static Component _stat(String value, String label) => div(
