@@ -1,3 +1,5 @@
+import '../../../../core/domain/enum/app_link_type.dart';
+import '../../../../core/domain/model/app_link.dart';
 import '../enum/project_category.dart';
 import '../enum/project_status.dart';
 
@@ -16,10 +18,10 @@ class ProjectModel {
     required this.stack,
     required this.summary,
     this.highlights = const [],
-    this.repoUrl,
-    this.liveUrl,
-    this.storeUrl,
+    this.links = const [],
+    this.featured = false,
     this.coverImage,
+    this.mockupImage,
   });
 
   /// URL segment: `/projects/<slug>`.
@@ -40,12 +42,30 @@ class ProjectModel {
   /// Bullet points — what was actually built or learned.
   final List<String> highlights;
 
-  final String? repoUrl;
-  final String? liveUrl;
-  final String? storeUrl;
+  /// Where this project can actually be used — store listings, a web app, the
+  /// source. Replaced three separate URL fields: a product routinely ships to
+  /// more than one store, and a flat list keeps their order meaningful.
+  final List<AppLink> links;
+
+  /// First repository link, for the `codeRepository` field in the JSON-LD.
+  String? get repoUrl => links
+      .where((l) => l.type == AppLinkType.repo)
+      .map((l) => l.url)
+      .firstOrNull;
 
   /// Path under `web/`, e.g. `images/criblynk.png`.
   final String? coverImage;
+
+  /// Promotes this project to its own full-width showcase band rather than a
+  /// card in a category grid. Requires [mockupImage] — the flat treatment is
+  /// built around a transparent device render and has nothing to show without
+  /// one.
+  final bool featured;
+
+  /// Transparent device mockup, for the flat featured treatment. Distinct from
+  /// [coverImage]: a cover is cropped to fill a box, whereas a mockup has its
+  /// own silhouette and must sit unframed on the section ground.
+  final String? mockupImage;
 
   /// Share image for this project, falling back to the site default upstream.
   String? get ogImage => coverImage == null ? null : '/$coverImage';
@@ -60,10 +80,16 @@ class ProjectModel {
         stack: _stringList(map['stack']),
         summary: _stringList(map['summary']),
         highlights: _stringList(map['highlights']),
-        repoUrl: map['repoUrl']?.toString(),
-        liveUrl: map['liveUrl']?.toString(),
-        storeUrl: map['storeUrl']?.toString(),
+        links: switch (map['links']) {
+          final List<Object?> raw => [
+              for (final entry in raw)
+                if (entry is Map<String, dynamic>) AppLink.fromMap(entry),
+            ],
+          _ => const [],
+        },
         coverImage: map['coverImage']?.toString(),
+        mockupImage: map['mockupImage']?.toString(),
+        featured: map['featured'] == true,
       );
 
   Map<String, dynamic> toMap() => {
@@ -76,10 +102,10 @@ class ProjectModel {
         'stack': stack,
         'summary': summary,
         'highlights': highlights,
-        'repoUrl': repoUrl,
-        'liveUrl': liveUrl,
-        'storeUrl': storeUrl,
+        'links': [for (final link in links) link.toMap()],
         'coverImage': coverImage,
+        'mockupImage': mockupImage,
+        'featured': featured,
       };
 
   static List<String> _stringList(Object? value) => value is List

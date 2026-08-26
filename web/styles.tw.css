@@ -422,6 +422,137 @@
       0 0 0 1px color-mix(in oklab, var(--color-iris-500) 12%, transparent);
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     FEATURED SHOWCASE
+
+     The featured project is presented flat — no border, no card, no panel.
+     The device mockup is a transparent PNG standing directly on the section
+     ground, which is why it needs its own shadow: without one it looks pasted
+     rather than placed. A CSS `drop-shadow` follows the alpha silhouette,
+     unlike `box-shadow`, which would draw a rectangle around it.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .showcase-device {
+    filter:
+      drop-shadow(0 24px 40px rgb(0 0 0 / 0.5))
+      drop-shadow(0 4px 10px rgb(0 0 0 / 0.35));
+  }
+
+  @keyframes hover-drift {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .showcase-device {
+      animation: hover-drift 9s ease-in-out infinite;
+    }
+  }
+
+  /* The oversized wordmark behind the device. Sits at low contrast and is
+     `aria-hidden` in the markup — it is texture, not a second heading. */
+  .showcase-ghost {
+    font-size: clamp(5rem, 17vw, 13rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+  }
+
+  /* Ruled meta rows under the featured copy. */
+  .meta-row {
+    @apply grid grid-cols-[7rem_1fr] gap-4 border-t border-ink-700 py-3.5;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     JUMP LINKS
+
+     Pills that scroll to a band rather than filtering it. `scroll-padding-top`
+     on <html> keeps the target clear of the sticky nav.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .jump-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink-700
+           px-4 py-2 text-xs text-ink-400;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft),
+                transform 0.35s var(--ease-soft);
+  }
+
+  .jump-pill:hover {
+    @apply text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    background-color: color-mix(in oklab, var(--color-iris-500) 12%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .jump-count {
+    @apply font-mono text-[10px] text-ink-500;
+  }
+
+  /* Briefly tints the band you have just jumped to, then lets it settle, so a
+     jump reads as an arrival rather than a silent teleport.
+
+     Drawn as a pseudo-element rather than a real overlay div: a positioned
+     sibling spanning the band would sit above the cards and swallow their
+     clicks. `pointer-events: none` on a ::before cannot. */
+  @keyframes target-settle {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section:target::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-color: color-mix(in oklab, var(--color-iris-500) 9%, transparent);
+      animation: target-settle 1.7s var(--ease-soft) both;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     STORE BADGES
+
+     Two stacked lines beside a platform mark. The overline is small and muted,
+     the destination sits at display weight — the same hierarchy the official
+     badges use, so it reads as familiar without borrowing the artwork.
+
+     Sized with a min-height rather than fixed dimensions so `Google Play` and
+     `Customer Portal` line up on one row without the longer label wrapping.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .store-badge {
+    @apply inline-flex min-h-[3.5rem] items-center gap-3.5 border
+           border-ink-600 bg-ink-850 px-5 py-2.5 text-ink-100;
+    transition: transform 0.45s var(--ease-soft),
+                border-color 0.45s var(--ease-soft),
+                background-color 0.45s var(--ease-soft),
+                box-shadow 0.45s var(--ease-soft);
+  }
+
+  .store-badge:hover {
+    @apply bg-ink-800;
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-iris-500) 60%, transparent);
+    box-shadow: 0 16px 32px -20px rgb(0 0 0 / 0.9);
+  }
+
+  .store-badge-glyph {
+    @apply shrink-0 text-ink-200;
+    transition: transform 0.45s var(--ease-spring), color 0.45s var(--ease-soft);
+  }
+
+  .store-badge:hover .store-badge-glyph {
+    @apply text-iris-300;
+    transform: scale(1.08);
+  }
+
+  .store-badge-overline {
+    @apply font-mono text-[9px] uppercase tracking-[0.16em] text-ink-400;
+  }
+
+  .store-badge-title {
+    @apply mt-1 font-display text-[0.95rem] font-bold tracking-tight;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

@@ -4,7 +4,7 @@ import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
-import '../../../../core/presentation/components/cta_button.dart';
+import '../../../../core/presentation/components/store_badge.dart';
 import '../../../../core/presentation/components/error_notice.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
@@ -148,21 +148,21 @@ class _ProjectDetailView extends StatelessComponent {
               ),
             ],
           ),
-        div(
-          classes: 'mt-14 flex flex-wrap gap-3',
-          [
-            if (project.liveUrl != null)
-              CtaButton(label: 'Visit site', href: project.liveUrl!),
-            if (project.storeUrl != null)
-              CtaButton(label: 'Get the app', href: project.storeUrl!),
-            if (project.repoUrl != null)
-              CtaButton(
-                label: 'Source',
-                href: project.repoUrl!,
-                variant: CtaVariant.outline,
+        if (project.links.isNotEmpty)
+          div(
+            classes: 'mt-14 border-t border-ink-700 pt-10',
+            [
+              const p(
+                classes: 'type-eyebrow font-mono text-ink-500',
+                [Component.text('Get the app')],
               ),
-          ],
-        ),
+              StoreBadgeRow(
+                links: project.links,
+                product: project.name,
+                classes: 'mt-5',
+              ),
+            ],
+          ),
       ],
     );
   }

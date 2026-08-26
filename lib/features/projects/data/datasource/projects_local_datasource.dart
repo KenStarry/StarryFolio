@@ -1,10 +1,13 @@
+import '../../../../core/domain/enum/app_link_type.dart';
+import '../../../../core/domain/model/app_link.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/enum/project_status.dart';
 import '../../domain/model/project_model.dart';
 
 /// The case studies, as compile-time constants.
 ///
-/// **Everything except `criblynk`, `flow` and `eduflow` is sample content**
+/// `healthx` and `flow` are the real featured builds. **Everything except
+/// `healthx`, `flow`, `criblynk` and `eduflow` is sample content**
 /// added to fill out the sections — replace that copy with real work before
 /// launch. Categories drive which section a project lands in.
 ///
@@ -18,6 +21,55 @@ import '../../domain/model/project_model.dart';
 /// content moves to a CMS, only this class and the route enumeration change.
 abstract final class ProjectsLocalDatasource {
   static const List<ProjectModel> projects = [
+    ProjectModel(
+      slug: 'healthx',
+      name: 'HealthX',
+      tagline: 'Care, a pharmacy and a doctor — in one app.',
+      year: '2026',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
+      mockupImage: 'images/healthx-mockup.webp',
+      featured: true,
+      stack: [
+        'Flutter',
+        'Riverpod 3',
+        'GoRouter',
+        'Dio',
+        'Clean Architecture',
+      ],
+      summary: [
+        'HealthX Africa puts consultations, appointments, prescriptions and '
+            'pharmacy delivery behind one login — video calls with a doctor, a '
+            'prescription photographed and filled, and the order tracked to the '
+            'door.',
+        'I own the full mobile lifecycle here: the design system and brand '
+            'through architecture, QA and shipping to both stores. The hard '
+            'part is that health data is unforgiving — every screen has to '
+            'degrade honestly when the network does not cooperate.',
+      ],
+      highlights: [
+        'Clean Architecture across seven feature modules, sharing one shell',
+        'Riverpod 3 with codegen throughout — no hand-rolled providers',
+        'Semantic theming via a HealthXColors ThemeExtension, not scattered hex',
+        'Stateful shell navigation that keeps each tab’s stack alive',
+        'On-device PDF receipt generation for orders and consultations',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.playStore,
+          url: 'https://play.google.com/store/apps/details?id=com.healthx.app&hl=en',
+        ),
+        AppLink(
+          type: AppLinkType.appStore,
+          url: 'https://apps.apple.com/ke/app/healthx-africa/id1570107533',
+        ),
+        AppLink(
+          type: AppLinkType.web,
+          url: 'https://portal.healthxafrica.com',
+          label: 'Customer Portal',
+        ),
+      ],
+    ),
     ProjectModel(
       slug: 'criblynk',
       name: 'CribLynk',
@@ -38,29 +90,51 @@ abstract final class ProjectsLocalDatasource {
         'Map + list view sharing a single source of truth',
         'Design system built before the first screen, not after the tenth',
       ],
-      repoUrl: 'https://github.com/KenStarry/CribLynk',
+      links: [
+        AppLink(type: AppLinkType.repo, url: 'https://github.com/KenStarry/CribLynk'),
+      ],
     ),
     ProjectModel(
       slug: 'flow',
-      name: 'Flow',
-      tagline: 'A money tracker that does not nag.',
-      year: '2025',
+      name: 'Flow Music Player',
+      tagline: 'An offline player built to rival Poweramp.',
+      year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
-      stack: ['Flutter', 'BLoC', 'Isar', 'fl_chart'],
+      mockupImage: 'images/flow-mockup.webp',
+      featured: true,
+      stack: [
+        'Flutter',
+        'BLoC',
+        'flutter_soloud',
+        'Hive',
+        'get_it',
+        'Shorebird',
+      ],
       summary: [
-        'Personal finance for people who bounce off budgeting apps. Flow logs '
-            'spending in two taps and only speaks up when a pattern is worth '
-            'noticing.',
-        'Everything is local-first — the database is on device, sync is opt-in, '
-            'and the app is fully usable in airplane mode.',
+        'A local music player for people who still keep their library on the '
+            'device — parametric EQ, gapless playback, internet radio and a '
+            'home-screen widget, with no account and no streaming tier.',
+        'The audio path runs on SoLoud through FFI rather than on the platform '
+            'player, which is what makes a real parametric EQ and scheduled '
+            'playback possible at all. Most of the work is in the engine, not '
+            'the screens.',
       ],
       highlights: [
-        'Isar-backed local store with sub-16ms query times on a 3-year ledger',
-        'Custom chart interactions built on fl_chart',
-        'Haptics and motion tuned so logging feels lighter than a spreadsheet',
+        'C++ SoLoud audio engine over FFI — parametric EQ, buses, scheduling',
+        'Home-screen widget painted in Dart and pushed to Android as raw pixels, '
+            'so the in-app preview runs the identical painter',
+        'Shorebird code push for Dart-only patches without a Play review',
+        'Internet radio over the radio-browser.info directory',
+        'flutter_extend — an in-house extension package with its own test suite',
       ],
-      repoUrl: 'https://github.com/KenStarry/Flow',
+      links: [
+        AppLink(
+          type: AppLinkType.playStore,
+          url: 'https://play.google.com/store/apps/details'
+              '?id=com.kenstarry.flow&pcampaignid=web_share',
+        ),
+      ],
     ),
     ProjectModel(
       slug: 'eduflow',
@@ -229,7 +303,9 @@ abstract final class ProjectsLocalDatasource {
         'Every curve documented with a rationale, not just a name',
         'Golden tests pinning the visual output of each transition',
       ],
-      repoUrl: 'https://github.com/KenStarry/orbit',
+      links: [
+        AppLink(type: AppLinkType.repo, url: 'https://github.com/KenStarry/orbit'),
+      ],
     ),
   ];
 

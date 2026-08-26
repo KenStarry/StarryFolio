@@ -15,7 +15,8 @@ import '../../../writing/presentation/components/post_card.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/model/project_model.dart';
 import '../components/project_bento.dart';
-import '../components/project_feature_card.dart';
+import '../components/project_showcase.dart';
+import '../components/section_jump_nav.dart';
 
 /// The projects index.
 ///
@@ -49,13 +50,18 @@ class ProjectsPage extends AsyncStatelessComponent {
         ),
       ]),
       (projects) {
-        final feature = projects.isEmpty ? null : projects.first;
+        final postList = posts.getOrElse((_) => const []);
 
-        // The feature is excluded from its own category band — showing the same
-        // project twice within one screen of itself reads as a bug, not as
-        // emphasis.
+        // A featured project needs a mockup — the flat showcase is built around
+        // one and has nothing to render without it. Anything flagged but
+        // missing its render falls back to a card in its category grid rather
+        // than producing an empty band.
+        final featured = projects
+            .where((item) => item.featured && item.mockupImage != null)
+            .toList(growable: false);
+
         final rest =
-            projects.where((item) => item != feature).toList(growable: false);
+            projects.where((item) => !featured.contains(item)).toList(growable: false);
 
         // Only categories that actually have projects get a band, so the page
         // can never render an empty titled section.
@@ -68,12 +74,39 @@ class ProjectsPage extends AsyncStatelessComponent {
             ),
         ].where((band) => band.items.isNotEmpty).toList(growable: false);
 
+        // Alternate showcase, grid, showcase, grid… then whatever is left over.
+        // Interleaving is what stops the page reading as one feature followed
+        // by a long uniform tail.
+        final blocks = <Component>[];
+        var f = 0, b = 0, n = 1;
+        while (f < featured.length || b < bands.length) {
+          if (f < featured.length) {
+            blocks.add(_Showcase(
+              project: featured[f],
+              index: n++,
+              // Every other showcase mirrors, so the eye zig-zags down.
+              reversed: f.isOdd,
+              raised: n.isEven,
+            ));
+            f++;
+          }
+          if (b < bands.length) {
+            blocks.add(_CategoryBand(
+              category: bands[b].category,
+              projects: bands[b].items,
+              index: n++,
+              raised: n.isEven,
+            ));
+            b++;
+          }
+        }
+
         return Component.fragment([
           const _Meta(),
           StructuredData(
             id: 'ld-projects',
             SchemaOrg.itemList(
-              items: [for (final p in projects) (name: p.name, slug: p.slug)],
+              items: [for (final item in projects) (name: item.name, slug: item.slug)],
             ),
           ),
           StructuredData(
@@ -84,20 +117,14 @@ class ProjectsPage extends AsyncStatelessComponent {
             ]),
           ),
 
-          _Header(count: projects.length),
-          if (feature != null) _Featured(project: feature),
-
-          for (final (i, band) in bands.indexed)
-            _CategoryBand(
-              category: band.category,
-              projects: band.items,
-              // Numbering continues past the feature, which is band 01.
-              index: i + 2,
-              raised: i.isOdd,
-            ),
-
-          _WritingBand(posts: posts.getOrElse((_) => const []),
-              index: bands.length + 2),
+          _Header(
+            count: projects.length,
+            jumpProjects: rest,
+            featured: featured,
+            postCount: postList.length,
+          ),
+          ...blocks,
+          _WritingBand(posts: postList, index: n),
         ]);
       },
     );
@@ -170,9 +197,23 @@ class _BandHeading extends StatelessComponent {
 /// Page header. Owns the `<h1>`, and carries the counts as a small stat rail so
 /// the top of the page has something to look at besides type.
 class _Header extends StatelessComponent {
-  const _Header({required this.count});
+  const _Header({
+    required this.count,
+    required this.jumpProjects,
+    required this.featured,
+    required this.postCount,
+  });
 
   final int count;
+
+  /// The projects grouped into category bands. Drives the category jump pills,
+  /// so a pill can never point at an anchor the page did not render.
+  final List<ProjectModel> jumpProjects;
+
+  /// Featured projects, which each get their own band anchored on their slug.
+  final List<ProjectModel> featured;
+
+  final int postCount;
 
   @override
   Component build(BuildContext context) {
@@ -217,6 +258,16 @@ class _Header extends StatelessComponent {
                 _stat('5+', 'years shipping'),
               ],
             ),
+            div(
+              classes: 'mt-10',
+              [
+                SectionJumpNav(
+                  projects: jumpProjects,
+                  featured: featured,
+                  postCount: postCount,
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -238,32 +289,41 @@ class _Header extends StatelessComponent {
       );
 }
 
-/// The full-width hero card, on its own raised band.
-class _Featured extends StatelessComponent {
-  const _Featured({required this.project});
+/// A featured project, presented flat on its own band.
+class _Showcase extends StatelessComponent {
+  const _Showcase({
+    required this.project,
+    required this.index,
+    required this.reversed,
+    required this.raised,
+  });
 
   final ProjectModel project;
+  final int index;
+  final bool reversed;
+  final bool raised;
 
   @override
   Component build(BuildContext context) {
     return section(
-      classes: 'bg-ink-800 py-20 sm:py-24',
+      id: project.slug,
+      classes: 'relative ${raised ? 'bg-ink-800' : 'bg-ink-900'} '
+          'py-20 sm:py-28',
       [
         div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
-            const _BandHeading(
-              index: 1,
+            _BandHeading(
+              index: index,
               eyebrow: 'Featured',
-              title: 'The one to read first.',
-              lead: 'The most recent build, and the one that best shows how I '
-                  'work across design, architecture and release.',
+              title: project.name,
+              lead: project.tagline,
               count: 1,
-              countLabel: 'project',
+              countLabel: 'flagship',
             ),
             div(
-              classes: 'reveal mt-12',
-              [ProjectFeatureCard(project: project)],
+              classes: 'mt-16',
+              [ProjectShowcase(project: project, reversed: reversed)],
             ),
           ],
         ),
@@ -292,10 +352,11 @@ class _CategoryBand extends StatelessComponent {
   Component build(BuildContext context) {
     return section(
       id: category.slug,
-      classes: '${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-28',
+      classes: 'relative ${raised ? 'bg-ink-800' : 'bg-ink-900'} '
+          'py-20 sm:py-28',
       [
         div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
             _BandHeading(
               index: index,
@@ -331,7 +392,7 @@ class _WritingBand extends StatelessComponent {
 
     return section(
       id: 'writing',
-      classes: 'bg-ink-950 py-20 sm:py-28',
+      classes: 'relative bg-ink-950 py-20 sm:py-28',
       [
         div(
           classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',

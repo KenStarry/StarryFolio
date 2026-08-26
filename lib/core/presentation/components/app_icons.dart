@@ -65,13 +65,49 @@ class AppIcons {
         '<path d="M9.6 14.2L8 18l2.4-1M14.4 14.2L16 18l-2.4-1"/></svg>',
       );
 
-  /// Resolves a [ServiceModel.icon] key to its glyph. Falls back rather than
+  // ── Platform marks ───────────────────────────────────────────────────────
+  //
+  // Rendered in `currentColor` rather than in Apple's and Google's brand
+  // colours. Google's Play mark is officially four-colour, but a 20px rainbow
+  // glyph is the one thing that would break this page's two-tone discipline,
+  // and the badge stays unmistakable on silhouette plus wordmark alone. Swap
+  // these for the official coloured badge assets if store guidelines ever
+  // need to be followed to the letter.
+
+  static Component apple({String classes = 'h-5 w-5'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+        '<path d="M16.37 1.43c0 1.14-.42 2.2-1.25 3.03-1 1-2.2 1.57-3.32 1.48-.13-1.1.43-2.27 1.24-3.06.9-.9 2.35-1.53 3.33-1.45zM20.9 17.1c-.5 1.16-.74 1.68-1.39 2.7-.9 1.43-2.17 3.2-3.75 3.22-1.4.01-1.76-.91-3.66-.9-1.9.01-2.3.92-3.7.9-1.58-.02-2.78-1.62-3.68-3.04-2.52-3.98-2.79-8.65-1.23-11.13 1.1-1.76 2.85-2.79 4.49-2.79 1.67 0 2.72.92 4.1.92 1.34 0 2.16-.92 4.09-.92 1.46 0 3.01.8 4.11 2.17-3.61 1.98-3.03 7.14.62 8.87z"/>'
+        '</svg>',
+      );
+
+  static Component play({String classes = 'h-5 w-5'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+        '<path d="M3.61 1.81a1.5 1.5 0 00-.36.99v18.4c0 .38.13.72.36.99l.06.06 10.3-10.3v-.24L3.67 1.75l-.06.06z" opacity=".95"/>'
+        '<path d="M17.9 15.31l-3.43-3.43v-.25l3.44-3.43.08.04 4.07 2.32c1.16.66 1.16 1.74 0 2.4l-4.07 2.31-.09.04z" opacity=".8"/>'
+        '<path d="M17.99 15.26L14.47 11.74 3.61 22.6c.38.4 1.01.45 1.72.05l12.66-7.39" opacity=".9"/>'
+        '<path d="M17.99 8.24L5.33 1.02C4.62.62 3.99.67 3.61 1.07l10.86 10.86 3.52-3.69z" opacity=".7"/>'
+        '</svg>',
+      );
+
+  static Component globe({String classes = 'h-5 w-5'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" $_s>'
+        '<circle cx="12" cy="12" r="9"/>'
+        '<path d="M3.5 9h17M3.5 15h17"/>'
+        '<path d="M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>'
+        '</svg>',
+      );
+
+  /// Resolves an [AppLinkType.icon] or [ServiceModel.icon] key to its glyph. Falls back rather than
   /// throwing, so a service added with an unknown icon still renders a card.
   static Component byName(String name, {String classes = 'h-6 w-6'}) =>
       switch (name) {
         'device' => device(classes: classes),
         'layers' => layers(classes: classes),
         'rocket' => rocket(classes: classes),
+        'apple' => apple(classes: classes),
+        'play' => play(classes: classes),
+        'globe' => globe(classes: classes),
+        'github' => github(classes: classes),
         _ => layers(classes: classes),
       };
 
