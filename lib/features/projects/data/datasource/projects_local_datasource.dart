@@ -1,16 +1,18 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../../domain/enum/project_category.dart';
+import '../../domain/enum/project_platform.dart';
 import '../../domain/enum/project_status.dart';
 import '../../domain/model/project_model.dart';
 
 /// The case studies, as compile-time constants.
 ///
-/// `healthx`, `rezq` and `flow` are the real featured builds, and appear as
-/// full-width showcases in that order. **Everything except those three plus
-/// `criblynk` and `eduflow` is sample content**
-/// added to fill out the sections — replace that copy with real work before
-/// launch. Categories drive which section a project lands in.
+/// Every entry here is real work. `healthx`, `rezq` and `flow` are the
+/// featured builds and appear as full-width showcases in that order.
+///
+/// Categories drive which band a project lands in on `/projects`; a project
+/// marked `featured` is lifted out of its band into its own showcase and needs
+/// a `mockupImage` to have anything to show.
 ///
 /// **Add a project here** and it appears on the home page, the projects index,
 /// and gets its own statically generated `/projects/<slug>` page.
@@ -29,6 +31,8 @@ abstract final class ProjectsLocalDatasource {
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
+      client: 'HealthX Africa',
+      platforms: [ProjectPlatform.android, ProjectPlatform.ios],
       mockupImage: 'images/healthx-mockup.webp',
       featured: true,
       stack: [
@@ -77,7 +81,8 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Rentals, minus the WhatsApp chaos.',
       year: '2026',
       status: ProjectStatus.building,
-      category: ProjectCategory.commercial,
+      category: ProjectCategory.personal,
+      platforms: [ProjectPlatform.android],
       stack: ['Flutter', 'Riverpod', 'Firebase', 'Google Maps'],
       summary: [
         'A marketplace that connects tenants with verified landlords — listings, '
@@ -102,6 +107,7 @@ abstract final class ProjectsLocalDatasource {
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
+      platforms: [ProjectPlatform.android],
       mockupImage: 'images/rezq-mockup.webp',
       featured: true,
       stack: [
@@ -145,6 +151,7 @@ abstract final class ProjectsLocalDatasource {
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
+      platforms: [ProjectPlatform.android],
       mockupImage: 'images/flow-mockup.webp',
       featured: true,
       stack: [
@@ -186,7 +193,8 @@ abstract final class ProjectsLocalDatasource {
       tagline: 'Junior-secondary school operations in one app.',
       year: '2025',
       status: ProjectStatus.shipped,
-      category: ProjectCategory.enterprise,
+      category: ProjectCategory.commercial,
+      platforms: [ProjectPlatform.android],
       stack: ['Flutter', 'Clean Architecture', 'REST', 'Hive'],
       summary: [
         'Attendance, grade books and parent comms for Kenyan junior secondary '
@@ -201,154 +209,105 @@ abstract final class ProjectsLocalDatasource {
         'Localised for English and Kiswahili',
       ],
     ),
+    // ─────────────────────────────────────────────────────────────────────
+    // TODO(ken): the four entries below are drafted from public sources —
+    // what the products do is researched and accurate, but `highlights` and
+    // `stack` describe *your* contribution and are deliberately left empty
+    // rather than guessed. Nothing false renders while they are blank: the
+    // card and case study simply omit those blocks. Fill them in and they
+    // appear.
+    // `year` is empty for the same reason — the card hides it rather than
+    // printing a date I invented.
+    // ─────────────────────────────────────────────────────────────────────
     ProjectModel(
-      slug: 'tuza',
-      name: 'Tuza',
-      tagline: 'Group savings that settle themselves.',
-      year: '2024',
-      status: ProjectStatus.shipped,
-      category: ProjectCategory.commercial,
-      stack: ['Flutter', 'Riverpod', 'Firebase', 'M-Pesa Daraja'],
-      summary: [
-        'A chama app for the way Kenyan savings groups already work — rotating '
-            'payouts, contribution reminders and a ledger every member can '
-            'audit without asking the treasurer.',
-        'The hard part was reconciliation. Mobile money callbacks arrive late, '
-            'twice, or not at all, so the ledger is built to be replayed rather '
-            'than corrected.',
-      ],
-      highlights: [
-        'Idempotent payment reconciliation against Daraja callbacks',
-        'Offline ledger that replays cleanly once the network returns',
-        'Per-member statements exportable as PDF',
-      ],
-    ),
-    ProjectModel(
-      slug: 'njia',
-      name: 'Njia',
-      tagline: 'Fleet visibility without the dashboard tax.',
-      year: '2024',
+      slug: 'healthx-portal',
+      name: 'HealthX Customer Portal',
+      tagline: 'The same care, without installing anything.',
+      year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
-      stack: ['Flutter', 'BLoC', 'Mapbox', 'WebSockets'],
+      client: 'HealthX Africa',
+      platforms: [ProjectPlatform.web],
+      stack: [],
       summary: [
-        'Live vehicle tracking for a distribution business running 40 vehicles '
-            'across three counties — dispatch, proof of delivery and route '
-            'history in one app for drivers and controllers alike.',
-        'Built around intermittent connectivity: the driver app is the source '
-            'of truth and the server catches up, not the other way round.',
-      ],
-      highlights: [
-        'Single codebase serving both the driver and controller roles',
-        'Batched location sync that survives hours without signal',
-        'Proof-of-delivery capture with signature and geotag',
-      ],
-    ),
-    ProjectModel(
-      slug: 'pulse',
-      name: 'Pulse',
-      tagline: 'Habits, without the streak guilt.',
-      year: '2023',
-      status: ProjectStatus.archived,
-      category: ProjectCategory.personal,
-      stack: ['Flutter', 'Drift', 'Riverpod', 'Health Connect'],
-      summary: [
-        'A habit tracker built on the idea that missing a day is data, not '
-            'failure. No streaks to break — just an honest picture of what you '
-            'actually do.',
-        'Shelved once the idea was proven, but the motion and charting work in '
-            'it went straight into Flow.',
-      ],
-      highlights: [
-        'Health Connect and HealthKit ingestion behind one interface',
-        'Custom chart rendering on raw canvas for 60fps scrubbing',
-        'Fully local — no account, no sync, no telemetry',
-      ],
-    ),
-    ProjectModel(
-      slug: 'rafiki',
-      name: 'Rafiki',
-      tagline: 'Field data collection that works off-grid.',
-      year: '2023',
-      status: ProjectStatus.shipped,
-      category: ProjectCategory.enterprise,
-      stack: ['Flutter', 'Isar', 'Clean Architecture', 'REST'],
-      summary: [
-        'A survey tool for NGO field officers working days away from a signal — '
-            'forms, photos and GPS captured offline and reconciled in bulk once '
-            'a device gets back to town.',
-        'Form definitions ship as data rather than code, so a programme lead '
-            'can change a questionnaire without waiting on a release.',
-      ],
-      highlights: [
-        'Server-driven forms rendered from a JSON schema',
-        'Multi-day offline capture with conflict-free bulk sync',
-        'Battery-aware GPS sampling for all-day fieldwork',
-      ],
-    ),
-    ProjectModel(
-      slug: 'mavuno',
-      name: 'Mavuno',
-      tagline: 'Produce, straight from the farm gate.',
-      year: '2023',
-      status: ProjectStatus.shipped,
-      category: ProjectCategory.commercial,
-      stack: ['Flutter', 'Riverpod', 'Supabase', 'Stripe'],
-      summary: [
-        'A marketplace putting smallholder farmers in front of restaurant '
-            'buyers directly — listings, cold-chain logistics and settlement in '
-            'one place.',
-        'Two very different users share one codebase: a farmer on a budget '
-            'Android phone and a chef on an iPad.',
-      ],
-      highlights: [
-        'Role-aware shell serving farmers and buyers from one build',
-        'Image pipeline that keeps uploads usable on 3G',
-        'Settlement ledger reconciled against the payment provider nightly',
-      ],
-    ),
-    ProjectModel(
-      slug: 'duka',
-      name: 'Duka',
-      tagline: 'A till that survives the power cut.',
-      year: '2022',
-      status: ProjectStatus.archived,
-      category: ProjectCategory.commercial,
-      stack: ['Flutter', 'BLoC', 'SQLite', 'Bluetooth'],
-      summary: [
-        'Point of sale for small retailers — stock, receipts and daily takings '
-            'on a phone plus a Bluetooth printer, with no server required.',
-        'Designed for shops where the network and the mains are both optional. '
-            'Everything is local, and the backup is a file you can copy.',
-      ],
-      highlights: [
-        'Entirely offline — no account, no server, no subscription',
-        'ESC/POS receipt printing over Bluetooth',
-        'Day-close report that reconciles cash against recorded sales',
-      ],
-    ),
-    ProjectModel(
-      slug: 'orbit',
-      name: 'Orbit',
-      tagline: 'Motion primitives for Flutter.',
-      year: '2022',
-      status: ProjectStatus.shipped,
-      category: ProjectCategory.personal,
-      stack: ['Dart', 'Flutter', 'CustomPainter'],
-      summary: [
-        'A small open-source package of the transitions I kept rewriting — '
-            'staggered reveals, shared-axis routes and a spring curve that does '
-            'not overshoot into ugliness.',
-        'Written mostly to force myself to document motion decisions instead of '
-            'copying magic numbers between projects.',
-      ],
-      highlights: [
-        'Zero dependencies beyond the Flutter SDK',
-        'Every curve documented with a rationale, not just a name',
-        'Golden tests pinning the visual output of each transition',
+        'The browser counterpart to the HealthX app — consultations, '
+            'prescriptions, orders and health records for people who would '
+            'rather not install anything, or who are reaching for a laptop '
+            'rather than a phone.',
       ],
       links: [
-        AppLink(type: AppLinkType.repo, url: 'https://github.com/KenStarry/orbit'),
+        AppLink(
+          type: AppLinkType.web,
+          url: 'https://portal.healthxafrica.com',
+          label: 'Customer Portal',
+        ),
+      ],
+    ),
+    ProjectModel(
+      slug: 'britam-app',
+      name: 'Britam App',
+      tagline: 'Policies, investments and loans in one app.',
+      year: '',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
+      client: 'Britam Insurance × Dentsu',
+      platforms: [ProjectPlatform.android, ProjectPlatform.ios],
+      stack: [],
+      summary: [
+        'MyBritam puts statements, new product sign-up, policy loans and '
+            'investment top-ups in a single app for Britam customers, with a '
+            'one-time password guarding every financial action.',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.playStore,
+          url: 'https://play.google.com/store/apps/details?id=com.app.britam',
+        ),
+      ],
+    ),
+    ProjectModel(
+      slug: 'britam-portal',
+      name: 'Britam Customer Portal',
+      tagline: 'Self-service for policies, on the web.',
+      year: '',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.enterprise,
+      client: 'Britam Insurance × Dentsu',
+      platforms: [ProjectPlatform.web],
+      stack: [],
+      summary: [
+        'The web counterpart to the app: one interface for managing Britam '
+            'policies, starting with the Life book and folding in further '
+            'product lines over time.',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.web,
+          url: 'https://customerportal.britam.com',
+          label: 'Customer Portal',
+        ),
+      ],
+    ),
+    ProjectModel(
+      slug: 'elvs',
+      name: 'Elvs Mobile',
+      tagline: 'Volunteer reporting, tracked end to end.',
+      year: '',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.commercial,
+      client: 'Podii Consultants',
+      platforms: [ProjectPlatform.android],
+      stack: [],
+      summary: [
+        'Tracks and manages the reports school volunteers submit and prepare, '
+            'so a programme lead can see what has been filed without chasing '
+            'anyone for it.',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.playStore,
+          url: 'https://play.google.com/store/apps/details?id=com.podii.elvs',
+        ),
       ],
     ),
   ];

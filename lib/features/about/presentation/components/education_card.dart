@@ -18,7 +18,7 @@ class EducationCard extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return div(
-      classes: 'reveal group border border-ink-700 bg-ink-850 p-7 sm:p-9',
+      classes: 'card reveal group p-7 sm:p-9',
       [
         div(
           classes: 'grid gap-6 lg:grid-cols-[11rem_1fr] lg:gap-12',
@@ -45,18 +45,17 @@ class EducationCard extends StatelessComponent {
                 [Component.text(education.qualification)],
               ),
               p(
-                classes: 'mt-2 text-sm text-ink-200',
+                classes: 'mt-1.5 text-sm text-ink-200',
                 [Component.text(education.institution)],
               ),
 
               if (education.note.isNotEmpty)
                 p(
-                  classes: 'mt-5 max-w-2xl text-sm leading-relaxed text-ink-400',
+                  classes: 'mt-4 max-w-xl text-sm leading-relaxed text-ink-400',
                   [Component.text(education.note)],
                 ),
 
-              if (education.focus.isNotEmpty) ...[
-                const div(classes: 'divider-quiet mt-7', []),
+              if (education.focus.isNotEmpty)
                 div(
                   classes: 'mt-6 flex flex-wrap gap-2',
                   [
@@ -64,7 +63,6 @@ class EducationCard extends StatelessComponent {
                       span(classes: 'pill', [Component.text(subject)]),
                   ],
                 ),
-              ],
             ]),
           ],
         ),

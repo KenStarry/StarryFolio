@@ -1,6 +1,7 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../enum/project_category.dart';
+import '../enum/project_platform.dart';
 import '../enum/project_status.dart';
 
 /// A case study.
@@ -15,6 +16,8 @@ class ProjectModel {
     required this.year,
     required this.status,
     required this.category,
+    this.client,
+    this.platforms = const [],
     required this.stack,
     required this.summary,
     this.highlights = const [],
@@ -33,6 +36,16 @@ class ProjectModel {
 
   /// Grouping for the filter pills on the work section.
   final ProjectCategory category;
+
+  /// Who the work was for — "Britam Insurance × Dentsu", "HealthX Africa".
+  ///
+  /// Null for personal projects, where there is no client and inventing one
+  /// would be worse than the absence.
+  final String? client;
+
+  /// Where it runs. Rendered on the card, since a product that ships as both
+  /// an app and a portal has two entries that are otherwise near-identical.
+  final List<ProjectPlatform> platforms;
 
   final List<String> stack;
 
@@ -77,6 +90,14 @@ class ProjectModel {
         year: map['year']?.toString() ?? '',
         status: ProjectStatus.fromName(map['status']?.toString()),
         category: ProjectCategory.fromName(map['category']?.toString()),
+        client: map['client']?.toString(),
+        platforms: switch (map['platforms']) {
+          final List<Object?> raw => [
+              for (final entry in raw)
+                ProjectPlatform.fromName(entry?.toString()),
+            ],
+          _ => const [],
+        },
         stack: _stringList(map['stack']),
         summary: _stringList(map['summary']),
         highlights: _stringList(map['highlights']),
@@ -99,6 +120,8 @@ class ProjectModel {
         'year': year,
         'status': status.name,
         'category': category.name,
+        'client': client,
+        'platforms': [for (final p in platforms) p.name],
         'stack': stack,
         'summary': summary,
         'highlights': highlights,

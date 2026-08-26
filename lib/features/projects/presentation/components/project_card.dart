@@ -68,14 +68,18 @@ class ProjectCard extends StatelessComponent {
               classes: 'flex items-center gap-3',
               [
                 span(
-                  classes: 'type-eyebrow font-mono text-iris-400',
-                  [Component.text(project.category.label)],
+                  classes: 'type-eyebrow truncate font-mono text-iris-400',
+                  // The client is the credential; the category is already the
+                  // band heading this card sits under, so repeating it here
+                  // spends the line on something the reader already knows.
+                  [Component.text(project.client ?? project.category.label)],
                 ),
                 const span(classes: 'h-px flex-1 bg-ink-700', []),
-                span(
-                  classes: 'font-mono text-[11px] text-ink-500',
-                  [Component.text(project.year)],
-                ),
+                if (project.year.isNotEmpty)
+                  span(
+                    classes: 'shrink-0 font-mono text-[11px] text-ink-500',
+                    [Component.text(project.year)],
+                  ),
               ],
             ),
 
@@ -113,7 +117,15 @@ class ProjectCard extends StatelessComponent {
             if (links.isEmpty)
               p(
                 classes: 'mt-6 font-mono text-[11px] text-ink-500',
-                [Component.text(project.stack.take(3).join('  ·  '))],
+                // Falls back to the platforms when the stack is not recorded,
+                // so the footer is never an empty line.
+                [
+                  Component.text(
+                    project.stack.isNotEmpty
+                        ? project.stack.take(3).join('  ·  ')
+                        : project.platforms.map((e) => e.label).join('  ·  '),
+                  ),
+                ],
               )
             else
               StoreBadgeRow(

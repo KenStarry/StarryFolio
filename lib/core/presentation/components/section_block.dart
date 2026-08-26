@@ -2,6 +2,7 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 import 'eyebrow.dart';
+import 'two_tone_title.dart';
 
 /// Ground tone for a section.
 ///
@@ -30,6 +31,7 @@ class SectionBlock extends StatelessComponent {
     this.id,
     this.eyebrow,
     this.heading,
+    this.headingTail = '',
     this.lead,
     this.tone = SectionTone.base,
     this.classes = '',
@@ -45,6 +47,10 @@ class SectionBlock extends StatelessComponent {
 
   final String? eyebrow;
   final String? heading;
+
+  /// The half of [heading] that sits back, set muted by [TwoToneTitle]. The
+  /// site's headline treatment — see CLAUDE.md.
+  final String headingTail;
   final String? lead;
   final SectionTone tone;
   final String classes;
@@ -76,10 +82,14 @@ class SectionBlock extends StatelessComponent {
                 [
                   if (eyebrow != null) Eyebrow(eyebrow!),
                   if (heading != null)
-                    if (isPageHeading)
-                      h1(classes: _headingClasses, _headingLines(heading!))
-                    else
-                      h2(classes: _headingClasses, _headingLines(heading!)),
+                    TwoToneTitle(
+                      lines: TwoToneTitle.tail(heading!, headingTail),
+                      classes: _headingClasses,
+                      isPageHeading: isPageHeading,
+                      // One notch under this block's `font-bold`, where a page
+                      // header steps down from `extrabold`.
+                      mutedWeight: 'font-semibold',
+                    ),
                   if (lead != null)
                     p(
                       classes: 'mt-5 max-w-lg text-sm leading-relaxed '
@@ -100,19 +110,6 @@ class SectionBlock extends StatelessComponent {
         ),
       ],
     );
-  }
-
-  /// Splits authored newlines into `<br>`-separated text, so a heading can set
-  /// as a deliberate two-line block rather than wrapping wherever the container
-  /// happens to end. A crawler still reads one continuous string.
-  static List<Component> _headingLines(String heading) {
-    final lines = heading.split('\n');
-    return [
-      for (final (i, line) in lines.indexed) ...[
-        if (i > 0) const br(),
-        Component.text(line),
-      ],
-    ];
   }
 
   static const String _headingClasses =

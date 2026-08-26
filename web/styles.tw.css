@@ -156,6 +156,15 @@
     white-space: nowrap;
   }
 
+  /* The same motif inside a card: a company's initial, or a step's number,
+     set large enough to be architecture rather than an ornament. Anchored to
+     the real name printed a few lines below it. */
+  .ghost-mono {
+    font-size: clamp(4.5rem, 10vw, 7.5rem);
+    line-height: 0.68;
+    letter-spacing: -0.06em;
+  }
+
   .ghost-title-lg { font-size: clamp(7rem, 27vw, 21rem); }
   .ghost-title-md { font-size: clamp(5rem, 19vw, 15rem); }
   .ghost-title-sm { font-size: clamp(3.75rem, 13vw, 10.5rem); }
@@ -992,9 +1001,9 @@
     .step:not(:last-child)::after {
       content: "";
       position: absolute;
-      top: 2.25rem;
-      right: -1.5rem;
-      width: 1.5rem;
+      top: 3.25rem;
+      right: -1.25rem;
+      width: 1.25rem;
       height: 1px;
       background: linear-gradient(
         to right,

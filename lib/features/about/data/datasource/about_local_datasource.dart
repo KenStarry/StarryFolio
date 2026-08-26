@@ -53,33 +53,18 @@ abstract final class AboutLocalDatasource {
       company: 'HealthX Africa',
       period: '2023 — Present',
       kind: 'Full-time',
-      location: 'Nairobi, Kenya',
+      location: 'Nairobi',
       current: true,
       draft: true,
       projectSlug: 'healthx',
       summary: 'I own the full mobile lifecycle of a Kenyan telehealth '
-          'platform — brand and design system through architecture, QA and '
-          'release to both stores. Health data is unforgiving: every screen '
-          'has to degrade honestly when the network does not cooperate, and '
-          'no failure is allowed to look like success.',
+          'platform — design system through release.',
       highlights: [
-        'Took the app from a single feature to seven modules on one shell, '
-            'without a rewrite',
-        'Set the design system — tokens, type ramp, motion — and built '
-            'against it rather than beside it',
-        'Shipped to the App Store and Play Store on a repeatable, signed, '
-            'staged pipeline',
-        'Made offline behaviour a design constraint from screen one instead '
-            'of a patch after the complaints',
+        'Seven feature modules on one shell',
+        'A design system built in, not bolted on',
+        'Both stores, signed and staged',
       ],
-      stack: [
-        'Flutter',
-        'Riverpod 3',
-        'Clean Architecture',
-        'Dio',
-        'Firebase',
-        'Fastlane',
-      ],
+      stack: ['Flutter', 'Riverpod 3', 'Clean Architecture', 'Firebase'],
     ),
     ExperienceModel(
       slug: 'dentsu',
@@ -87,20 +72,15 @@ abstract final class AboutLocalDatasource {
       company: 'Dentsu',
       period: '2022 — 2023',
       kind: 'Contract',
-      location: 'Nairobi, Kenya',
+      location: 'Nairobi',
       draft: true,
-      summary: 'Digital product work for brand clients, on deadlines that do '
-          'not move. Agency work teaches a specific discipline: the polish has '
-          'to be in the system, because there is never time to add it '
-          'afterwards.',
+      summary: 'Client products on campaign deadlines that do not move.',
       highlights: [
-        'Built client-facing Flutter products against fixed campaign dates',
-        'Translated finished brand guidelines into component libraries that '
-            'held up past the launch',
-        'Worked directly with designers, which is where the habit of building '
-            'the system first came from',
+        'Brand guidelines turned into component libraries',
+        'Shipped against fixed launch dates',
+        'Designers in the room, daily',
       ],
-      stack: ['Flutter', 'BLoC', 'Figma', 'REST'],
+      stack: ['Flutter', 'BLoC', 'Figma'],
     ),
     ExperienceModel(
       slug: 'britam',
@@ -108,21 +88,16 @@ abstract final class AboutLocalDatasource {
       company: 'Britam',
       period: '2021 — 2022',
       kind: 'Full-time',
-      location: 'Nairobi, Kenya',
+      location: 'Nairobi',
       draft: true,
-      summary: 'Insurance, on mobile. Long forms, legal copy, money moving, '
-          'and users who will only ever open the app on the day something has '
-          'gone wrong for them. The clarity of an empty state matters more '
-          'here than anywhere else I have worked.',
+      summary: 'Insurance on mobile, where a mistyped field has a financial '
+          'consequence.',
       highlights: [
-        'Shipped customer-facing flows where a mis-typed field has a real '
-            'financial consequence',
-        'Learned to treat validation, retries and receipts as product '
-            'surfaces rather than plumbing',
-        'Worked inside an enterprise release process — approvals, audits, '
-            'staged rollouts',
+        'Customer flows that move real money',
+        'Validation and receipts as product surfaces',
+        'An enterprise release process, learned properly',
       ],
-      stack: ['Flutter', 'Provider', 'REST', 'Play Console'],
+      stack: ['Flutter', 'Provider', 'REST'],
     ),
     ExperienceModel(
       slug: 'podii',
@@ -130,18 +105,16 @@ abstract final class AboutLocalDatasource {
       company: 'Podii',
       period: '2020 — 2021',
       kind: 'Full-time',
-      location: 'Nairobi, Kenya',
+      location: 'Nairobi',
       draft: true,
-      summary: 'Product engineering across several client builds, and where '
-          'Dart stopped being a language I was reading about and became the '
-          'one I reached for. Small team, wide surface, everything visible.',
+      summary: 'Product engineering across client builds — and where Dart '
+          'became the language I reach for.',
       highlights: [
-        'Delivered features end to end — data layer, UI, review, release',
-        'Sat close enough to product decisions to see which ones survive '
-            'contact with users',
-        'Wrote the first Flutter code I would still defend today',
+        'Features end to end, data layer to release',
+        'Close enough to product to see what survives',
+        'The first Flutter I would still defend',
       ],
-      stack: ['Dart', 'Flutter', 'Git', 'Agile'],
+      stack: ['Dart', 'Flutter', 'Git'],
     ),
   ];
 
@@ -154,15 +127,9 @@ abstract final class AboutLocalDatasource {
       institution: 'University of Nairobi',
       period: '2016 — 2020',
       draft: true,
-      note: 'The fundamentals that do not expire — data structures, systems, '
-          'and how to read a specification. Everything framework-shaped I '
-          'learned after, and keep relearning.',
-      focus: [
-        'Algorithms & data structures',
-        'Software engineering',
-        'Databases',
-        'Human–computer interaction',
-      ],
+      note: 'The fundamentals that do not expire. Everything framework-shaped '
+          'came after — and keeps coming.',
+      focus: ['Algorithms', 'Systems', 'Databases', 'HCI'],
     ),
   ];
 
@@ -234,41 +201,33 @@ abstract final class AboutLocalDatasource {
       slug: 'frame',
       title: 'Frame it',
       icon: 'compass',
-      artefact: 'A one-page scope, and the list of what we are not building',
-      blurb: 'Before a single screen: what has to be true for this to have '
-          'been worth building? Most projects arrive as a feature list. The '
-          'first job is turning it back into an outcome, then cutting '
-          'everything that does not serve it.',
+      artefact: 'A one-page scope',
+      blurb: 'What has to be true for this to have been worth building? Then '
+          'cut everything that does not serve it.',
     ),
     ProcessStepModel(
       slug: 'systemise',
       title: 'Systemise it',
       icon: 'layers',
-      artefact: 'Tokens, a component library, and the motion spec',
-      blurb: 'Type ramp, spacing, colour, motion curves and every state a '
-          'component can be in — decided once, in code, before screen one. '
-          'This is why screen forty still looks like screen one, and why a '
-          'new feature takes days rather than a redesign.',
+      artefact: 'Tokens and a component library',
+      blurb: 'Type, spacing, colour, motion and every state — decided once, in '
+          'code, before screen one.',
     ),
     ProcessStepModel(
       slug: 'build',
       title: 'Build it',
       icon: 'device',
-      artefact: 'A codebase your next engineer can read without a handover',
-      blurb: 'Clean Architecture, a real state layer, and offline behaviour '
-          'designed in rather than bolted on. Built to hold up on a mid-range '
-          'Android phone with two bars of signal, because that is what most '
-          'users actually have.',
+      artefact: 'A codebase your next engineer can read',
+      blurb: 'Clean Architecture, a real state layer, offline designed in. '
+          'Built for a mid-range phone on two bars.',
     ),
     ProcessStepModel(
       slug: 'ship',
       title: 'Ship it',
       icon: 'rocket',
-      artefact: 'Signed builds, staged rollouts, and a listing that converts',
-      blurb: 'Release is a feature. Automated builds and signing, staged '
-          'rollouts, crash reporting wired before launch rather than after '
-          'the first bad review — and store copy and screenshots treated as '
-          'part of the product, not paperwork.',
+      artefact: 'Signed builds and a listing that converts',
+      blurb: 'Release is a feature. Signing, rollouts and crash reporting '
+          'wired before launch, not after the first bad review.',
     ),
   ];
 
@@ -280,32 +239,27 @@ abstract final class AboutLocalDatasource {
     MilestoneModel(
       year: '2019',
       title: 'First widget tree',
-      note: 'Swapped a screenful of Android XML for a widget tree and never '
-          'went back.',
+      note: 'Swapped a screenful of Android XML for it. Never went back.',
     ),
     MilestoneModel(
       year: '2021',
       title: 'First app on a store',
-      note: 'A real listing, a real download count, and the specific dread of '
-            'a rejected build.',
+      note: 'A real listing, and the specific dread of a rejected build.',
     ),
     MilestoneModel(
       year: '2023',
       title: 'Took the whole lifecycle',
-      note: 'Design system through release, at a telehealth platform — the '
-          'first time every part of it was mine.',
+      note: 'Design system through release — the first time all of it was mine.',
     ),
     MilestoneModel(
       year: '2025',
       title: 'Both stores, one codebase',
-      note: 'iOS and Android shipping from the same source, on a pipeline '
-          'that runs itself.',
+      note: 'iOS and Android from one source, on a pipeline that runs itself.',
     ),
     MilestoneModel(
       year: '2026',
       title: 'This site, in Dart',
-      note: 'Rebuilt in Jaspr and pre-rendered — the same language as the '
-          'apps, all the way down.',
+      note: 'Rebuilt in Jaspr. The same language as the apps, all the way down.',
     ),
   ];
 
@@ -316,32 +270,29 @@ abstract final class AboutLocalDatasource {
       title: 'A side project I actually use',
       icon: 'device',
       marker: 'CribLynk',
-      blurb: 'Building it is how I keep the tools honest — every framework '
-          'opinion gets tested against something I have to live with.',
+      blurb: 'Where framework opinions get tested against something I have to '
+          'live with.',
     ),
     FacetModel(
       title: 'A camera roll full of UI',
       icon: 'layers',
       marker: 'Screenshots',
-      blurb: 'Sheet easings, empty states, a transition that landed just '
-          'right. Most of what I know about polish came from stealing '
-          'carefully.',
+      blurb: 'Sheet easings, empty states, transitions that landed. Polish is '
+          'stolen carefully.',
     ),
     FacetModel(
       title: 'Teaching what I just learned',
       icon: 'compass',
       marker: 'Community',
       blurb: 'Explaining a thing badly is how you find out you did not '
-          'understand it. Most of my best decisions started as a bad '
-          'explanation.',
+          'understand it.',
     ),
     FacetModel(
       title: 'Nairobi, and the light here',
       icon: 'globe',
       marker: 'UTC+3',
-      blurb: 'Building for a market where a mid-range phone and two bars of '
-          'signal is the default, not the edge case. It makes you a better '
-          'engineer.',
+      blurb: 'Building where a mid-range phone on two bars is the default, not '
+          'the edge case.',
     ),
   ];
 }

@@ -107,9 +107,15 @@ class _ProjectDetailView extends StatelessComponent {
           classes: 'mt-12 grid grid-cols-2 gap-6 border-t border-ink-700 pt-8 '
               'sm:grid-cols-3',
           [
-            _meta('Year', project.year),
-            _meta('Stack', project.stack.join('  ·  ')),
-            _meta('Role', 'Design + Flutter'),
+            if (project.year.isNotEmpty) _meta('Year', project.year),
+            if (project.client != null) _meta('Client', project.client!),
+            if (project.platforms.isNotEmpty)
+              _meta(
+                'Platform',
+                project.platforms.map((e) => e.label).join('  ·  '),
+              ),
+            if (project.stack.isNotEmpty)
+              _meta('Stack', project.stack.join('  ·  ')),
           ],
         ),
         div(

@@ -8,7 +8,7 @@ import '../../domain/model/skill_model.dart';
 /// The toolkit, as a matrix of ruled rows with a depth meter against each.
 ///
 /// Pills were the previous pass and they say only *that* a tool is known. Four
-/// ruled columns with three-dot meters say how deeply, which is the honest and
+/// carded columns with three-dot meters say how deeply, which is the honest and
 /// far more interesting claim — and it is scannable without reading a single
 /// label, because the filled dots draw the shape of where someone is strong.
 ///
@@ -27,11 +27,11 @@ class SkillMatrix extends StatelessComponent {
       _legend(),
 
       div(
-        classes: 'mt-10 grid gap-x-12 gap-y-12 sm:grid-cols-2 lg:grid-cols-4',
+        classes: 'mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4',
         [
           for (final group in groups)
             div(
-              classes: 'reveal',
+              classes: 'card reveal group/card p-7',
               [
                 h3(
                   classes: 'font-display text-lg font-bold tracking-tight '

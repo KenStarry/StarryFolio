@@ -62,7 +62,7 @@ class ProjectShowcase extends StatelessComponent {
               [
                 span(
                   classes: 'type-eyebrow font-mono text-iris-400',
-                  [Component.text(project.category.label)],
+                  [Component.text(project.client ?? project.category.label)],
                 ),
                 const span(classes: 'h-px w-8 bg-ink-600', []),
                 span(
@@ -93,9 +93,15 @@ class ProjectShowcase extends StatelessComponent {
               div(
                 classes: 'mt-10 max-w-md border-b border-ink-700',
                 [
-                  _meta('Year', project.year),
+                  if (project.year.isNotEmpty) _meta('Year', project.year),
+                  if (project.platforms.isNotEmpty)
+                    _meta(
+                      'Platform',
+                      project.platforms.map((e) => e.label).join('  ·  '),
+                    ),
                   _meta('Role', 'Design system · Architecture · Release'),
-                  _meta('Stack', project.stack.join('  ·  ')),
+                  if (project.stack.isNotEmpty)
+                    _meta('Stack', project.stack.join('  ·  ')),
                 ],
               )
             else

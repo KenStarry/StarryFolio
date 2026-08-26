@@ -5,6 +5,7 @@ import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/presentation/components/cta_button.dart';
 import '../../../../core/presentation/components/error_notice.dart';
+import '../../../../core/presentation/components/eyebrow.dart';
 import '../../../../core/presentation/components/page_header.dart';
 import '../../../../core/presentation/components/section_block.dart';
 import '../../../../core/presentation/components/section_rail.dart';
@@ -163,7 +164,13 @@ class _Header extends StatelessComponent {
   }
 }
 
-/// The words, and the numbers beside them.
+/// The statement band.
+///
+/// Centred, and deliberately short. The header above it already carries the
+/// dossier, four numbers and a standfirst; repeating the stats here — as the
+/// first pass did — made the page open by saying the same thing three times in
+/// three type sizes. What is left is the one line the work is actually built
+/// on, and a single paragraph under it.
 class _Story extends StatelessComponent {
   const _Story({required this.profile});
 
@@ -171,55 +178,29 @@ class _Story extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return SectionBlock(
+    return section(
       id: 'story',
-      classes: 'relative tl-1',
-      tone: SectionTone.raised,
-      eyebrow: 'The short version',
-      heading: 'The last 10%\nis the product.',
-      bodyClasses: 'grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20',
-      children: [
+      classes: 'relative tl-1 bg-ink-800 py-24 sm:py-28',
+      [
         div(
-          classes: 'reveal',
+          classes: 'mx-auto w-full max-w-3xl px-6 text-center sm:px-8',
           [
+            const div(
+              classes: 'reveal mx-auto flex w-fit',
+              [Eyebrow('What I care about')],
+            ),
+
             const p(
-              classes: 'type-quote font-display font-semibold text-ink-100',
+              classes: 'reveal type-quote mt-8 font-display font-semibold '
+                  'text-ink-100',
               [Component.text(SiteConfig.pullQuote)],
             ),
-            div(
-              classes: 'mt-8 space-y-5',
-              [
-                for (final para in SiteConfig.bio)
-                  p(
-                    classes: 'text-sm leading-relaxed text-ink-400',
-                    [Component.text(para)],
-                  ),
-              ],
-            ),
-          ],
-        ),
 
-        // The numbers, stacked and ruled rather than in a row: beside a column
-        // of prose a horizontal stat row would fight the reading line.
-        div(
-          classes: 'reveal',
-          [
-            for (final stat in SiteConfig.stats)
-              div(
-                classes: 'border-t border-ink-700/60 py-7 first:border-t-0 '
-                    'first:pt-0',
-                [
-                  p(
-                    classes: 'type-stat font-display font-extrabold '
-                        'text-ink-100',
-                    [Component.text(stat.value)],
-                  ),
-                  p(
-                    classes: 'mt-3 text-sm leading-snug text-ink-400',
-                    [Component.text(stat.label)],
-                  ),
-                ],
-              ),
+            p(
+              classes: 'reveal mx-auto mt-7 max-w-xl text-sm leading-relaxed '
+                  'text-ink-400',
+              [Component.text(SiteConfig.bio.first)],
+            ),
           ],
         ),
       ],
@@ -238,10 +219,8 @@ class _Experience extends StatelessComponent {
       id: 'experience',
       classes: 'relative tl-2',
       eyebrow: 'Experience',
-      heading: 'Where the work\nactually happened.',
-      lead: 'Reverse-chronological, and honest about which parts were mine. '
-          'Where a role produced something you can hold, it links to the case '
-          'study.',
+      heading: 'Where the work',
+      headingTail: 'actually happened.',
       children: [
         if (profile.experience.isEmpty)
           const ErrorNotice(message: 'No roles to show yet.')
@@ -270,35 +249,11 @@ class _Education extends StatelessComponent {
       classes: 'relative tl-3',
       tone: SectionTone.raised,
       eyebrow: 'Education',
-      heading: 'The fundamentals\nthat do not expire.',
-      bodyClasses: 'space-y-5',
+      heading: 'The fundamentals',
+      headingTail: 'that do not expire.',
       children: [
         for (final school in profile.education)
           EducationCard(education: school),
-
-        // The honest footnote to any engineer's education section. Set as a
-        // dashed panel so it reads as an aside rather than a second degree.
-        const div(
-          classes: 'reveal border border-dashed border-ink-700 p-7 sm:p-8',
-          [
-            p(
-              classes: 'type-eyebrow font-mono text-ink-500',
-              [Component.text('And since')],
-            ),
-            p(
-              classes: 'mt-4 max-w-2xl text-sm leading-relaxed text-ink-300',
-              [
-                Component.text(
-                  'Everything framework-shaped has been self-taught and '
-                  'kept current in production — documentation, source, other '
-                  "people's code, and shipping the thing to find out what the "
-                  'tutorial left out. The degree taught me how to learn the '
-                  'rest.',
-                ),
-              ],
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -315,9 +270,8 @@ class _Skills extends StatelessComponent {
       id: 'skills',
       classes: 'relative tl-4',
       eyebrow: 'Toolkit',
-      heading: 'What I reach for,\nand how deep it goes.',
-      lead: 'Depth stated in three honest bands rather than a percentage. A '
-          'number nobody can verify is a number everybody discounts.',
+      heading: 'What I reach for,',
+      headingTail: 'and how deep it goes.',
       children: [SkillMatrix(groups: profile.skillGroups)],
     );
   }
@@ -335,9 +289,8 @@ class _Process extends StatelessComponent {
       classes: 'relative tl-5',
       tone: SectionTone.raised,
       eyebrow: 'How I work',
-      heading: 'Four steps, and\nwhat each hands over.',
-      lead: 'The same order every time, whether it is a two-week build or a '
-          'two-year product. What changes is how long each step takes.',
+      heading: 'Four steps, and',
+      headingTail: 'what each hands over.',
       children: [ProcessArc(steps: profile.process)],
     );
   }
@@ -354,7 +307,8 @@ class _Milestones extends StatelessComponent {
       id: 'milestones',
       classes: 'relative tl-6',
       eyebrow: 'Milestones',
-      heading: 'The road so far.',
+      heading: 'The road',
+      headingTail: 'so far.',
       children: [MilestoneSpine(milestones: profile.milestones)],
     );
   }
@@ -372,7 +326,8 @@ class _Beyond extends StatelessComponent {
       classes: 'relative tl-7',
       tone: SectionTone.raised,
       eyebrow: 'Beyond the code',
-      heading: 'The part that\nis not work.',
+      heading: 'The part that',
+      headingTail: 'is not work.',
       children: [FacetGrid(facets: profile.facets)],
     );
   }
