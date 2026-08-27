@@ -152,8 +152,12 @@ class SiteConfig {
 
   static const List<SocialLink> socials = [
     SocialLink(label: 'GitHub', handle: '@KenStarry', url: 'https://github.com/KenStarry'),
-    SocialLink(label: 'LinkedIn', handle: 'Ken Starry', url: 'https://www.linkedin.com/in/kenstarry/'),
-    SocialLink(label: 'X', handle: '@KenStarry', url: 'https://x.com/KenStarry'),
+    SocialLink(
+      label: 'LinkedIn',
+      handle: 'Ken Starry',
+      url: 'https://www.linkedin.com/in/ken-s-133a04217/',
+    ),
+    SocialLink(label: 'X', handle: '@ken_starry', url: 'https://x.com/ken_starry'),
   ];
 
   // The toolkit used to live here as a flat list of names. It now lives in
