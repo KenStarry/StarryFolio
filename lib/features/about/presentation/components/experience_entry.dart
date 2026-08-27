@@ -22,9 +22,22 @@ import '../../domain/model/experience_model.dart';
 /// light together on hover *and* `focus-within`, so a keyboard user tabbing to
 /// the case-study link gets the same acknowledgement a pointer does.
 class ExperienceEntry extends StatelessComponent {
-  const ExperienceEntry({required this.experience, super.key});
+  const ExperienceEntry({
+    required this.experience,
+    this.caseStudySlugs = const {},
+    super.key,
+  });
 
   final ExperienceModel experience;
+
+  /// Slugs that have a case study page generated for them.
+  ///
+  /// Passed in rather than looked up here: a role may name a project that has
+  /// no write-up — or, as `britam-app` did, no project at all — and rendering
+  /// a `Case study` link to a route that was never generated is a 404 waiting
+  /// to happen. Resolved by the page, which is where cross-feature composition
+  /// belongs.
+  final Set<String> caseStudySlugs;
 
   @override
   Component build(BuildContext context) {
@@ -126,7 +139,8 @@ class ExperienceEntry extends StatelessComponent {
                         [Component.text(experience.stack.join('  ·  '))],
                       ),
 
-                    if (experience.projectSlug case final slug?)
+                    if (experience.projectSlug case final slug?
+                        when caseStudySlugs.contains(slug))
                       Link(
                         to: RoutePaths.projectDetail(slug),
                         classes: 'link-line group/link inline-flex items-center '

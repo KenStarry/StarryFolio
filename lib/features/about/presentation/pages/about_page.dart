@@ -59,6 +59,16 @@ class AboutPage extends AsyncStatelessComponent {
   Future<Component> build(BuildContext context) async {
     final result = await Locator.about.getProfile();
 
+    // Which project slugs actually have a page. A role can name a project that
+    // was never written up, and linking to a route the router never generated
+    // would ship a dead link.
+    final projects = await Locator.projects.getProjects();
+    final caseStudySlugs = projects
+        .getOrElse((_) => const [])
+        .where((item) => item.hasCaseStudy)
+        .map((item) => item.slug)
+        .toSet();
+
     return result.fold(
       (error) => Component.fragment([
         const _Meta(),
@@ -104,7 +114,10 @@ class AboutPage extends AsyncStatelessComponent {
           classes: 'rail-scope',
           [
             _Story(profile: profile),
-            _Experience(profile: profile),
+            _Experience(
+              profile: profile,
+              caseStudySlugs: caseStudySlugs,
+            ),
             _Education(profile: profile),
             _Skills(profile: profile),
             _Process(profile: profile),
@@ -209,9 +222,13 @@ class _Story extends StatelessComponent {
 }
 
 class _Experience extends StatelessComponent {
-  const _Experience({required this.profile});
+  const _Experience({required this.profile, required this.caseStudySlugs});
 
   final AboutProfile profile;
+
+  /// Project slugs with a generated case study page, so a role never links to
+  /// one that does not exist.
+  final Set<String> caseStudySlugs;
 
   @override
   Component build(BuildContext context) {
@@ -229,7 +246,10 @@ class _Experience extends StatelessComponent {
             classes: 'mt-4',
             [
               for (final role in profile.experience)
-                ExperienceEntry(experience: role),
+                ExperienceEntry(
+                  experience: role,
+                  caseStudySlugs: caseStudySlugs,
+                ),
             ],
           ),
       ],

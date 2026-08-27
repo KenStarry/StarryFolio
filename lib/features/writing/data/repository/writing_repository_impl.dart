@@ -15,12 +15,29 @@ class WritingRepositoryImpl implements WritingRepository {
   const WritingRepositoryImpl();
 
   @override
-  Future<Either<String, List<PostModel>>> getPosts({int limit = 3}) async {
+  Future<Either<String, List<PostModel>>> getPosts({int limit = 0}) async {
     try {
       final all = WritingLocalDatasource.posts;
-      return Right(all.take(limit).toList(growable: false));
+      return Right(
+        limit > 0 ? all.take(limit).toList(growable: false) : all,
+      );
     } catch (e) {
       return const Left('Could not load the writing list.');
+    }
+  }
+
+  @override
+  Future<Either<String, PostModel>> getPost(String slug) async {
+    try {
+      final match = WritingLocalDatasource.posts
+          .where((post) => post.slug == slug)
+          .firstOrNull;
+      if (match == null) {
+        return const Left('That piece has moved, or never existed.');
+      }
+      return Right(match);
+    } catch (e) {
+      return const Left('Could not load that piece.');
     }
   }
 }

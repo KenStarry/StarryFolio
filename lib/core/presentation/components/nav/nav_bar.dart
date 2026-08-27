@@ -13,6 +13,7 @@ const _links = <({String label, String href})>[
   (label: 'Home', href: RoutePaths.home),
   (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
+  (label: 'Writing', href: RoutePaths.writing),
   (label: 'About', href: RoutePaths.about),
   (label: 'Contact', href: RoutePaths.contact),
 ];

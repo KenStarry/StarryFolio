@@ -243,6 +243,64 @@ class SchemaOrg {
 
   /// Trail shown under the result title in search. [crumbs] is ordered
   /// root-first as `(label, path)`.
+  /// One written piece.
+  ///
+  /// `BlogPosting` rather than a bare `Article`: it tells a crawler this is a
+  /// dated entry in an ongoing publication, which is what earns the byline and
+  /// date in a result — an `Article` on its own does not.
+  ///
+  /// `datePublished` is omitted entirely when the post carries no ISO date. A
+  /// guessed date is worse than none: it is a machine-readable claim, and
+  /// getting it wrong is the kind of error that outlives the correction.
+  static Map<String, Object?> blogPosting({
+    required String headline,
+    required String description,
+    required String slug,
+    required List<String> keywords,
+    String? datePublished,
+    String? image,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'BlogPosting',
+        'headline': headline,
+        'description': description,
+        'url': SiteConfig.absolute(RoutePaths.post(slug)),
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': SiteConfig.absolute(RoutePaths.post(slug)),
+        },
+        if (datePublished != null) 'datePublished': datePublished,
+        'keywords': keywords.join(', '),
+        'image': SiteConfig.absolute(image ?? SiteConfig.defaultOgImage),
+        'author': {'@id': personId},
+        'publisher': {'@id': personId},
+      };
+
+  /// The writing index.
+  ///
+  /// Only pieces that actually have a page are listed — pointing a crawler at
+  /// a URL that does not exist spends crawl budget to earn a 404.
+  static Map<String, Object?> blog({
+    required List<({String name, String slug, String? date})> items,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'Blog',
+        'name': 'Writing — ${SiteConfig.name}',
+        'url': SiteConfig.absolute(RoutePaths.writing),
+        'author': {'@id': personId},
+        'blogPost': [
+          for (final item in items)
+            {
+              '@type': 'BlogPosting',
+              'headline': item.name,
+              'url': SiteConfig.absolute(RoutePaths.post(item.slug)),
+              if (item.date != null) 'datePublished': item.date,
+            },
+        ],
+      };
+
   static Map<String, Object?> breadcrumbs(
     List<({String label, String path})> crumbs,
   ) =>

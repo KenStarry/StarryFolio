@@ -94,7 +94,8 @@ abstract repository, never on `*_impl`. Models live in `domain/`.
 **Core vs feature:** content-agnostic goes in `core/`; domain-specific stays in the feature.
 Extract to `core/` once it is used in 2+ places.
 
-Major Current features: `home`, `projects`, `services`, `not_found`.
+Major Current features: `home`, `projects`, `services`, `about`, `contact`, `writing`,
+`not_found`.
 
 ---
 
@@ -112,6 +113,39 @@ Major Current features: `home`, `projects`, `services`, `not_found`.
 6. Add the path to `core/routing/route_paths.dart`, then a `Route` in `app.dart`.
 7. Add `PageMeta` and, where it fits, `StructuredData`.
 8. Build and grep the HTML for the new content.
+
+### Adding a post
+
+Append to `features/writing/data/datasource/writing_local_datasource.dart`, then add
+it to the `posts` list — which is the running order, newest first, with no sort step
+to disagree with it.
+
+**A post's `body` decides whether it gets a page.** `WritingLocalDatasource.slugs`
+filters on `PostModel.hasBody` and `app.dart` enumerates that, so:
+
+| `body` | `url` | Result |
+|---|---|---|
+| set | — | card links to `/writing/<slug>`, page is generated |
+| empty | set | card links out in a new tab, no page |
+| empty | null | unlinked card marked *Soon*, no page |
+
+That third row is deliberate. Listing a piece you have not written is honest; 404ing
+on it is not. Give it a `body` later and the page appears on the next build with no
+other change.
+
+The body is a `List<PostBlock>` — a sealed hierarchy in
+`domain/model/post_block.dart` (`PostHeading`, `PostProse`, `PostCode`, `PostImage`,
+`PostList`, `PostNote`, `PostSteps`). `PostBody` switches over it exhaustively, so a
+new block type is a compile error until it is rendered.
+
+**Prose carries three inline forms and no more:** `` `code` ``, `**bold**` and
+`[label](href)`. Everything else is escaped through `Component.text`, so authored
+content can never inject markup. If you need a fourth construct, add a `PostBlock` —
+not a new escape sequence, which would be a thing the stylesheet has no rules for.
+
+Headings in a body are `h2`/`h3` only. The `h1` is the post title in the masthead
+(§4), and `PostHeading.anchor` derives its own id so the contents rail cannot list a
+section that is not there.
 
 ### Adding a project
 

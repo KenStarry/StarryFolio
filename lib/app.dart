@@ -13,12 +13,15 @@ import 'features/projects/data/datasource/projects_local_datasource.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/services/presentation/pages/services_page.dart';
+import 'features/writing/data/datasource/writing_local_datasource.dart';
+import 'features/writing/presentation/pages/post_detail_page.dart';
+import 'features/writing/presentation/pages/writing_page.dart';
 
 /// Route table. In `static` mode every path listed here is pre-rendered to its
 /// own HTML file at build time.
 ///
 /// Project routes are enumerated straight from
-/// [ProjectsLocalDatasource.slugs] rather than the repository: static
+/// [ProjectsLocalDatasource.caseStudySlugs] rather than the repository: static
 /// generation needs the full list of pages *synchronously*, before any async
 /// work can run. The pages themselves still go through the repository — this
 /// only decides which URLs exist.
@@ -42,6 +45,12 @@ class App extends StatelessComponent {
               AppLayout(path: state.location, child: const ProjectsPage()),
         ),
         Route(
+          path: RoutePaths.writing,
+          title: 'Writing — ${SiteConfig.name}',
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const WritingPage()),
+        ),
+        Route(
           path: RoutePaths.about,
           title: 'About — ${SiteConfig.name}',
           builder: (context, state) =>
@@ -59,12 +68,23 @@ class App extends StatelessComponent {
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ContactPage()),
         ),
-        for (final slug in ProjectsLocalDatasource.slugs)
+        for (final slug in ProjectsLocalDatasource.caseStudySlugs)
           Route(
             path: RoutePaths.projectDetail(slug),
             builder: (context, state) => AppLayout(
               path: state.location,
               child: ProjectDetailPage(slug: slug),
+            ),
+          ),
+        // Same rule as the projects above, with one addition: the datasource
+        // filters on `hasBody`, so a planned piece listed on the index does not
+        // generate a page it has no content for.
+        for (final slug in WritingLocalDatasource.slugs)
+          Route(
+            path: RoutePaths.post(slug),
+            builder: (context, state) => AppLayout(
+              path: state.location,
+              child: PostDetailPage(slug: slug),
             ),
           ),
         Route(

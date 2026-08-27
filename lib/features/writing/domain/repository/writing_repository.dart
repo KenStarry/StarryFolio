@@ -9,5 +9,11 @@ import '../model/post_model.dart';
 /// implementation — so swapping the local source for an HTTP or CMS-backed one
 /// is a one-line change at the composition root.
 abstract class WritingRepository {
-  Future<Either<String, List<PostModel>>> getPosts({int limit});
+  /// Newest first. [limit] of zero or less means every post — the index wants
+  /// all of them, the home teaser wants three.
+  Future<Either<String, List<PostModel>>> getPosts({int limit = 0});
+
+  /// One piece by slug. `Left` when nothing matches, so a stale link renders a
+  /// real message rather than an empty article.
+  Future<Either<String, PostModel>> getPost(String slug);
 }

@@ -3,6 +3,7 @@ import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/presentation/components/app_icons.dart';
+import '../../../../core/presentation/components/ghost_text.dart';
 import '../../../../core/presentation/components/store_badge.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../domain/model/project_model.dart';
@@ -120,25 +121,26 @@ class ProjectShowcase extends StatelessComponent {
                 classes: 'mt-10',
               ),
 
-            div(
-              classes: 'mt-10',
-              [
-                Link(
-                  to: RoutePaths.projectDetail(project.slug),
+            if (project.hasCaseStudy)
+              div(
+                classes: 'mt-10',
+                [
+                  Link(
+                    to: RoutePaths.projectDetail(project.slug),
                   classes: 'link-line group inline-flex items-center gap-3 '
                       'text-sm font-medium text-ink-100 transition-colors '
                       'duration-300 hover:text-iris-300',
-                  children: [
-                    const Component.text('Read the case study'),
-                    span(
-                      classes: 'transition-transform duration-500 ease-soft '
-                          'group-hover:translate-x-1.5',
-                      [AppIcons.arrow()],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                    children: [
+                      const Component.text('Read the case study'),
+                      span(
+                        classes: 'transition-transform duration-500 ease-soft '
+                            'group-hover:translate-x-1.5',
+                        [AppIcons.arrow()],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
           ],
         ),
 
@@ -160,14 +162,7 @@ class ProjectShowcase extends StatelessComponent {
             div(
               classes: 'pointer-events-none absolute inset-0 flex items-center '
                   'justify-center overflow-hidden',
-              attributes: const {'aria-hidden': 'true'},
-              [
-                span(
-                  classes: 'showcase-ghost select-none font-display '
-                      'font-extrabold text-ink-100/[0.035]',
-                  [Component.text(project.name)],
-                ),
-              ],
+              [GhostText(project.name, size: GhostSize.hero)],
             ),
 
             if (mockup != null)

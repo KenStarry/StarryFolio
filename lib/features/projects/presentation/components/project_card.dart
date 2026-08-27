@@ -87,21 +87,28 @@ class ProjectCard extends StatelessComponent {
               classes: 'mt-4 font-display text-xl font-extrabold '
                   'tracking-tight text-ink-100 sm:text-2xl',
               [
-                Link(
-                  to: RoutePaths.projectDetail(project.slug),
-                  classes: 'stretch-link inline-flex items-center gap-2 '
-                      'transition-colors duration-300 '
-                      'hover:text-iris-300 group-hover:text-iris-300',
-                  children: [
-                    Component.text(project.name),
-                    span(
-                      classes: 'text-ink-500 transition-transform '
-                          'duration-500 ease-soft group-hover:translate-x-1 '
-                          'group-hover:text-iris-300',
-                      [AppIcons.arrowUpRight(classes: 'h-4 w-4')],
-                    ),
-                  ],
-                ),
+                // Linked only when there is a case study to reach. Without one
+                // the stretched hit area would cover the whole card and lead
+                // to a page saying less than the card already does — and the
+                // route is not generated for those projects anyway.
+                if (project.hasCaseStudy)
+                  Link(
+                    to: RoutePaths.projectDetail(project.slug),
+                    classes: 'stretch-link inline-flex items-center gap-2 '
+                        'transition-colors duration-300 '
+                        'hover:text-iris-300 group-hover:text-iris-300',
+                    children: [
+                      Component.text(project.name),
+                      span(
+                        classes: 'text-ink-500 transition-transform '
+                            'duration-500 ease-soft group-hover:translate-x-1 '
+                            'group-hover:text-iris-300',
+                        [AppIcons.arrowUpRight(classes: 'h-4 w-4')],
+                      ),
+                    ],
+                  )
+                else
+                  Component.text(project.name),
               ],
             ),
 

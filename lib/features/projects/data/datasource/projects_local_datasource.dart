@@ -3,6 +3,8 @@ import '../../../../core/domain/model/app_link.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/enum/project_platform.dart';
 import '../../domain/enum/project_status.dart';
+import '../../domain/model/project_feature.dart';
+import '../../domain/model/project_module.dart';
 import '../../domain/model/project_model.dart';
 
 /// The case studies, as compile-time constants.
@@ -58,6 +60,164 @@ abstract final class ProjectsLocalDatasource {
         'Semantic theming via a HealthXColors ThemeExtension, not scattered hex',
         'Stateful shell navigation that keeps each tab’s stack alive',
         'On-device PDF receipt generation for orders and consultations',
+      ],
+      // HealthX is two products sharing one account, so the case study is
+      // described by modules rather than a flat feature list. Clinical ships
+      // today; Bloom is designed and partly built, which is why its features
+      // carry no renders and fall back to the card treatment.
+      modules: [
+        ProjectModule(
+          name: 'Clinical',
+          tagline: 'Care, delivered.',
+          blurb: 'The transactional half. See a doctor, fill a prescription, '
+              'track it to the door — efficient, trustworthy, get-in-get-out.',
+          accent: '#E9552B',
+          surfaces: ['Home', 'Bookings', 'Consult', 'Pharmacy', 'Labs'],
+          features: [
+          ProjectFeature(
+            label: 'Consult',
+            title: 'A doctor, without the queue.',
+            description: 'Voice and video consultations booked in the app, with '
+                'the clinical notes and any prescription landing back in the '
+                'patient record the moment the call ends.',
+            points: [
+              'In-call state survives a backgrounded app or a dropped network',
+              'Notes and prescriptions written straight onto the record',
+              'Toll-free fallback when the connection will not hold a video call',
+            ],
+            image: 'images/healthx-mockup.webp',
+          ),
+          ProjectFeature(
+            label: 'Pharmacy',
+            title: 'Photograph the script. Track the box.',
+            description: 'A prescription is uploaded as a photo, verified by a '
+                'pharmacist, and the resulting order is tracked to the door — '
+                'the whole path in one place instead of three phone calls.',
+            points: [
+              'Upload, verification and dispatch as one tracked flow',
+              'Live order status with delivery handover confirmation',
+              'Reorder from any past prescription in two taps',
+            ],
+            image: 'images/healthx-mockup.webp',
+          ),
+          ProjectFeature(
+            label: 'Appointments',
+            title: 'Booking that survives a bad signal.',
+            description: 'Slots, reminders and rescheduling built for mid-range '
+                'phones on unreliable networks — every action queues locally and '
+                'reconciles when the connection returns.',
+            points: [
+              'Optimistic booking with server reconciliation on reconnect',
+              'Local reminders that fire without a push connection',
+              'Reschedule and cancel without losing the original slot history',
+            ],
+            image: 'images/healthx-mockup.webp',
+          ),
+          ProjectFeature(
+            label: 'Records',
+            title: 'One calm home for your health.',
+            description: 'Consultations, orders and receipts collected into a '
+                'single history, with PDFs generated on the device so a receipt '
+                'is available with no connection at all.',
+            points: [
+              'On-device PDF generation for orders and consultations',
+              'Chronological record spanning every part of the app',
+              'Shareable receipts without a round trip to the server',
+            ],
+            image: 'images/healthx-mockup.webp',
+          ),
+  ],
+        ),
+        ProjectModule(
+          name: 'Bloom',
+          tagline: 'Grow, daily.',
+          blurb: 'The reflective half. Record how the day felt, breathe, track '
+              'a cycle — calm, unhurried, warm. One account and one wallet, '
+              'seen through a different lens.',
+          accent: '#16A34A',
+          badge: 'In build',
+          conceptual: true,
+          surfaces: ['Bloom Home', 'Journal', 'Breathe', 'Cycle', 'Stats'],
+          features: [
+            ProjectFeature(
+              label: 'Journal',
+              title: 'Record how the day felt.',
+              description: 'A low-friction daily entry that asks for a feeling '
+                  'before it asks for a number — the habit has to survive a bad '
+                  'day to be worth anything.',
+              image: 'images/healthx-mockup.webp',
+            ),
+            ProjectFeature(
+              label: 'Breathe',
+              title: 'Guided sessions that do not nag.',
+              description: 'Short breathing exercises that open in one tap and '
+                  'never guilt a missed streak.',
+              image: 'images/healthx-mockup.webp',
+            ),
+            ProjectFeature(
+              label: 'Cycle',
+              title: 'Tracking that stays private.',
+              description: 'Cycle logging held on the device, surfaced in Bloom '
+                  'and never leaked into the clinical side.',
+              image: 'images/healthx-mockup.webp',
+            ),
+            ProjectFeature(
+              label: 'The morph',
+              title: 'Switching worlds is one tap, and it animates.',
+              description: 'Every switch runs a single 0→1 value over ~700ms: '
+                  'the accent lerps between worlds, the imagery and copy '
+                  'cross-dissolve, and a radial glow blooms out of the control '
+                  'you touched. It never cuts.',
+              points: [
+                'One driver value keeps accent, backdrop, copy and wash in step',
+                'Urgent clinical signals still reach you inside Bloom',
+                'Auth is byte-for-byte identical across both worlds',
+              ],
+            ),
+          ],
+        ),
+        ProjectModule(
+          name: 'Portal',
+          kind: 'Surface',
+          tagline: 'The same care, on a bigger screen.',
+          blurb: 'The clinical half again, in the browser. Not a cut-down '
+              'companion — the same consultations, the same pharmacy, the same '
+              'records, for the moments a phone is simply the wrong tool. Bloom '
+              'stays on mobile, where a reflective habit belongs.',
+          accent: '#E9552B',
+          badge: 'Web',
+          surfaces: ['Consult', 'Pharmacy', 'Orders', 'Records'],
+          features: [
+            ProjectFeature(
+              label: 'Consult',
+              title: 'Take the call at a desk.',
+              description: 'The same consultation, joined from a laptop — '
+                  'useful when you need to take notes, or when the person who '
+                  'books the appointment is not the person attending it.',
+            ),
+            ProjectFeature(
+              label: 'Pharmacy',
+              title: 'A prescription is easier to read at full size.',
+              description: 'Uploading from a desktop means a scanned script '
+                  'rather than a photograph of one, and a basket that is far '
+                  'quicker to assemble with a keyboard.',
+            ),
+            ProjectFeature(
+              label: 'Orders',
+              title: 'A wide screen is a better dashboard.',
+              description: 'Order history, delivery status and repeat orders '
+                  'laid out at once instead of paged through — the view that '
+                  'suits someone managing care for a whole household.',
+            ),
+            ProjectFeature(
+              label: 'Records',
+              title: 'Read it, print it, keep it.',
+              description: 'The same record the app holds, in a form you can '
+                  'actually print or hand to a clinic that still runs on '
+                  'paper.',
+            ),
+          ],
+        ),
       ],
       links: [
         AppLink(
@@ -136,6 +296,92 @@ abstract final class ProjectsLocalDatasource {
             'ramp and surface contrast, never by lines',
         'Local-first on Hive, with PDF thumbnails rastered on device',
       ],
+      // Drawn from the project's own specs. The two entries without an image
+      // are documented as spec-only there, so they are told as notes rather
+      // than mocked up as if they shipped.
+      features: [
+        ProjectFeature(
+          label: 'Workshop',
+          title: 'Write your career once.',
+          description: 'The master profile lives in the Workshop — eight '
+              'sections covering everything you have ever done. Nothing else '
+              'in the app works until this exists, so it is the part that had '
+              'to feel effortless.',
+          points: [
+            'Eight sections: personal, summary, experience, education, skills, '
+                'projects, socials, hobbies',
+            'Edited in place, never through a wizard',
+            'Held locally on Hive — it works with no account and no signal',
+          ],
+          image: 'images/rezq-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Roles',
+          title: 'A snapshot per job, not a document per job.',
+          description: 'A Role is a tailored view of the master profile for a '
+              'target job — pick the experience that matters, choose a template '
+              'and a theme, and the PDF follows. Editing the profile updates '
+              'every role that draws on it.',
+          points: [
+            'Roles select from the profile rather than copying it',
+            'Share and download live on the role itself',
+            'Rewriting a job description once fixes it everywhere',
+          ],
+          image: 'images/rezq-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Templates',
+          title: 'Three templates, each with its own voice.',
+          description: 'Maverick, Zenith and Visiona are not colour swaps — '
+              'each carries its own typographic ramp, spacing tokens and PDF '
+              'colour palette, browsable by tone.',
+          points: [
+            'Every template owns its ramp and palette, not just an accent',
+            'Browsable with a tone-based filter',
+            'Thumbnails rastered on device from the real document',
+          ],
+          image: 'images/rezq-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'PDF engine',
+          title: 'A section renders itself, per template.',
+          description: 'The document pipeline runs fonts, config, theme and '
+              'data into a template implementation. Sections dispatch through '
+              'a strategy enum, so adding a template is a new builder rather '
+              'than an edit to every section.',
+          points: [
+            'Strategy dispatch keeps templates and sections independent',
+            'Async TTF loading with a typography ramp per document',
+            'Generated on device — no server round trip to see your CV',
+          ],
+          image: 'images/rezq-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Next — Smart Import',
+          title: 'Upload an old CV, watch the Workshop fill in.',
+          description: 'The Workshop has a cold-start wall: typing a whole '
+              'career into a blank screen is the single biggest reason people '
+              'give up. Smart Import turns a CV you already have into a '
+              'populated profile, and Role Tailoring builds a role from a '
+              'pasted job description on the same foundation.',
+          points: [
+            'Specced, not shipped',
+            'Targets a first CV in under three minutes',
+            'Role Tailoring rides the same layer once import lands',
+          ],
+        ),
+        ProjectFeature(
+          label: 'Next — Live links',
+          title: 'A resume that is a link, not an attachment.',
+          description: 'Every competitor ends at "Download PDF". A live link '
+              'would let a role be shared as a URL that stays current when the '
+              'profile behind it changes.',
+          points: [
+            'Spec only — nothing wired yet',
+            'The role stays the source of truth, not the download',
+          ],
+        ),
+      ],
       links: [
         AppLink(
           type: AppLinkType.playStore,
@@ -178,6 +424,96 @@ abstract final class ProjectsLocalDatasource {
         'Shorebird code push for Dart-only patches without a Play review',
         'Internet radio over the radio-browser.info directory',
         'flutter_extend — an in-house extension package with its own test suite',
+      ],
+      // Drawn from the project's own reference doc. Every image is the same
+      // composite mockup for now; swap each `image:` as real screenshots land.
+      // `Radio` deliberately carries none — it is built but withheld, and that
+      // is a story rather than a screen.
+      features: [
+        ProjectFeature(
+          label: 'Engine',
+          title: 'A C++ audio engine, driven from Dart.',
+          description: 'The playback path was rebuilt from nothing on SoLoud '
+              'over FFI rather than the platform player, because a real '
+              'parametric EQ and scheduled playback are not things a platform '
+              'player will give you.',
+          points: [
+            'Every voice plays through one music bus; filters attach to the bus',
+            'Gain staging with strictly separated writers, so nothing fights '
+                'over volume',
+            'Engine core is pure Dart with zero state-management imports',
+          ],
+          image: 'images/flow-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Search',
+          title: 'Finds the thing, not just the song.',
+          description: 'The old search could not find an album, an artist, a '
+              'playlist, a folder or a setting, and ranked every match the '
+              'same. This one is a tiered ladder that narrows as you type.',
+          points: [
+            'Albums, artists, playlists, folders and settings are all findable',
+            'A command palette sits on the same index',
+            'The ranking engine knows nothing about music — it is testable alone',
+          ],
+          image: 'images/flow-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Lyrics',
+          title: 'Timed lyrics, parsed purely.',
+          description: 'Synced and unsynced lyrics resolved from several '
+              'sources, with the parsing kept free of any file, clock or widget '
+              'so a mis-read timestamp fails a test rather than a listener.',
+          points: [
+            'Pure parser, tested with no file and no clock',
+            'Reachable from the three places you would actually reach for it',
+            'Falls back gracefully when a track has no words at all',
+          ],
+          image: 'images/flow-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Language',
+          title: 'Eight languages, and the plural rules to match.',
+          description: 'Around 690 hard-coded strings across 446 files were '
+              'lifted into a translation layer where the language you end up '
+              'reading is decided by a pure function.',
+          points: [
+            'Eight complete languages, not eight partial ones',
+            'Plural rules, which is the half a plain string table does not buy',
+            'Adding a language is two steps',
+          ],
+          image: 'images/flow-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Home widget',
+          title: 'A widget painted in Dart.',
+          description: 'The home-screen widget is built in-house rather than '
+              'with a plugin: a pane is painted in Dart and pushed to Android '
+              'as raw pixels, which is what lets the in-app preview run the '
+              'identical painter the home screen runs.',
+          points: [
+            'One painter serves both the widget and its in-app preview',
+            'No divergence between what you configure and what you get',
+            'Shorebird code push ships Dart-only fixes without a store review',
+          ],
+          image: 'images/flow-mockup.webp',
+        ),
+        ProjectFeature(
+          label: 'Radio',
+          title: 'Built, tested, and deliberately switched off.',
+          description: 'Internet radio is whole and wired — a distinct playback '
+              'mode rather than a track with odd properties, mutually exclusive '
+              'with the queue in both directions. It ships behind a flag that '
+              'is currently false, because the public station directory is '
+              'missing most of the big Kenyan commercial stations. A flagship '
+              'surface that cannot find the stations its audience listens to '
+              'reads as broken rather than as incomplete.',
+          points: [
+            'A separate playback mode, not a track pretending to be one',
+            'Pausing a live stream disconnects it, which fixed a real bug',
+            'Held back on the directory, not on the code',
+          ],
+        ),
       ],
       links: [
         AppLink(
@@ -312,8 +648,15 @@ abstract final class ProjectsLocalDatasource {
     ),
   ];
 
-  /// Every slug, in display order. Consumed by the router to pre-render one
-  /// static page per project.
+  /// Every slug, in display order.
   static List<String> get slugs =>
       projects.map((p) => p.slug).toList(growable: false);
+
+  /// Slugs that actually have a case study written. Consumed by the router to
+  /// pre-render one static page per *written-up* project — a project without a
+  /// walkthrough gets no route, so it can neither be linked to nor found.
+  static List<String> get caseStudySlugs => projects
+      .where((p) => p.hasCaseStudy)
+      .map((p) => p.slug)
+      .toList(growable: false);
 }

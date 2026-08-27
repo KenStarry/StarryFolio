@@ -1,6 +1,8 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../enum/project_category.dart';
+import 'project_feature.dart';
+import 'project_module.dart';
 import '../enum/project_platform.dart';
 import '../enum/project_status.dart';
 
@@ -21,6 +23,8 @@ class ProjectModel {
     required this.stack,
     required this.summary,
     this.highlights = const [],
+    this.features = const [],
+    this.modules = const [],
     this.links = const [],
     this.featured = false,
     this.coverImage,
@@ -55,10 +59,27 @@ class ProjectModel {
   /// Bullet points — what was actually built or learned.
   final List<String> highlights;
 
+  /// Capability spotlights on the case study. Empty simply omits the section —
+  /// not every project needs a walkthrough.
+  final List<ProjectFeature> features;
+
+  /// Distinct halves of the product, each with its own band. Takes precedence
+  /// over [features] when present: a product with modules is described by them.
+  final List<ProjectModule> modules;
+
   /// Where this project can actually be used — store listings, a web app, the
   /// source. Replaced three separate URL fields: a product routinely ships to
   /// more than one store, and a flat list keeps their order meaningful.
   final List<AppLink> links;
+
+  /// Whether this project has enough written up to justify its own page.
+  ///
+  /// A case study with no walkthrough is a title, a tagline and a stack list —
+  /// which is exactly what the card already showed, so the click is a
+  /// disappointment. Projects without one render as unlinked cards and get no
+  /// route generated at all, so there is no thin page for a crawler to find
+  /// and no dead link pointing at one.
+  bool get hasCaseStudy => features.isNotEmpty || modules.isNotEmpty;
 
   /// First repository link, for the `codeRepository` field in the JSON-LD.
   String? get repoUrl => links
@@ -101,6 +122,20 @@ class ProjectModel {
         stack: _stringList(map['stack']),
         summary: _stringList(map['summary']),
         highlights: _stringList(map['highlights']),
+        features: switch (map['features']) {
+          final List<Object?> raw => [
+              for (final entry in raw)
+                if (entry is Map<String, dynamic>) ProjectFeature.fromMap(entry),
+            ],
+          _ => const [],
+        },
+        modules: switch (map['modules']) {
+          final List<Object?> raw => [
+              for (final entry in raw)
+                if (entry is Map<String, dynamic>) ProjectModule.fromMap(entry),
+            ],
+          _ => const [],
+        },
         links: switch (map['links']) {
           final List<Object?> raw => [
               for (final entry in raw)
@@ -125,6 +160,8 @@ class ProjectModel {
         'stack': stack,
         'summary': summary,
         'highlights': highlights,
+        'features': [for (final f in features) f.toMap()],
+        'modules': [for (final m in modules) m.toMap()],
         'links': [for (final link in links) link.toMap()],
         'coverImage': coverImage,
         'mockupImage': mockupImage,

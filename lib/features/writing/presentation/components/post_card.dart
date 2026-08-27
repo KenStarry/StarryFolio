@@ -1,5 +1,6 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../domain/model/post_model.dart';
@@ -11,8 +12,11 @@ import '../../domain/model/post_model.dart';
 /// project card and a post card side by side and you should know which is which
 /// before reading a word.
 ///
-/// An unpublished post renders as a `<div>` rather than an `<a>`. A card that
-/// looks clickable and goes nowhere is worse than one that plainly waits.
+/// The card renders one of three ways, following [PostModel.href]:
+/// a `Link` for a piece that lives here, an `<a target=_blank>` for one
+/// published elsewhere, and a plain `<div>` for one that is still planned. That
+/// last case matters — a card that looks clickable and goes nowhere is worse
+/// than one that plainly waits.
 class PostCard extends StatelessComponent {
   const PostCard({required this.post, required this.index, super.key});
 
@@ -88,11 +92,24 @@ class PostCard extends StatelessComponent {
       return div(classes: '$base reveal', children);
     }
 
+    const linked = '$base float-card reveal hover:bg-ink-850';
+
+    // A `Link` for an internal destination, so the router handles it as a
+    // client-side navigation once hydrated — and still emits a plain `<a href>`
+    // into the static HTML, which is what a crawler follows.
+    if (!post.isExternal) {
+      return Link(
+        to: post.href!,
+        classes: linked,
+        children: children,
+      );
+    }
+
     return a(
-      href: post.url!,
+      href: post.href!,
       target: Target.blank,
       attributes: const {'rel': 'noopener'},
-      classes: '$base float-card reveal hover:bg-ink-850',
+      classes: linked,
       children,
     );
   }

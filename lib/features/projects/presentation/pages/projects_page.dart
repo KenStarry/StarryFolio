@@ -118,8 +118,14 @@ class ProjectsPage extends AsyncStatelessComponent {
           const _Meta(),
           StructuredData(
             id: 'ld-projects',
+            // Only projects with a generated page. An ItemList entry pointing
+            // at a URL that does not exist is a soft-404 handed straight to a
+            // crawler.
             SchemaOrg.itemList(
-              items: [for (final item in projects) (name: item.name, slug: item.slug)],
+              items: [
+                for (final item in projects)
+                  if (item.hasCaseStudy) (name: item.name, slug: item.slug),
+              ],
             ),
           ),
           StructuredData(

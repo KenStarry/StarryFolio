@@ -11,10 +11,12 @@ class RoutePaths {
   static const String services = '/services';
   static const String contact = '/contact';
   static const String about = '/about';
+  static const String writing = '/writing';
   static const String thanks = '/thanks';
   static const String notFound = '/404';
 
   static String projectDetail(String slug) => '$projects/$slug';
+  static String post(String slug) => '$writing/$slug';
 
   /// Builds an in-page anchor href.
   ///

@@ -25,8 +25,19 @@ class WritingMockRepository implements WritingRepository {
   ];
 
   @override
-  Future<Either<String, List<PostModel>>> getPosts({int limit = 3}) async {
+  Future<Either<String, List<PostModel>>> getPosts({int limit = 0}) async {
     await Future<void>.delayed(delay);
-    return Right(_posts.take(limit).toList(growable: false));
+    return Right(
+      limit > 0 ? _posts.take(limit).toList(growable: false) : _posts,
+    );
+  }
+
+  @override
+  Future<Either<String, PostModel>> getPost(String slug) async {
+    await Future<void>.delayed(delay);
+    final match = _posts.where((post) => post.slug == slug).firstOrNull;
+    return match == null
+        ? const Left('That piece has moved, or never existed.')
+        : Right(match);
   }
 }
