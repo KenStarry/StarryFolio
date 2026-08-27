@@ -146,7 +146,7 @@ class _Feature extends StatelessComponent {
                       img(
                         src: '/${post.coverImage}',
                         alt: post.coverAlt,
-                        classes: 'w-full',
+                        classes: 'reveal-media w-full',
                         attributes: const {
                           'loading': 'lazy',
                           'decoding': 'async',
@@ -251,7 +251,8 @@ class _Grid extends StatelessComponent {
       tone: SectionTone.base,
       children: [
         div(
-          classes: 'mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3',
+          // `stagger`, not `reveal` per card — see ProjectBento.
+          classes: 'stagger mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3',
           [
             for (final (i, post) in posts.indexed)
               PostCard(post: post, index: i + offset),

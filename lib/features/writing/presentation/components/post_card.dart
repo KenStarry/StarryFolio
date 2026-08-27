@@ -89,10 +89,10 @@ class PostCard extends StatelessComponent {
         'p-7 transition-colors duration-500 ease-soft';
 
     if (!published) {
-      return div(classes: '$base reveal', children);
+      return div(classes: base, children);
     }
 
-    const linked = '$base float-card reveal hover:bg-ink-850';
+    const linked = '$base float-card hover:bg-ink-850';
 
     // A `Link` for an internal destination, so the router handles it as a
     // client-side navigation once hydrated — and still emits a plain `<a href>`

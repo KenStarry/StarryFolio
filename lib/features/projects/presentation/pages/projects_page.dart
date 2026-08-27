@@ -512,7 +512,7 @@ class _PackageFeature extends StatelessComponent {
       [
         Link(
           to: href,
-          classes: 'group block overflow-hidden bg-ink-850',
+          classes: 'reveal-media group block overflow-hidden bg-ink-850',
           children: [
             if (project.coverImage case final cover?)
               img(

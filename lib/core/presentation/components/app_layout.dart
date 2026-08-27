@@ -1,6 +1,9 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../../config/site_config.dart';
+import 'back_to_top.dart';
+import 'custom_cursor.dart';
 import 'nav/nav_bar.dart';
 import 'site_footer.dart';
 
@@ -42,6 +45,12 @@ class AppLayout extends StatelessComponent {
         NavBar(path: path),
         main_(classes: 'flex-1', [child]),
         SiteFooter(path: path),
+
+        // Both sit after the footer in source order so they are last in the
+        // tab order and last in the accessibility tree — neither is content,
+        // and the cursor pair is `aria-hidden` besides.
+        const BackToTop(),
+        if (SiteConfig.customCursor) const CustomCursor(),
       ],
     );
   }

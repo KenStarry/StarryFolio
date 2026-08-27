@@ -24,13 +24,17 @@ class ProjectBento extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return div(
-      classes: 'grid grid-cols-1 items-start gap-6 sm:grid-cols-2 '
+      // `stagger` on the container rather than `reveal` on each card: the
+      // children enter over successive slices of one view timeline, so the
+      // cascade tracks the scroll instead of running on fixed delays. Stopping
+      // mid-grid stops the cascade with you.
+      classes: 'stagger grid grid-cols-1 items-start gap-6 sm:grid-cols-2 '
           'lg:grid-cols-3 lg:gap-7',
       [
         for (final (i, project) in projects.indexed)
           ProjectCard(
             project: project,
-            classes: 'reveal ${_offsets[i % _offsets.length]}',
+            classes: _offsets[i % _offsets.length],
           ),
       ],
     );

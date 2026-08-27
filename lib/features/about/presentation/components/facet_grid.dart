@@ -20,11 +20,11 @@ class FacetGrid extends StatelessComponent {
     if (facets.isEmpty) return const div([]);
 
     return div(
-      classes: 'grid gap-5 sm:grid-cols-2',
+      classes: 'stagger grid gap-5 sm:grid-cols-2',
       [
         for (final facet in facets)
           div(
-            classes: 'card reveal group flex flex-col p-7 sm:p-8',
+            classes: 'card group flex flex-col p-7 sm:p-8',
             [
               div(
                 classes: 'flex items-start justify-between gap-6',

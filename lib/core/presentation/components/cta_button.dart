@@ -70,13 +70,13 @@ class CtaButton extends StatelessComponent {
     ];
 
     if (_isInternal) {
-      return Link(to: href, classes: '$styles $classes', children: children);
+      return Link(to: href, classes: 'press $styles $classes', children: children);
     }
 
     final external = href.startsWith('http');
     return a(
       href: href,
-      classes: '$styles $classes',
+      classes: 'press $styles $classes',
       target: external ? Target.blank : null,
       attributes: external ? const {'rel': 'noopener'} : null,
       children,

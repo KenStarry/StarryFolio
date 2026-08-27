@@ -30,7 +30,7 @@ class ProjectCover extends StatelessComponent {
     final mockup = project.mockupImage;
 
     return div(
-      classes: 'overflow-hidden bg-ink-900 '
+      classes: 'reveal-media overflow-hidden bg-ink-900 '
           '${fill ? 'absolute inset-0' : 'relative aspect-[16/10] w-full'}',
       [
         if (cover != null)

@@ -1122,6 +1122,239 @@
     tab-size: 2;
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MICRO-INTERACTIONS
+
+     Extensions to the motion vocabulary above, following its two rules:
+     scroll-driven wherever the trigger is position, and a *visible* base
+     state so a browser without scroll-timeline support — or a crawler —
+     never sees a page of invisible boxes.
+
+     Everything here is presentational. None of it gates content.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── Back to top ──────────────────────────────────────────────────────
+     A scroll timeline, not a listener: the button is simply a function of
+     how far down the page you are, so it cannot desync and costs no JS.
+     `pointer-events` animates as a discrete property, which is what stops
+     the hidden button from swallowing clicks in its corner. */
+  @keyframes to-top-in {
+    from { opacity: 0; translate: 0 14px; scale: 0.9; pointer-events: none; }
+    60%  { pointer-events: none; }
+    to   { opacity: 1; translate: 0 0;    scale: 1;   pointer-events: auto; }
+  }
+
+  .to-top { opacity: 1; }
+
+  @supports (animation-timeline: scroll()) {
+    .to-top {
+      opacity: 0;
+      animation: to-top-in linear both;
+      animation-timeline: scroll(root block);
+      /* Appears through the first viewport-and-a-half of scrolling, so it is
+         never present on a page you have not actually travelled down. */
+      animation-range: 55vh 130vh;
+    }
+  }
+
+  .to-top-btn {
+    transition: transform 0.5s var(--ease-soft),
+                border-color 0.5s var(--ease-soft),
+                background-color 0.5s var(--ease-soft),
+                color 0.5s var(--ease-soft);
+  }
+
+  .to-top-btn:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    @apply bg-ink-800 text-ink-100;
+  }
+
+  /* The arrow lifts a little further than the button does, so the gesture
+     reads as *upward* rather than as a box that merely moved. */
+  .to-top-btn svg {
+    transition: transform 0.5s var(--ease-spring);
+  }
+
+  .to-top-btn:hover svg {
+    transform: translateY(-2px);
+  }
+
+  /* ── Custom cursor ────────────────────────────────────────────────────
+     Two elements: a dot that tracks the pointer exactly, and a ring that
+     trails it under easing. Positioning uses `transform` (set by script)
+     while centring uses the independent `translate` property — so the two
+     never overwrite one another.
+
+     **The geometry never changes.** Neither element scales, on any state.
+     A cursor that resizes under the hand stops reading as a cursor and
+     starts reading as an effect, and it makes precise targeting harder
+     precisely when you are trying to click something. Every state below is
+     therefore luminosity only: colour, fill and bloom.
+
+     The native cursor is hidden only under `.has-cursor`, which the script
+     adds once it has confirmed it is running on a fine pointer. If the
+     script never executes, the real cursor is untouched. */
+  .cursor-dot,
+  .cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 90;
+    pointer-events: none;
+    translate: -50% -50%;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-soft),
+                background-color 0.4s var(--ease-soft),
+                border-color 0.4s var(--ease-soft),
+                box-shadow 0.4s var(--ease-soft);
+  }
+
+  .cursor-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--color-iris-400);
+  }
+
+  .cursor-ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklab, var(--color-ink-300) 55%, transparent);
+  }
+
+  /* `cursor-ready` waits for the first real pointer move, so neither element
+     flashes at 0,0 before the pointer has been anywhere. */
+  body.cursor-ready .cursor-dot,
+  body.cursor-ready .cursor-ring { opacity: 1; }
+
+  body.has-cursor,
+  body.has-cursor a,
+  body.has-cursor button,
+  body.has-cursor label,
+  body.has-cursor summary,
+  body.has-cursor [role="button"] { cursor: none; }
+
+  /* Over something interactive: the ring lights up. Same size, same place —
+     it takes the accent on its border, gains a barely-there fill, and throws
+     a soft bloom in two stops. Two stops rather than one is what makes it
+     read as light rather than as an outline that got thicker: a tight halo
+     for the edge, a wide diffuse one for the falloff. */
+  body.cursor-active .cursor-ring {
+    border-color: color-mix(in oklab, var(--color-iris-400) 85%, transparent);
+    background: color-mix(in oklab, var(--color-iris-500) 7%, transparent);
+    box-shadow:
+      0 0 10px 0 color-mix(in oklab, var(--color-iris-500) 30%, transparent),
+      0 0 26px 5px color-mix(in oklab, var(--color-iris-500) 14%, transparent);
+  }
+
+  /* The dot brightens with it and picks up its own small halo, so the pair
+     lights together instead of the ring acting alone. */
+  body.cursor-active .cursor-dot {
+    background: var(--color-iris-300);
+    box-shadow: 0 0 9px 1px color-mix(in oklab, var(--color-iris-400) 55%, transparent);
+  }
+
+  /* Pressed: the same light, briefly turned up. Still no geometry change —
+     the confirmation is that the glow blooms, not that the ring moved. */
+  body.cursor-down .cursor-ring {
+    border-color: color-mix(in oklab, var(--color-iris-300) 95%, transparent);
+    background: color-mix(in oklab, var(--color-iris-500) 14%, transparent);
+    box-shadow:
+      0 0 14px 1px color-mix(in oklab, var(--color-iris-400) 45%, transparent),
+      0 0 36px 8px color-mix(in oklab, var(--color-iris-500) 20%, transparent);
+    transition-duration: 0.12s;
+  }
+
+  /* Over a text field the pair fades out entirely and the native caret takes
+     over — an I-beam says where the text will land, which is the one thing a
+     dot cannot. Fading beats shrinking: nothing about the shape changes on
+     the way out. */
+  body.cursor-text .cursor-dot,
+  body.cursor-text .cursor-ring { opacity: 0; }
+
+  body.has-cursor input,
+  body.has-cursor textarea,
+  body.has-cursor select { cursor: auto; }
+
+  /* Off the window entirely. */
+  body.cursor-gone .cursor-dot,
+  body.cursor-gone .cursor-ring { opacity: 0; }
+
+  /* ── Stagger ──────────────────────────────────────────────────────────
+     A sequence driven by scroll position rather than by delay. Each child
+     enters over a slightly later slice of the same view timeline, so the
+     cascade tracks the scroll — pause halfway and it pauses with you, which
+     a `animation-delay` chain cannot do. */
+  .stagger > * { opacity: 1; }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .stagger > * {
+        animation: reveal-up both linear;
+        animation-timeline: view();
+      }
+      .stagger > *:nth-child(1) { animation-range: entry 2%  cover 15%; }
+      .stagger > *:nth-child(2) { animation-range: entry 6%  cover 19%; }
+      .stagger > *:nth-child(3) { animation-range: entry 10% cover 23%; }
+      .stagger > *:nth-child(4) { animation-range: entry 14% cover 27%; }
+      .stagger > *:nth-child(5) { animation-range: entry 18% cover 31%; }
+      .stagger > *:nth-child(6) { animation-range: entry 22% cover 35%; }
+      .stagger > *:nth-child(n+7) { animation-range: entry 26% cover 39%; }
+    }
+  }
+
+  /* ── Rule draw ────────────────────────────────────────────────────────
+     Hairlines draw in from the left instead of appearing. The site is built
+     out of rules and dividers, so this is the highest-frequency detail
+     here — and the cheapest. */
+  @keyframes rule-draw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .draw-rule { transform-origin: left center; }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .draw-rule {
+        animation: rule-draw both linear;
+        animation-timeline: view();
+        animation-range: entry 5% cover 18%;
+      }
+    }
+  }
+
+  /* ── Media reveal ─────────────────────────────────────────────────────
+     A cover uncovers itself rather than fading: the clip opens upward while
+     the image settles back from a slight overscale. Fading a photograph in
+     over a dark ground reads as a loading state; this reads as intent. */
+  @keyframes media-in {
+    from { clip-path: inset(18% 0 0 0); transform: scale(1.06); }
+    to   { clip-path: inset(0 0 0 0);   transform: scale(1); }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal-media {
+        animation: media-in both linear;
+        animation-timeline: view();
+        animation-range: entry 4% cover 26%;
+      }
+    }
+  }
+
+  /* ── Press ────────────────────────────────────────────────────────────
+     Applied to buttons and pills. `--ease-spring` on the release is what
+     makes it feel like a physical control rather than a rectangle that
+     briefly got smaller. */
+  .press {
+    transition: scale 0.3s var(--ease-spring);
+  }
+
+  .press:active { scale: 0.97; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1152,4 +1385,31 @@
     animation: none !important;
     transform: none !important;
   }
+
+  /* The button stays put and stays usable — it is navigation, not decoration,
+     and someone who has asked for less motion still needs to get back up. */
+  .to-top {
+    opacity: 1 !important;
+    translate: none !important;
+    scale: none !important;
+    pointer-events: auto !important;
+  }
+
+  .stagger > *,
+  .reveal-media {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .draw-rule { transform: none !important; }
+
+  /* The custom cursor never initialises under reduced motion — the script
+     checks the same query — but this makes it impossible for a stray class
+     to leave the real pointer hidden. */
+  .cursor-dot,
+  .cursor-ring { display: none !important; }
+
+  body.has-cursor,
+  body.has-cursor * { cursor: auto !important; }
 }

@@ -75,6 +75,18 @@ class SiteConfig {
   /// never has to hard-code a project name that could go stale.
   static const String currentSideProject = 'CribLynk';
 
+  /// Whether the site paints its own pointer (`CustomCursor`).
+  ///
+  /// A deliberate switch rather than a decision baked into the layout: a
+  /// custom cursor overrides a pointer some visitors have sized or
+  /// contrast-adjusted on purpose, and on a portfolio it can read as flourish
+  /// rather than craft. Set it to `false` and the two elements and their
+  /// script stop being emitted entirely — nothing else changes.
+  ///
+  /// It already declines to run on touch devices and under
+  /// `prefers-reduced-motion`; this is the blanket off.
+  static const bool customCursor = true;
+
   static const bool available = true;
   static const String availabilityLabel = 'Available for select work';
 

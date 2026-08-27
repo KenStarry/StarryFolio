@@ -411,6 +411,48 @@ radios, and sibling selectors hide non-matching cards (`#pf-*` in
 would ship crawlers one category and hide the rest behind JS, which §0 forbids.
 Every card stays in the document; `display:none` is presentational.
 
+**Motion is scroll-driven, and the base state is always visible.** Every
+entrance animation hangs off `animation-timeline: view()` or `scroll()` inside
+an `@supports` guard, with the *un-animated* state being the visible one. A
+browser without scroll-timeline support — and every crawler — sees a finished
+page, never a grid of invisible boxes. The one exception is `.rise`, which is
+time-based because it runs above the fold where there is nothing to scroll yet.
+
+The vocabulary, all in `web/styles.tw.css`:
+
+| Class | Does |
+|---|---|
+| `.reveal` | the standard entrance — fade and 18px lift |
+| `.rise` + `.d-1`…`.d-7` | time-based entrance, for above-the-fold |
+| `.stagger` | on a **container**; children enter over successive slices of one timeline |
+| `.draw-rule` | a hairline sweeps out from the left |
+| `.reveal-media` | a cover uncovers upward from a slight overscale |
+| `.press` | `scale(0.97)` on `:active`, spring on release |
+| `.to-top` / `.to-top-btn` | the back-to-top control's appearance and hover |
+
+Two rules that are easy to get wrong:
+
+- **`.stagger` replaces `.reveal` on its children — never both.** Both animate
+  the same element on the same timeline and the later declaration silently wins.
+- **Never put `.reveal-media` on an element that owns a `transform`.** It
+  animates `transform`, and with `both` fill it *holds* its end value once out
+  of range, overriding any hover scale. Put it on a wrapper instead — that is
+  why `ProjectCover` carries it on the frame rather than on the `<img>`.
+
+Everything degrades under `prefers-reduced-motion`, at the foot of the
+stylesheet. The back-to-top button is deliberately exempt from being hidden
+there: it is navigation, not decoration.
+
+**The custom cursor is a `<script>`, not an island**, and is gated by
+`SiteConfig.customCursor`. **Its geometry is fixed** — hover and press change
+colour, fill and bloom only, never size. A cursor that resizes under the hand
+stops reading as a cursor and makes precise targeting harder at the exact
+moment you are aiming at something. It declines to run on coarse pointers and under
+reduced motion, and the native cursor is only hidden once the script has
+confirmed it is running (`body.has-cursor`) — so the failure mode is "no custom
+cursor", never "no cursor at all". It is the site's only inline script;
+`NavBar` remains the only `@client` island.
+
 **Tailwind:** classes must be **string literals** — the scanner reads `.dart`
 source, so a class built by concatenation gets purged. Design tokens live in
 `web/styles.tw.css`; change `--color-ink-200` and the pale moves everywhere.
