@@ -4,7 +4,7 @@ import 'package:jaspr/jaspr.dart';
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/cta_button.dart';
-import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../../core/presentation/components/page_header.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
 import '../../../../core/seo/structured_data.dart';
@@ -43,72 +43,30 @@ class _Header extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    return const section(
-      classes: 'relative overflow-hidden bg-ink-900 pb-14 pt-16 sm:pb-16 '
-          'sm:pt-24',
-      [
-        // The motif, at page scale. Texture rather than content, so it is
-        // hidden from assistive tech and unselectable — it repeats a word the
-        // heading beside it already says.
-        div(
-          classes: 'pointer-events-none absolute -right-8 top-1/2 '
-              '-translate-y-1/2 select-none',
-          attributes: {'aria-hidden': 'true'},
-          [
-            span(
-              classes: 'showcase-ghost font-display font-extrabold '
-                  'text-ink-100/[0.035]',
-              [Component.text('Talk')],
-            ),
-          ],
+    return PageHeader(
+      trail: 'Contact',
+      ghost: 'Contact',
+      path: RoutePaths.contact,
+      meta: SiteConfig.availabilityLabel,
+      title: 'Tell me what',
+      titleTail: 'you are building.',
+      lead: 'A brief, a rough idea, or a question about something on this '
+          'site — all welcome. I read everything and usually reply within a '
+          'day.',
+      facts: [
+        (
+          value: ChannelGrid.channels.length.toString().padLeft(2, '0'),
+          label: 'Ways to reach me',
         ),
-
-        div(
-          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
-          [
-            div(
-              classes: 'reveal max-w-2xl',
-              [
-                Eyebrow('Contact'),
-                h1(
-                  classes: 'type-section mt-5 font-display font-extrabold '
-                      'text-ink-100',
-                  [
-                    Component.text('Tell me what'),
-                    br(),
-                    Component.text('you are building.'),
-                  ],
-                ),
-                p(
-                  classes: 'mt-6 max-w-lg text-sm leading-relaxed text-ink-400 '
-                      'sm:text-[0.9375rem]',
-                  [
-                    Component.text(
-                      'A brief, a rough idea, or a question about something on '
-                      'this site — all welcome. I read everything and usually '
-                      'reply within a day.',
-                    ),
-                  ],
-                ),
-                div(
-                  classes: 'mt-8 inline-flex items-center gap-2.5',
-                  [
-                    span(
-                      classes: 'h-1.5 w-1.5 rounded-full bg-iris-400 dot-live',
-                      [],
-                    ),
-                    span(
-                      classes: 'type-eyebrow font-mono text-ink-400',
-                      [Component.text(SiteConfig.availabilityLabel)],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            div(classes: 'divider mt-12', []),
-          ],
-        ),
+        (value: '<24h', label: 'Typical reply'),
+        (value: 'UTC+3', label: SiteConfig.location),
+        (value: '02', label: 'App stores'),
       ],
+      jumpStops: const [
+        (anchor: 'message', label: 'Send a message', count: 0),
+        (anchor: 'support', label: 'Support the work', count: 0),
+      ],
+      jumpLabel: 'Jump to a section',
     );
   }
 }
