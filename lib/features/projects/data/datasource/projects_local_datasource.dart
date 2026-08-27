@@ -1,6 +1,7 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../../domain/enum/project_category.dart';
+import '../../domain/enum/project_kind.dart';
 import '../../domain/enum/project_platform.dart';
 import '../../domain/enum/project_status.dart';
 import '../../domain/model/project_feature.dart';
@@ -643,6 +644,126 @@ abstract final class ProjectsLocalDatasource {
         AppLink(
           type: AppLinkType.playStore,
           url: 'https://play.google.com/store/apps/details?id=com.podii.elvs',
+        ),
+      ],
+    ),
+    // ── Open source ────────────────────────────────────────────────────────
+    // The only `ProjectKind.package` on the index, and the reason that axis
+    // exists. Every figure below is verifiable from the repository — release
+    // count, test count, extension count, CI steps — so the case study needs
+    // no pub.dev metrics, which would go stale between deploys anyway.
+    ProjectModel(
+      slug: 'flutter-extend',
+      name: 'flutter_extend',
+      tagline: 'The boilerplate you stop writing.',
+      year: '2025',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.personal,
+      kind: ProjectKind.package,
+      platforms: [
+        ProjectPlatform.android,
+        ProjectPlatform.ios,
+        ProjectPlatform.web,
+        ProjectPlatform.desktop,
+      ],
+      coverImage: 'images/flutter-extend-cover.webp',
+      stack: [
+        'Dart',
+        'Flutter',
+        'Extension methods',
+        'GitHub Actions',
+        'flutter_test',
+        'intl',
+        'flutter_animate',
+      ],
+      links: [
+        AppLink(
+          type: AppLinkType.pubDev,
+          url: 'https://pub.dev/packages/flutter_extend',
+        ),
+        AppLink(
+          type: AppLinkType.repo,
+          url: 'https://github.com/KenStarry/flutter_extend',
+        ),
+        AppLink(
+          type: AppLinkType.web,
+          url: 'https://starrycodes.mintlify.app/flutter_extend/introduction',
+          label: 'Documentation',
+        ),
+      ],
+      summary: [
+        'A Dart extension library that removes the boilerplate every Flutter '
+            'codebase rewrites: navigation without the `context` clutter, '
+            'padding declared on the widget itself, theme access that does not '
+            'go through `Theme.of(context)`, and string, date, file and list '
+            'helpers that would otherwise be a `utils.dart` in every project.',
+        'It started as the shared layer inside Flow Music Player and got '
+            'pulled out once the same twenty helpers had been copied into a '
+            'third codebase. Thirteen releases later it is 37 extensions '
+            'across 12 core types, with 80 tests and CI gating every pull '
+            'request.',
+        'The interesting part is not the extension list — the docs cover that '
+            'better than a case study can. It is that a package other people '
+            'depend on has to be maintained differently from an app you own: '
+            'nothing can be renamed on a whim, and every removal needs a '
+            'migration path shipped ahead of it.',
+      ],
+      highlights: [
+        '13 releases over a year of continuous maintenance, v0.0.1 to v0.3.1',
+        '37 extensions across 12 types — String, BuildContext, Widget, File, '
+            'DateTime, num, Color and more',
+        '80 tests in 13 files, run by GitHub Actions on every pull request',
+        'CI also enforces formatting: `dart format --set-exit-if-changed`',
+        'Deprecations ship with a named removal version and a migration target',
+        'Split into per-area entrypoints, so importing strings does not pull '
+            'in the animation layer',
+      ],
+      features: [
+        ProjectFeature(
+          label: 'Ergonomics',
+          title: 'The call site is the design.',
+          description: 'Every extension was judged by one question — does the '
+              'line that uses it read better than the line it replaces? Where '
+              'the answer was no, it did not ship, however useful the helper '
+              'was in isolation.',
+          points: [
+            'Navigation: `context.pushScreen(Home())` over the Navigator dance',
+            'Layout: `Text(...).padding()` declared on the widget, not around '
+                'it',
+            'Theme: `context.colorScheme` instead of `Theme.of(context)`',
+            'Validation: `email.isValidEmail`, `password.hasMinimumLength(8)`',
+          ],
+        ),
+        ProjectFeature(
+          label: 'Maintenance',
+          title: 'A deprecation policy, on a v0.x side project.',
+          description: 'The rename from `"".generateLoremIpsum()` to '
+              '`30.loremWords` could have been a breaking change in a patch '
+              'release. Instead the old form stayed, marked deprecated, '
+              'pointing at its replacement and naming the version it would be '
+              'removed in.',
+          points: [
+            'Four generator methods deprecated in v0.2.0 with 1.0.0 named as '
+                'the removal',
+            'Every deprecation carries the exact call to migrate to',
+            'v0.3.1 restructured the library into smaller entrypoints without '
+                'breaking a single import',
+          ],
+        ),
+        ProjectFeature(
+          label: 'Discipline',
+          title: 'CI that can actually fail.',
+          description: 'A solo package is where test suites usually go to die. '
+              'This one runs `flutter test` and a formatting check on every '
+              'pull request, against a pinned Flutter version — so a red '
+              'branch cannot be merged and a reformatted file cannot sneak in '
+              'unreviewed.',
+          points: [
+            'GitHub Actions, pinned to Flutter 3.27.1',
+            '80 tests across generators, strings, dates, files, lists, numbers',
+            '51+ pull requests — features branched, reviewed and merged rather '
+                'than pushed to main',
+          ],
         ),
       ],
     ),

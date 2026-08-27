@@ -1,6 +1,7 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../enum/project_category.dart';
+import '../enum/project_kind.dart';
 import 'project_feature.dart';
 import 'project_module.dart';
 import '../enum/project_platform.dart';
@@ -18,6 +19,7 @@ class ProjectModel {
     required this.year,
     required this.status,
     required this.category,
+    this.kind = ProjectKind.product,
     this.client,
     this.platforms = const [],
     required this.stack,
@@ -40,6 +42,11 @@ class ProjectModel {
 
   /// Grouping for the filter pills on the work section.
   final ProjectCategory category;
+
+  /// What sort of thing this is — an application or a package. Defaults to
+  /// [ProjectKind.product], which is what every entry was before the axis
+  /// existed, so adding it recategorised nothing.
+  final ProjectKind kind;
 
   /// Who the work was for — "Britam Insurance × Dentsu", "HealthX Africa".
   ///
@@ -111,6 +118,7 @@ class ProjectModel {
         year: map['year']?.toString() ?? '',
         status: ProjectStatus.fromName(map['status']?.toString()),
         category: ProjectCategory.fromName(map['category']?.toString()),
+        kind: ProjectKind.fromName(map['kind']?.toString()),
         client: map['client']?.toString(),
         platforms: switch (map['platforms']) {
           final List<Object?> raw => [
@@ -156,6 +164,7 @@ class ProjectModel {
         'status': status.name,
         'category': category.name,
         'client': client,
+        'kind': kind.name,
         'platforms': [for (final p in platforms) p.name],
         'stack': stack,
         'summary': summary,

@@ -122,6 +122,7 @@ class AppIcons {
         'play' => play(classes: classes),
         'globe' => globe(classes: classes),
         'github' => github(classes: classes),
+        'dart' => dart(classes: classes),
         _ => layers(classes: classes),
       };
 
@@ -139,6 +140,17 @@ class AppIcons {
   static Component github({String classes = 'h-4 w-4'}) => RawText(
         '<svg class="$classes" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
         '<path d="M12 .8a11.2 11.2 0 00-3.54 21.83c.56.1.77-.24.77-.54v-2.1c-3.12.68-3.78-1.32-3.78-1.32-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.94.1-.73.39-1.22.71-1.5-2.49-.29-5.11-1.25-5.11-5.55 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.1 1.16a10.7 10.7 0 015.64 0c2.15-1.46 3.1-1.16 3.1-1.16.61 1.54.22 2.68.11 2.96.72.79 1.15 1.79 1.15 3.02 0 4.31-2.62 5.26-5.12 5.54.4.35.76 1.03.76 2.08v3.09c0 .3.2.65.78.54A11.2 11.2 0 0012 .8z"/>'
+        '</svg>',
+      );
+
+  /// The Dart wordmark's bird glyph, flattened to one colour. Dart's published
+  /// mark is two blues; the palette has no second hue, so the badge takes the
+  /// silhouette and lets `currentColor` do the rest — the same treatment the
+  /// Apple and Play marks already get.
+  static Component dart({String classes = 'h-4 w-4'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+        '<path d="M6.4 2.6 2.6 6.4v9.9l3.3 3.3h9.9l3.8-3.8V5.9L16 2.6H6.4zm.5 2h8.6l2.6 2.6v8.9l-2.6 2.6H6.9L4.6 15.4V6.9L6.9 4.6z"/>'
+        '<path d="M8.4 7.2v7.1l1.9 1.9h5.2V9.1l-1.9-1.9H8.4z"/>'
         '</svg>',
       );
 

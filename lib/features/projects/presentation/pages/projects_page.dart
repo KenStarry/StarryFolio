@@ -1,8 +1,10 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/server.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
+import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/error_notice.dart';
 import '../../../../core/presentation/components/company_marquee.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
@@ -13,6 +15,7 @@ import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
 import '../../../../core/seo/structured_data.dart';
 import '../../domain/enum/project_category.dart';
+import '../../domain/enum/project_kind.dart';
 import '../../domain/model/project_model.dart';
 import '../components/project_bento.dart';
 import '../components/project_showcase.dart';
@@ -54,12 +57,23 @@ class ProjectsPage extends AsyncStatelessComponent {
         // one and has nothing to render without it. Anything flagged but
         // missing its render falls back to a card in its category grid rather
         // than producing an empty band.
-        final featured = projects
+        // The two kinds are laid out separately. A package has no device
+        // render and no store listing, so it cannot go through the showcase
+        // and would sit oddly in a band titled by audience — see
+        // [ProjectKind].
+        final products = projects
+            .where((item) => item.kind == ProjectKind.product)
+            .toList(growable: false);
+        final packages = projects
+            .where((item) => item.kind == ProjectKind.package)
+            .toList(growable: false);
+
+        final featured = products
             .where((item) => item.featured && item.mockupImage != null)
             .toList(growable: false);
 
         final rest =
-            projects.where((item) => !featured.contains(item)).toList(growable: false);
+            products.where((item) => !featured.contains(item)).toList(growable: false);
 
         // Only categories that actually have projects get a band, so the page
         // can never render an empty titled section.
@@ -112,6 +126,22 @@ class ProjectsPage extends AsyncStatelessComponent {
             stops.add((anchor: band.category.slug, label: band.category.title));
             b++;
           }
+        }
+
+        // Appended after the interleave, so open source always closes the
+        // page rather than landing wherever the alternation happened to stop.
+        if (packages.isNotEmpty) {
+          blocks.add(_KindBand(
+            kind: ProjectKind.package,
+            projects: packages,
+            index: n++,
+            raised: n.isEven,
+            timeline: slot(),
+          ));
+          stops.add((
+            anchor: ProjectKind.package.slug,
+            label: ProjectKind.package.label,
+          ));
         }
 
         return Component.fragment([
@@ -400,6 +430,195 @@ class _CategoryBand extends StatelessComponent {
       ],
     );
   }
+}
+
+
+/// The open-source band.
+///
+/// Deliberately not a [_CategoryBand] with a different title. A package has no
+/// device render, no store listing and no client, so the things a product card
+/// leads with are all absent — and a bento of one card reads as an
+/// afterthought rather than as a section.
+///
+/// A single package therefore gets a wide two-column card: its artwork beside
+/// what actually distinguishes it, which for a library is the maintenance
+/// record rather than the screens. Two or more fall back to the shared bento,
+/// where the grid does the work again.
+class _KindBand extends StatelessComponent {
+  const _KindBand({
+    required this.kind,
+    required this.projects,
+    required this.index,
+    required this.raised,
+    required this.timeline,
+  });
+
+  final ProjectKind kind;
+  final List<ProjectModel> projects;
+  final int index;
+  final String timeline;
+  final bool raised;
+
+  @override
+  Component build(BuildContext context) {
+    final solo = projects.length == 1 ? projects.first : null;
+
+    return section(
+      id: kind.slug,
+      classes: '$timeline relative '
+          '${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-28',
+      [
+        div(
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          [
+            _BandHeading(
+              index: index,
+              eyebrow: kind.label,
+              title: kind.title,
+              lead: kind.lead,
+              count: projects.length,
+              countLabel: projects.length == 1 ? 'package' : 'packages',
+            ),
+
+            div(
+              classes: 'mt-12',
+              [
+                if (solo != null)
+                  _PackageFeature(project: solo)
+                else
+                  ProjectBento(projects: projects),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// One package, wide: artwork on the left, the record on the right.
+class _PackageFeature extends StatelessComponent {
+  const _PackageFeature({required this.project});
+
+  final ProjectModel project;
+
+  @override
+  Component build(BuildContext context) {
+    final href = RoutePaths.projectDetail(project.slug);
+
+    return div(
+      classes: 'float-card reveal grid overflow-hidden border border-ink-700 '
+          'bg-ink-900 lg:grid-cols-[1.1fr_1fr]',
+      [
+        Link(
+          to: href,
+          classes: 'group block overflow-hidden bg-ink-850',
+          children: [
+            if (project.coverImage case final cover?)
+              img(
+                src: '/$cover',
+                alt: '${project.name} — ${project.tagline}',
+                classes: 'h-full w-full object-cover transition-transform '
+                    'duration-700 ease-soft group-hover:scale-[1.03]',
+                attributes: const {'loading': 'lazy', 'decoding': 'async'},
+              ),
+          ],
+        ),
+
+        div(
+          classes: 'flex flex-col justify-center p-8 sm:p-10',
+          [
+            div(
+              classes: 'flex flex-wrap items-center gap-3',
+              [
+                span(
+                  classes: 'type-eyebrow font-mono text-iris-400',
+                  [Component.text(kindEyebrow(project))],
+                ),
+                const span(classes: 'h-px w-8 bg-ink-600', []),
+                span(
+                  classes: 'border px-2.5 py-1 font-mono text-[10px] '
+                      'uppercase tracking-wider ${project.status.classes}',
+                  [Component.text(project.status.label)],
+                ),
+              ],
+            ),
+
+            h3(
+              classes: 'mt-6 font-display text-2xl font-extrabold '
+                  'tracking-tight text-ink-100 sm:text-3xl',
+              [
+                Link(
+                  to: href,
+                  classes: 'transition-colors duration-300 '
+                      'hover:text-iris-300',
+                  children: [Component.text(project.name)],
+                ),
+              ],
+            ),
+
+            p(
+              classes: 'mt-4 text-[0.9375rem] leading-relaxed text-ink-300',
+              [Component.text(project.tagline)],
+            ),
+
+            // The maintenance record — what a library is judged on, and the
+            // part a product card has no slot for.
+            if (project.highlights.isNotEmpty)
+              ul(
+                classes: 'mt-8 space-y-2.5',
+                [
+                  for (final line in project.highlights.take(3))
+                    li(
+                      classes: 'flex gap-3 text-sm leading-relaxed text-ink-400',
+                      [
+                        const span(
+                          classes: 'shrink-0 pt-1.5 font-mono text-iris-400',
+                          attributes: {'aria-hidden': 'true'},
+                          [Component.text('—')],
+                        ),
+                        span([Component.text(line)]),
+                      ],
+                    ),
+                ],
+              ),
+
+            div(
+              classes: 'mt-9 flex flex-wrap items-center gap-6',
+              [
+                Link(
+                  to: href,
+                  classes: 'link-line type-eyebrow inline-flex items-center '
+                      'font-mono text-ink-100',
+                  children: [const Component.text('Read the case study →')],
+                ),
+                for (final link in project.links)
+                  a(
+                    href: link.url,
+                    target: Target.blank,
+                    attributes: const {'rel': 'noopener'},
+                    classes: 'type-eyebrow inline-flex items-center gap-2 '
+                        'font-mono text-ink-400 transition-colors '
+                        'hover:text-ink-100',
+                    [
+                      AppIcons.byName(link.type.icon, classes: 'h-4 w-4'),
+                      Component.text(link.label ?? link.type.title),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// The platform line, since a package that runs everywhere is worth saying
+  /// out loud — it is the practical difference from every app on this page.
+  static String kindEyebrow(ProjectModel project) =>
+      project.platforms.length >= 4
+          ? 'Every Flutter platform'
+          : project.platforms.map((item) => item.label).join(' · ');
 }
 
 class _Meta extends StatelessComponent {

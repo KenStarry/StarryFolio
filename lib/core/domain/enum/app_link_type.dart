@@ -29,6 +29,12 @@ enum AppLinkType {
     title: 'Source',
     icon: 'github',
     verb: 'View',
+  ),
+  pubDev(
+    overline: 'Get it on',
+    title: 'pub.dev',
+    icon: 'dart',
+    verb: 'Install',
   );
 
   const AppLinkType({

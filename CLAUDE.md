@@ -151,8 +151,32 @@ section that is not there.
 
 Append to `features/projects/data/datasource/projects_local_datasource.dart`. It appears on
 the home page, the index, and gets its own pre-rendered `/projects/<slug>` page — the route
-table reads `ProjectsLocalDatasource.slugs` directly, because static generation must
-enumerate every page synchronously before any async work runs.
+table reads `ProjectsLocalDatasource.caseStudySlugs`, because static generation must
+enumerate every page synchronously before any async work runs. A project with no `features`
+and no `modules` has no case study written, so it gets no route and cannot be linked to.
+
+#### The three axes — keep them separate
+
+A project is described on three independent axes. They answer different questions, and
+collapsing any two produces an enum with no coherent meaning:
+
+| Axis | Question | Values | Drives |
+|---|---|---|---|
+| `ProjectKind` | what is it? | `product` · `package` | the top-level split on `/projects` |
+| `ProjectCategory` | who was it for? | enterprise · commercial · personal | the bands within products |
+| `ProjectPlatform` | where does it run? | android · iOS · web · desktop | a badge on the card |
+
+**"Open source" is not a category.** It is a licence plus a public repo — a *property*, not
+a grouping. A mobile app can be open source too, which is exactly how an axis breaks. What
+separates `flutter_extend` from every other entry is that it is not an application: no
+screens, no store listing, no users. Developers depend on it. That is a difference of
+*kind*.
+
+`ProjectKind` defaults to `product`, so adding the axis recategorised nothing. Products flow
+through the featured showcase and the category bands unchanged; packages get `_KindBand`,
+which closes the page. A single package renders as a wide two-column card rather than a bento
+of one — and it leads with `highlights`, because a library is judged on its maintenance
+record, not its screenshots.
 
 ---
 
