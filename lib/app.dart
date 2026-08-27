@@ -8,6 +8,7 @@ import 'features/home/presentation/pages/home_page.dart';
 import 'features/about/presentation/pages/about_page.dart';
 import 'features/contact/presentation/pages/contact_page.dart';
 import 'features/contact/presentation/pages/thanks_page.dart';
+import 'features/documents/presentation/pages/documents_page.dart';
 import 'features/not_found/presentation/pages/not_found_page.dart';
 import 'features/projects/data/datasource/projects_local_datasource.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
@@ -49,6 +50,12 @@ class App extends StatelessComponent {
           title: 'Writing — ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const WritingPage()),
+        ),
+        Route(
+          path: RoutePaths.documents,
+          title: 'Documents & CV — ${SiteConfig.name}',
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const DocumentsPage()),
         ),
         Route(
           path: RoutePaths.about,

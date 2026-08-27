@@ -32,7 +32,7 @@ class SiteConfig {
   /// The logo mark — a crop of the hero avatar, which is the trademark.
   /// Replaces the letter monogram that stood in before the artwork existed.
   static const String logoMark = 'images/logo-mark.webp';
-  static const String role = 'Flutter UI/UX Engineer';
+  static const String role = 'Senior Flutter Engineer & UI/UX';
   static const String location = 'Nairobi, Kenya';
   static const String domain = 'kenstarry.com';
   static const String siteUrl = 'https://kenstarry.com';
@@ -86,6 +86,14 @@ class SiteConfig {
   /// It already declines to run on touch devices and under
   /// `prefers-reduced-motion`; this is the blanket off.
   static const bool customCursor = true;
+
+  /// The downloadable CV, served straight from `web/`.
+  ///
+  /// The `/cv` page is generated from the same facts (see
+  /// `AboutLocalDatasource`), so the two cannot drift — but the file is the
+  /// artefact people actually attach to an application, and it has to exist as
+  /// a file for that.
+  static const String cvFile = '/cv.pdf';
 
   static const bool available = true;
   static const String availabilityLabel = 'Available for select work';

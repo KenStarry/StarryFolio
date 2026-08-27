@@ -9,6 +9,7 @@ import '../../../about/domain/model/about_profile.dart';
 import '../components/about_section.dart';
 import '../components/contact_section.dart';
 import '../components/hero_section.dart';
+import '../components/honours_band.dart';
 import '../components/services_section.dart';
 import '../components/work_section.dart';
 
@@ -53,6 +54,11 @@ class HomePage extends AsyncStatelessComponent {
       StructuredData(id: 'ld-website', SchemaOrg.website()),
 
       const HeroSection(),          // base
+      // Sits directly under the hero, sharing its ground so the plate reads as
+      // seated on the same sheet rather than as the next section starting.
+      HonoursBand(
+        education: profile.education.isEmpty ? null : profile.education.first,
+      ),
       AboutSection(                 // base  (own ground)
         profile: profile,
         error: aboutError,

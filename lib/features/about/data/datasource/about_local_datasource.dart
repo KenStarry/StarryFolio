@@ -15,20 +15,21 @@ import '../../domain/model/skill_model.dart';
 /// repository on top exists so the page never learns where it came from.
 ///
 /// ─────────────────────────────────────────────────────────────────────────
-/// **Before launch — the authored facts.**
+/// **The CV is the source of truth for this file.**
 ///
-/// The companies are real; the *date ranges* against them are not, and neither
-/// is the education entry. Every affected record carries `draft: true`, which
-/// renders a quiet `dates to confirm` marker in place rather than presenting a
-/// guess as a fact. Correct the values, delete the flags, and the markers
-/// disappear on their own.
+/// [experience], [education], [skillGroups] and [milestones] are transcribed
+/// from `Kenneth_Michuki_Resume.pdf` — the same document served at
+/// `/cv.pdf` — so the page, the `/cv` route and the downloadable file cannot
+/// state three different careers. When the CV changes, change it here first
+/// and let both pages follow.
 ///
-/// - [experience] — confirm every `period`, `kind` and `location`.
-/// - [education] — confirm the institution, the qualification and the years.
-/// - [milestones] — confirm the years.
-/// - [facets] — written from what the site already knows. Make them yours;
-///   this band is the only part of the page that is not about work, and
-///   borrowed personality reads worse than none.
+/// Every record once carried `draft: true`, which rendered a quiet
+/// `dates to confirm` marker rather than presenting a guess as a fact. The
+/// flags are gone because the dates are now real; the mechanism stays on the
+/// models for the next time something is authored ahead of being confirmed.
+///
+/// [facets] is the exception — it is the one band that is not about work, and
+/// the CV has nothing to say about it.
 /// ─────────────────────────────────────────────────────────────────────────
 abstract final class AboutLocalDatasource {
   static const AboutProfile profile = AboutProfile(
@@ -49,73 +50,73 @@ abstract final class AboutLocalDatasource {
   static const List<ExperienceModel> experience = [
     ExperienceModel(
       slug: 'healthx',
-      role: 'Lead Mobile Engineer',
+      role: 'Senior Flutter Engineer & UI/UX',
       company: 'HealthX Africa',
-      period: '2023 — Present',
+      period: 'Jan 2026 — Present',
       kind: 'Full-time',
       location: 'Nairobi',
       current: true,
-      draft: true,
       projectSlug: 'healthx',
-      summary: 'I own the full mobile lifecycle of a Kenyan telehealth '
-          'platform — design system through release.',
+      summary: 'Sole engineer and designer on Kenya\'s most comprehensive '
+          'telehealth platform — research, brand, architecture, development, '
+          'QA and a dual-store release, all of it owned end to end.',
       highlights: [
-        'Seven feature modules on one shell',
-        'A design system built in, not bolted on',
-        'Both stores, signed and staged',
+        'Zero to both stores in under three months',
+        'Product UI/UX across 10+ feature modules, with no designer or PM',
+        'Established the company brand identity — now used company-wide',
+        'Feature-driven Clean Architecture on Riverpod 3',
+        'Real-time video consultations on LiveKit, e-pharmacy, biometric auth',
+        'Kenya DPA 2019 compliance, staged rollouts, TestFlight betas',
       ],
-      stack: ['Flutter', 'Riverpod 3', 'Clean Architecture', 'Firebase'],
+      stack: [
+        'Flutter',
+        'Riverpod 3',
+        'LiveKit',
+        'Clean Architecture',
+        'Hive',
+      ],
     ),
     ExperienceModel(
       slug: 'dentsu',
-      role: 'Mobile Engineer',
-      company: 'Dentsu',
-      period: '2022 — 2023',
-      kind: 'Contract',
-      location: 'Nairobi',
-      draft: true,
-      summary: 'Client products on campaign deadlines that do not move.',
-      highlights: [
-        'Brand guidelines turned into component libraries',
-        'Shipped against fixed launch dates',
-        'Designers in the room, daily',
-      ],
-      stack: ['Flutter', 'BLoC', 'Figma'],
-    ),
-    ExperienceModel(
-      slug: 'britam',
       role: 'Flutter Developer',
-      company: 'Britam',
-      period: '2021 — 2022',
-      kind: 'Full-time',
+      company: 'Dentsu Kenya',
+      period: 'Apr 2024 — Sep 2025',
+      kind: 'Consultant',
       location: 'Nairobi',
-      draft: true,
       projectSlug: 'britam-app',
-      summary: 'Insurance on mobile, where a mistyped field has a financial '
+      summary: 'A full architectural rebuild of the legacy MyBritam insurance '
+          'platform — the kind of work where a mistyped field has a financial '
           'consequence.',
       highlights: [
-        'Customer flows that move real money',
-        'Validation and receipts as product surfaces',
-        'An enterprise release process, learned properly',
+        'Play Store rating from 3.1 to 4.1 through stability and UI/UX work',
+        '100% feature parity across Android, iOS and Web from one codebase',
+        'CI/CD on GitHub Actions and Azure DevOps, synchronised across three '
+            'platforms',
+        'Deep linking and real-time WebSocket updates',
       ],
-      stack: ['Flutter', 'Provider', 'REST'],
+      stack: [
+        'Flutter',
+        'Clean Architecture',
+        'GitHub Actions',
+        'Azure DevOps',
+      ],
     ),
     ExperienceModel(
       slug: 'podii',
-      role: 'Software Engineer',
-      company: 'Podii',
-      period: '2020 — 2021',
+      role: 'Flutter Developer',
+      company: 'Podii Consultants',
+      period: 'May 2023 — Mar 2024',
       kind: 'Full-time',
       location: 'Nairobi',
-      draft: true,
-      summary: 'Product engineering across client builds — and where Dart '
-          'became the language I reach for.',
+      projectSlug: 'elvs',
+      summary: 'Internal tooling and the offline problem — building for people '
+          'whose connectivity cannot be assumed.',
       highlights: [
-        'Features end to end, data layer to release',
-        'Close enough to product to see what survives',
-        'The first Flutter I would still defend',
+        'ELVS Mobile: a business workflow app with role-based access control',
+        'Offline sync and state restoration on SQLite, built for data integrity '
+            'in low-connectivity environments',
       ],
-      stack: ['Dart', 'Flutter', 'Git'],
+      stack: ['Flutter', 'Dart', 'SQLite'],
     ),
   ];
 
@@ -124,10 +125,9 @@ abstract final class AboutLocalDatasource {
   static const List<EducationModel> education = [
     EducationModel(
       slug: 'degree',
-      qualification: 'BSc, Computer Science',
-      institution: 'University of Nairobi',
-      period: '2016 — 2020',
-      draft: true,
+      qualification: 'BSc Computer Science — First Class Honours',
+      institution: 'Masinde Muliro University of Science and Technology',
+      period: '2024',
       note: 'The fundamentals that do not expire. Everything framework-shaped '
           'came after — and keeps coming.',
       focus: ['Algorithms', 'Systems', 'Databases', 'HCI'],
@@ -148,9 +148,10 @@ abstract final class AboutLocalDatasource {
       skills: [
         SkillModel('Dart', SkillLevel.core),
         SkillModel('Flutter', SkillLevel.core),
+        SkillModel('Kotlin', SkillLevel.fluent),
+        SkillModel('Jetpack Compose', SkillLevel.fluent),
+        SkillModel('Java', SkillLevel.working),
         SkillModel('Jaspr', SkillLevel.fluent),
-        SkillModel('Kotlin', SkillLevel.working),
-        SkillModel('Swift', SkillLevel.working),
       ],
     ),
     SkillGroupModel(
@@ -160,9 +161,25 @@ abstract final class AboutLocalDatasource {
       skills: [
         SkillModel('Clean Architecture', SkillLevel.core),
         SkillModel('Riverpod', SkillLevel.core),
-        SkillModel('BLoC', SkillLevel.fluent),
-        SkillModel('Isar / Drift', SkillLevel.fluent),
-        SkillModel('Offline-first sync', SkillLevel.fluent),
+        SkillModel('BLoC / Cubit', SkillLevel.fluent),
+        SkillModel('MVVM & SOLID', SkillLevel.core),
+        SkillModel('Offline-first sync', SkillLevel.core),
+        SkillModel('Hive / Isar / Room', SkillLevel.fluent),
+        SkillModel('TDD', SkillLevel.fluent),
+      ],
+    ),
+    SkillGroupModel(
+      slug: 'backend',
+      name: 'Backend & cloud',
+      note: 'Enough of the other side to design an API I can actually consume.',
+      skills: [
+        SkillModel('Supabase', SkillLevel.core),
+        SkillModel('Firebase', SkillLevel.core),
+        SkillModel('PostgreSQL', SkillLevel.fluent),
+        SkillModel('REST', SkillLevel.core),
+        SkillModel('GraphQL', SkillLevel.working),
+        SkillModel('Cloudflare R2', SkillLevel.fluent),
+        SkillModel('OAuth2 / JWT', SkillLevel.fluent),
       ],
     ),
     SkillGroupModel(
@@ -172,9 +189,10 @@ abstract final class AboutLocalDatasource {
       skills: [
         SkillModel('Design systems', SkillLevel.core),
         SkillModel('Motion & easing', SkillLevel.core),
+        SkillModel('Figma', SkillLevel.core),
         SkillModel('Accessibility', SkillLevel.fluent),
-        SkillModel('Figma', SkillLevel.fluent),
         SkillModel('Typography', SkillLevel.fluent),
+        SkillModel('Rive', SkillLevel.working),
       ],
     ),
     SkillGroupModel(
@@ -183,10 +201,12 @@ abstract final class AboutLocalDatasource {
       note: 'The half of the job that happens after the code is written.',
       skills: [
         SkillModel('CI/CD', SkillLevel.core),
-        SkillModel('Fastlane', SkillLevel.fluent),
-        SkillModel('Firebase', SkillLevel.core),
+        SkillModel('GitHub Actions', SkillLevel.core),
+        SkillModel('Azure DevOps', SkillLevel.fluent),
         SkillModel('Play Console & App Store Connect', SkillLevel.core),
-        SkillModel('Crash triage', SkillLevel.fluent),
+        SkillModel('Sentry', SkillLevel.fluent),
+        SkillModel('Amplitude', SkillLevel.working),
+        SkillModel('Docker', SkillLevel.working),
       ],
     ),
   ];
@@ -243,24 +263,27 @@ abstract final class AboutLocalDatasource {
       note: 'Swapped a screenful of Android XML for it. Never went back.',
     ),
     MilestoneModel(
-      year: '2021',
-      title: 'First app on a store',
-      note: 'A real listing, and the specific dread of a rejected build.',
+      year: '2023',
+      title: 'Paid to write Dart',
+      note: 'Podii, and the offline problem — building for connectivity you '
+          'cannot assume.',
     ),
     MilestoneModel(
-      year: '2023',
-      title: 'Took the whole lifecycle',
-      note: 'Design system through release — the first time all of it was mine.',
+      year: '2024',
+      title: 'First Class Honours',
+      note: 'BSc Computer Science, Masinde Muliro. Finished while shipping '
+          'insurance software full-time.',
     ),
     MilestoneModel(
       year: '2025',
-      title: 'Both stores, one codebase',
-      note: 'iOS and Android from one source, on a pipeline that runs itself.',
+      title: 'Three platforms, one codebase',
+      note: 'MyBritam on Android, iOS and Web — and a Play rating from 3.1 to '
+          '4.1.',
     ),
     MilestoneModel(
       year: '2026',
-      title: 'This site, in Dart',
-      note: 'Rebuilt in Jaspr. The same language as the apps, all the way down.',
+      title: 'Zero to both stores in three months',
+      note: 'HealthX, solo — research, brand, architecture, QA and release.',
     ),
   ];
 

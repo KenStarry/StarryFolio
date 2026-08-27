@@ -15,6 +15,7 @@ const _links = <({String label, String href})>[
   (label: 'Works', href: RoutePaths.projects),
   (label: 'Writing', href: RoutePaths.writing),
   (label: 'About', href: RoutePaths.about),
+  (label: 'Documents', href: RoutePaths.documents),
   (label: 'Contact', href: RoutePaths.contact),
 ];
 
@@ -84,7 +85,7 @@ class _NavBarView extends StatelessComponent {
             _logo(),
 
             div(
-              classes: 'hidden items-center gap-10 md:flex',
+              classes: 'hidden items-center gap-7 lg:flex xl:gap-10',
               [
                 for (final link in _links)
                   a(
@@ -106,13 +107,13 @@ class _NavBarView extends StatelessComponent {
                   href: 'mailto:${SiteConfig.email}',
                   classes: 'hidden bg-ink-200 px-5 py-2.5 text-sm font-medium '
                       'text-ink-900 transition-colors duration-300 '
-                      'hover:bg-ink-100 md:inline-flex',
+                      'hover:bg-ink-100 lg:inline-flex',
                   [Component.text("Let's talk")],
                 ),
                 button(
                   classes: 'inline-flex h-10 w-10 items-center justify-center '
                       'border border-ink-600 text-ink-200 transition-colors '
-                      'duration-300 hover:border-ink-400 md:hidden',
+                      'duration-300 hover:border-ink-400 lg:hidden',
                   attributes: {
                     'aria-label': isOpen ? 'Close menu' : 'Open menu',
                     'aria-expanded': '$isOpen',
@@ -132,7 +133,7 @@ class _NavBarView extends StatelessComponent {
           div(
             id: 'mobile-menu',
             classes: 'relative border-t border-ink-700/70 bg-ink-900 px-6 '
-                'pb-8 pt-2 md:hidden',
+                'pb-8 pt-2 lg:hidden',
             [
               for (final link in _links)
                 a(

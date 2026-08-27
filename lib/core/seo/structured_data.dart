@@ -181,14 +181,21 @@ class SchemaOrg {
   /// the [person] node by `@id` plus the employment and education facts that
   /// only this page carries — which is what lets a knowledge panel state where
   /// someone works without having to parse the prose.
+  /// [path] exists because two pages describe this person — `/about` at
+  /// reading pace and `/cv` at scanning pace. Both are legitimately a
+  /// `ProfilePage`, and both point `mainEntity` at the same person `@id`, so
+  /// a crawler reads them as one person documented twice rather than as two
+  /// identically-named Kens. Hard-coding the URL here would have made the CV
+  /// page claim to be the about page.
   static Map<String, Object?> profilePage({
     required List<({String name, String role})> employers,
     required List<String> education,
+    String path = RoutePaths.about,
   }) =>
       {
         '@context': _context,
         '@type': 'ProfilePage',
-        'url': SiteConfig.absolute(RoutePaths.about),
+        'url': SiteConfig.absolute(path),
         'name': 'About ${SiteConfig.name}',
         'mainEntity': {
           '@type': 'Person',

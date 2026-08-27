@@ -12,6 +12,14 @@ class RoutePaths {
   static const String contact = '/contact';
   static const String about = '/about';
   static const String writing = '/writing';
+  /// The documents hub. Named for what it holds rather than for the CV
+  /// alone — the CV is one band on it.
+  static const String documents = '/documents';
+
+  /// The old CV URL, kept because `/cv` is what a recruiter guesses. It is a
+  /// 301 to [documents], declared in `web/_redirects` rather than as a route:
+  /// a second route would be a duplicate page competing with the real one.
+  static const String cvLegacy = '/cv';
   static const String thanks = '/thanks';
   static const String notFound = '/404';
 

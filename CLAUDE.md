@@ -114,6 +114,97 @@ Major Current features: `home`, `projects`, `services`, `about`, `contact`, `wri
 7. Add `PageMeta` and, where it fits, `StructuredData`.
 8. Build and grep the HTML for the new content.
 
+### The documents hub
+
+`/documents` is the hub for everything a recruiter files: the CV, the portfolio
+as paper, and the degree. It is a full feature (`features/documents/`) with its
+own model, enum, datasource and repository, but it *composes* `Locator.about`
+and `Locator.projects` rather than restating them — so the hub, `/about` and
+`web/cv.pdf` cannot describe three different careers.
+
+**`/cv` still works.** It is a 301 in `web/_redirects`, not a route — a second
+route would be a duplicate page competing with the real one. `/resume` redirects
+too.
+
+| Band | Is |
+|---|---|
+| `#cv` | the file, its own pages fanned beside it as `PaperStack` |
+| `#degree` | the credential, `SealedDocument`, on request |
+
+**Two bands, and only two.** Everything here has to be a document somebody
+would actually file. A print band and a readable copy of the CV both lived here
+briefly and both were cut: the hub stopped reading as a records desk and
+started reading as a features list. There is no `@media print` block any more —
+it existed only to reformat the readable copy, and dead rules that reference
+nothing are worse than no rules, because the next person reads them as a
+feature.
+
+**The page renders are generated, never drawn.** `web/images/cv-page-*.webp`
+come out of the PDF itself:
+
+```bash
+pdftoppm -png -r 150 -f 1 -l 3 web/cv.pdf out
+cwebp -q 88 -resize 900 0 out-1.png -o web/images/cv-page-1.webp
+```
+
+Regenerate them whenever `cv.pdf` changes, or the preview shows a layout the
+download does not have.
+
+**`DocumentAccess` is content, not security.** A gated document has no file on
+the server at all, and the request goes to a human by `mailto:`. Nothing here
+pretends to be access control — on a static site it could not be, and
+"available on request" is a normal sentence on a CV. Never publish a blurred
+image of a withheld document: it implies a file is sitting there behind a
+filter, one URL guess away.
+
+**The university crest is a stencil, never an image.** `web/images/mmust-crest.webp`
+carries no colour at all — only an alpha channel where the logo's linework is
+opaque and its paper is clear. `.crest` paints `currentColor` through it, so the
+mark takes whatever tone the element is set to. That is the *only* way a
+two-colour third-party logo can enter a site whose design rule is two tones and
+no accent hue; dropping the original PNG in would import a light blue the
+palette does not have.
+
+It also means tint and opacity are ordinary Tailwind text-colour utilities —
+`text-ink-200` for the crest, `text-ink-100/[0.065]` for the watermark. One CSS
+class, every variant.
+
+Regenerate it from the source logo with: alpha = existing alpha × (1 −
+luminance), discarding anything under an alpha floor of ~34 so the source's
+soft drop shadow does not engrave as a smudge under the ribbon. Export the
+**complete lockup** — roundel *and* the "Technology for Development" ribbon —
+trimmed to its bounding box, at 512×464 (aspect 1.10), `cwebp -q 75 -alpha_q
+70`. The fine outer text ring is indistinguishable from `alpha_q 100` at every
+size it is displayed, for a third of the weight.
+
+**The mark is 1.10:1, not square.** Every box that holds it carries that
+aspect, and `.crest-seat` has no `rounded-full` — `closest-side` then resolves
+the bloom to a soft ellipse that follows the lockup instead of a circle with
+the ribbon hanging out of it.
+
+**The mark appears at two scales on both surfaces**, which is what a real
+certificate does: the crest at the head, and the same mark again large and
+barely there, embossed through the paper. On the home plate the watermark is
+hung far enough off the right edge (`-right-40` against a 19rem mark) that the
+roundel's *centre* clears the plate and only its outer ring shows — parked any
+closer, the dense gear-and-book middle sits under the Verify link and turns it
+to mush. An arc reads as embossing; a whole logo behind a button reads as clip
+art.
+
+Both instances are `aria-hidden`: the institution is named in text beside them,
+and a screen reader announcing the crest would be repeating it.
+
+**The degree also appears on the home page**, as `HonoursBand` directly under
+the hero — the certificate language from `SealedDocument` (drawn seal, double
+hairline frame, ruled ground) at strip scale, so the two read as one claim seen
+twice rather than as two designs. It is fed the same `AboutLocalDatasource`
+education entry, and renders nothing when there is none.
+
+It is a band rather than a pill inside the hero on purpose: the hero is already
+a name, a statement, a portrait and three stat pills, and a fourth claim in
+there reads as competition, not emphasis. It is also deliberately slim — a full
+section for one line of credential would overplay it.
+
 ### Adding a post
 
 Append to `features/writing/data/datasource/writing_local_datasource.dart`, then add

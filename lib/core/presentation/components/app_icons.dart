@@ -123,8 +123,29 @@ class AppIcons {
         'globe' => globe(classes: classes),
         'github' => github(classes: classes),
         'dart' => dart(classes: classes),
+        'download' => download(classes: classes),
+        'lock' => lock(classes: classes),
+        'mail' => mail(classes: classes),
         _ => layers(classes: classes),
       };
+
+  static Component download({String classes = 'h-4 w-4'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" fill="none" '
+        'stroke="currentColor" stroke-width="1.75" stroke-linecap="round" '
+        'stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/>'
+        '<path d="M4 20h16"/>'
+        '</svg>',
+      );
+
+  static Component lock({String classes = 'h-4 w-4'}) => RawText(
+        '<svg class="$classes" viewBox="0 0 24 24" fill="none" '
+        'stroke="currentColor" stroke-width="1.75" stroke-linecap="round" '
+        'stroke-linejoin="round" aria-hidden="true">'
+        '<rect x="4" y="10" width="16" height="11" rx="2"/>'
+        '<path d="M8 10V7a4 4 0 0 1 8 0v3"/>'
+        '</svg>',
+      );
 
   // ── Brand marks ──────────────────────────────────────────────────────────
   //

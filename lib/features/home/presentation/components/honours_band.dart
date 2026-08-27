@@ -2,7 +2,6 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_router/jaspr_router.dart';
 
-import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../about/domain/model/education_model.dart';
 
@@ -23,11 +22,17 @@ import '../../../about/domain/model/education_model.dart';
 /// ## Why it looks like this
 ///
 /// It borrows the certificate language from `SealedDocument` on `/documents` —
-/// the drawn seal, the double hairline frame, the faint ruled ground — at
-/// strip scale. Two reasons that is better than inventing a new treatment:
+/// the engraved university crest, the double hairline frame, the faint ruled
+/// ground — at strip scale. Two reasons that is better than inventing a new treatment:
 /// the page and the hub then read as the same claim seen twice rather than as
 /// two designs, and a plate is the right *shape* for a conferral. Certificates
 /// have embossed foil under the title; this is that, at 1/10th the size.
+///
+/// The crest is the university's own mark painted as `currentColor` through an
+/// alpha stencil (`.crest`), so it takes the palette's tone instead of
+/// importing its own two colours — and it appears twice at different scales,
+/// small at the head and large as a watermark, which is what a certificate
+/// does.
 ///
 /// It is deliberately slim. A full section for one line of credential would
 /// overplay it, and the restraint is what keeps it reading as a mark of record
@@ -69,6 +74,30 @@ class HonoursBand extends StatelessComponent {
               classes: 'honours-plate reveal relative overflow-hidden border '
                   'border-ink-700 bg-ink-850',
               [
+                // The mark embossed through the plate, bleeding off the right
+                // edge. Anchored there rather than centred because the copy
+                // runs left, and a watermark under text is a legibility cost
+                // for no gain.
+                //
+                // Hung far enough off the edge (`-right-56` against a 21rem
+                // mark) that the roundel's *centre* clears the plate entirely
+                // and only its outer ring shows. That matters: parked any
+                // closer, the dense gear-and-book middle sits directly under
+                // the Verify link and turns it to mush. An arc reads as
+                // embossing; a whole logo behind a button reads as clip art.
+                //
+                // The offset is tuned to the *lockup*, not the roundel — the
+                // ribbon widens the mark's box, which moves the roundel's
+                // centre left within it and needs more clearance than the
+                // circular crop did.
+                const div(
+                  classes: 'crest pointer-events-none absolute -right-56 '
+                      'top-1/2 h-[19rem] w-[21rem] -translate-y-1/2 '
+                      'text-ink-100/[0.075]',
+                  attributes: {'aria-hidden': 'true'},
+                  [],
+                ),
+
                 // The inset rules a certificate has and a card does not. Two,
                 // because one reads as a border and two read as a document.
                 const div(
@@ -87,12 +116,20 @@ class HonoursBand extends StatelessComponent {
                       'py-9 text-center sm:px-12 md:flex-row md:gap-10 '
                       'md:text-left',
                   [
-                    // The seal, at strip scale.
-                    div(
-                      classes: 'seal flex h-16 w-16 shrink-0 items-center '
-                          'justify-center rounded-full border '
-                          'border-iris-500/40 text-iris-400/80',
-                      [AppIcons.byName('seal', classes: 'h-7 w-7')],
+                    // The crest at strip scale, on the same seat the
+                    // documents hub gives it.
+                    const div(
+                      classes: 'crest-seat flex h-[5.5rem] w-[6.25rem] '
+                          'shrink-0 items-center justify-center',
+                      attributes: {'aria-hidden': 'true'},
+                      [
+                        // 1.10:1 — the lockup's own aspect, so `contain`
+                        // never letterboxes it inside its box.
+                        div(
+                          classes: 'crest h-[4.5rem] w-[4.96rem] text-ink-200',
+                          [],
+                        ),
+                      ],
                     ),
 
                     div(

@@ -1355,6 +1355,112 @@
   }
 
   .press:active { scale: 0.97; }
+
+
+  /* ── Documents hub ────────────────────────────────────────────────────
+     The paper stack is the hub's answer to the project showcase's device
+     mockup, and reuses the hero's `.stack` fan rather than inventing a
+     second gesture. The direction is mirrored: the hero fans left, these
+     fan right, because the stack sits on the opposite side of its band. */
+  .paper-sheet {
+    box-shadow:
+      0 1px 2px -1px rgb(0 0 0 / 0.5),
+      0 24px 50px -28px rgb(0 0 0 / 0.85);
+  }
+
+  .paper-layer {
+    box-shadow: 0 16px 34px -22px rgb(0 0 0 / 0.7);
+  }
+
+  /* Resting offsets. Without these the sheets sit exactly on top of one
+     another and the stack only exists on hover. */
+  .paper-layer.stack-layer-1 { transform: translate(1.5rem, 0.9rem) rotate(4.5deg); }
+  .paper-layer.stack-layer-2 { transform: translate(0.75rem, 0.45rem) rotate(2.25deg); }
+
+  .stack:hover .paper-layer.stack-layer-1 { transform: translate(2.75rem, 1.6rem) rotate(8deg); }
+  .stack:hover .paper-layer.stack-layer-2 { transform: translate(1.4rem, 0.85rem) rotate(4deg); }
+
+  /* A single diagonal sheen so the front page reads as paper under a light
+     rather than as a screenshot pasted onto the band. */
+  .paper-sheen {
+    background: linear-gradient(
+      108deg,
+      transparent 32%,
+      rgb(255 255 255 / 0.22) 46%,
+      transparent 60%
+    );
+    mix-blend-mode: overlay;
+  }
+
+  /* The sealed card sits on a faint ruled ground — the texture a certificate
+     has and a web card does not. Two hairline gradients, nothing more. */
+  .sealed-doc {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 7px,
+        color-mix(in oklab, var(--color-ink-100) 2%, transparent) 7px,
+        color-mix(in oklab, var(--color-ink-100) 2%, transparent) 8px
+      );
+  }
+
+
+  /* The honours plate under the home hero. Same certificate language as
+     `.sealed-doc` on the documents hub — a faint ruled ground under a double
+     hairline frame — so the two read as one claim seen twice. */
+  .honours-plate {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 7px,
+        color-mix(in oklab, var(--color-ink-100) 2%, transparent) 7px,
+        color-mix(in oklab, var(--color-ink-100) 2%, transparent) 8px
+      );
+    transition: border-color 0.55s var(--ease-soft),
+                box-shadow 0.55s var(--ease-soft);
+  }
+
+  /* Lifts a touch on hover, because the whole plate leads somewhere. */
+  .honours-plate:hover {
+    border-color: color-mix(in oklab, var(--color-iris-500) 34%, transparent);
+    box-shadow: 0 0 44px -18px color-mix(in oklab, var(--color-iris-500) 40%, transparent);
+  }
+
+  /* ── Engraved crest ───────────────────────────────────────────────────
+     The university mark, rendered as a stencil rather than as an image.
+
+     `web/images/mmust-crest.webp` carries no colour — only an alpha channel
+     where the logo's linework is opaque and its paper is clear. Painting
+     `currentColor` through it means the mark takes whatever tone the element
+     is set to, which is the *only* way a two-colour third-party logo can
+     enter a site whose design rule is two tones and no accent hue. It also
+     means tint and opacity are controlled by ordinary Tailwind text-colour
+     utilities: `text-ink-200` for the crest, `text-ink-100/[0.055]` for the
+     watermark. One class, every variant.
+
+     Generated from the source PNG with the alpha set to ink density and the
+     roundel clipped to its own circle — see CLAUDE.md. */
+  .crest {
+    background-color: currentColor;
+    -webkit-mask: url("/images/mmust-crest.webp") center / contain no-repeat;
+    mask: url("/images/mmust-crest.webp") center / contain no-repeat;
+  }
+
+  /* Seats the crest in the ground with the site's one permitted glow. No
+     border: the mark already carries its own outer ring, and a second ring
+     around it reads as a badge rather than as an engraving.
+     `closest-side` makes the gradient follow the box, so on the lockup's
+     wider-than-tall frame it resolves to a soft ellipse rather than a circle
+     with the ribbon hanging out of it. */
+  .crest-seat {
+    background: radial-gradient(
+      closest-side,
+      color-mix(in oklab, var(--color-iris-500) 20%, transparent),
+      transparent 72%
+    );
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

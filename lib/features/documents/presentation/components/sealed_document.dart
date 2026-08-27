@@ -2,6 +2,7 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 import '../../../../core/presentation/components/app_icons.dart';
+
 import '../../domain/model/document_model.dart';
 
 /// The visual for a document that is deliberately not published.
@@ -17,9 +18,15 @@ import '../../domain/model/document_model.dart';
 /// What is withheld is only the scan, which carries a signature and a
 /// registration number and belongs in a reply, not on a crawler's index.
 ///
-/// The seal is drawn, not photographed, for the same reason: an ornament that
-/// represents a document is honest; a picture of one that you cannot have is
-/// not.
+/// The crest is the conferring university's own mark, engraved — painted as
+/// `currentColor` through an alpha stencil rather than dropped in as a colour
+/// image. That is what lets a two-colour logo sit in a palette with no accent
+/// hue, and it is also the honest register: an engraving of the issuer's mark
+/// states who conferred the degree without imitating the certificate itself.
+///
+/// It appears at two scales, which is exactly what a real certificate does —
+/// the crest at the head of the document, and the same mark again, large and
+/// barely there, embossed through the paper behind the text.
 class SealedDocument extends StatelessComponent {
   const SealedDocument({required this.document, super.key});
 
@@ -31,6 +38,22 @@ class SealedDocument extends StatelessComponent {
       classes: 'sealed-doc relative mx-auto w-full max-w-sm overflow-hidden '
           'border border-ink-700 bg-ink-850 px-8 py-12 text-center',
       [
+        // The mark embossed through the paper. Sized past the card and
+        // centred on the text, the way a watermark actually sits.
+        //
+        // 5% rather than the ghost motif's usual 3.5%, but *lower* than the
+        // roundel-only crop wanted: the complete lockup carries the ribbon as
+        // well, so there is more ink on the same area and the same opacity
+        // reads heavier. It has to stay felt rather than read — it sits
+        // directly under the credential text.
+        const div(
+          classes: 'crest pointer-events-none absolute left-1/2 top-1/2 '
+              'h-[20rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 '
+              'text-ink-100/[0.05]',
+          attributes: {'aria-hidden': 'true'},
+          [],
+        ),
+
         // The guilloche-ish hairline frame every certificate has. Two insets
         // rather than one, because a single border reads as a card and two
         // read as a document.
@@ -48,12 +71,19 @@ class SealedDocument extends StatelessComponent {
         div(
           classes: 'relative',
           [
-            // The seal.
-            div(
-              classes: 'seal mx-auto flex h-20 w-20 items-center '
-                  'justify-center rounded-full border border-iris-500/40 '
-                  'text-iris-400/70',
-              [AppIcons.byName('seal', classes: 'h-9 w-9')],
+            // The crest at the head of the document, seated on the site's
+            // one permitted glow.
+            const div(
+              classes: 'crest-seat mx-auto flex h-[6.5rem] w-[7.25rem] '
+                  'items-center justify-center',
+              attributes: {'aria-hidden': 'true'},
+              [
+                // 1.10:1 — the lockup's own aspect.
+                div(
+                  classes: 'crest h-[5.5rem] w-[6.07rem] text-ink-200',
+                  [],
+                ),
+              ],
             ),
 
             const p(
