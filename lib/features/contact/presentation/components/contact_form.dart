@@ -194,26 +194,51 @@ class _ContactFormView extends StatelessComponent {
 
   static Component _select(String service) => div([
         label_(name: 'service', text: 'What do you need?'),
-        select(
-          name: 'service',
-          id: 'cf-service',
-          classes: '$_inputClasses appearance-none',
+
+        // `appearance-none` strips the native dropdown chevron, which left this
+        // looking identical to the text inputs above it — nothing signalled it
+        // could be opened, so it silently went out on its default value. The
+        // chevron is drawn back in, and `pr-11` keeps the longest option from
+        // running underneath it.
+        div(
+          classes: 'relative',
           [
-            for (final option in _serviceOptions)
-              // `selected` rather than a client-side default, so the choice is
-              // already correct in the server-rendered markup.
-              Component.element(
-                tag: 'option',
-                attributes: {
-                  'value': option,
-                  if (option == service && service.isNotEmpty)
-                    'selected': 'selected',
-                },
-                children: [Component.text(option.isEmpty ? 'Not sure yet' : option)],
-              ),
+            const span(
+              classes: 'pointer-events-none absolute right-4 top-1/2 mt-1 '
+                  '-translate-y-1/2 text-ink-400',
+              attributes: {'aria-hidden': 'true'},
+              [_chevron],
+            ),
+            select(
+              name: 'service',
+              id: 'cf-service',
+              classes: '$_inputClasses cursor-pointer appearance-none pr-11',
+              [
+                for (final option in _serviceOptions)
+                  // `selected` rather than a client-side default, so the choice
+                  // is already correct in the server-rendered markup.
+                  Component.element(
+                    tag: 'option',
+                    attributes: {
+                      'value': option,
+                      if (option == service && service.isNotEmpty)
+                        'selected': 'selected',
+                    },
+                    children: [
+                      Component.text(
+                        option.isEmpty ? 'Not sure yet' : option,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ],
         ),
       ]);
+
+  /// Extracted so the surrounding markup stays a `const` subtree —
+  /// `AppIcons.chevronDown` is a method call and cannot appear in one.
+  static const Component _chevron = _Chevron();
 
   static Component _textarea() => div([
         label_(name: 'message', text: 'What are you building?'),
@@ -291,4 +316,14 @@ class _Sent extends StatelessComponent {
       ],
     );
   }
+}
+
+/// The dropdown chevron. A component rather than an inline call so the select's
+/// markup can stay `const`.
+class _Chevron extends StatelessComponent {
+  const _Chevron();
+
+  @override
+  Component build(BuildContext context) =>
+      AppIcons.chevronDown(classes: 'h-4 w-4');
 }
