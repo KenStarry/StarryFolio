@@ -44,10 +44,27 @@ class _Header extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return const section(
-      classes: 'bg-ink-900 pb-14 pt-16 sm:pb-16 sm:pt-24',
+      classes: 'relative overflow-hidden bg-ink-900 pb-14 pt-16 sm:pb-16 '
+          'sm:pt-24',
       [
+        // The motif, at page scale. Texture rather than content, so it is
+        // hidden from assistive tech and unselectable — it repeats a word the
+        // heading beside it already says.
         div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          classes: 'pointer-events-none absolute -right-8 top-1/2 '
+              '-translate-y-1/2 select-none',
+          attributes: {'aria-hidden': 'true'},
+          [
+            span(
+              classes: 'showcase-ghost font-display font-extrabold '
+                  'text-ink-100/[0.035]',
+              [Component.text('Talk')],
+            ),
+          ],
+        ),
+
+        div(
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
             div(
               classes: 'reveal max-w-2xl',
@@ -103,28 +120,26 @@ class _Body extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return const section(
-      classes: 'bg-ink-900 pb-24 sm:pb-32',
+      id: 'message',
+      classes: 'relative bg-ink-800 py-20 sm:py-28',
       [
         div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
-            div(
-              classes: 'grid gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16',
-              [
-                // ── Form ──
-                div(
-                  classes: 'reveal',
-                  [
-                    p(
-                      classes: 'type-eyebrow font-mono text-ink-500',
-                      [Component.text('Send a message')],
-                    ),
-                    div(classes: 'divider-quiet mt-5', []),
-                    div(classes: 'mt-8', [ContactForm()]),
-                  ],
-                ),
+            _BandHead(
+              index: '01',
+              eyebrow: 'Send a message',
+              title: 'Start with the detail.',
+              lead: 'The more you can say about what you are building, the more '
+                  'useful my first reply will be.',
+            ),
 
-                // ── Channels ──
+            div(
+              classes: 'mt-14 grid gap-14 lg:grid-cols-[1.08fr_0.92fr] '
+                  'lg:gap-16',
+              [
+                div(classes: 'reveal', [ContactForm()]),
+
                 div(
                   classes: 'reveal',
                   [
@@ -136,7 +151,7 @@ class _Body extends StatelessComponent {
                     div(classes: 'mt-8', [ChannelGrid()]),
                     p(
                       classes: 'mt-8 max-w-sm text-xs leading-relaxed '
-                          'text-ink-500',
+                          'text-ink-400',
                       [
                         Component.text(
                           'Based in ${SiteConfig.location}, working with teams '
@@ -156,70 +171,76 @@ class _Body extends StatelessComponent {
   }
 }
 
-/// Buy Me a Coffee.
+/// Buy Me a Coffee, on its own band.
 ///
-/// Deliberately last and deliberately quiet. It is an invitation, not an ask —
-/// putting it above the contact channels would make the page read as soliciting
-/// rather than offering.
+/// Given the same numbered treatment as the message band rather than tucked
+/// into a corner — it is a real thing being offered, not an afterthought — but
+/// placed last and on the deepest tone, so the page reads as offering before it
+/// reads as asking.
 class _Support extends StatelessComponent {
   const _Support();
 
   @override
   Component build(BuildContext context) {
     return section(
-      classes: 'bg-ink-950 py-20 sm:py-24',
+      id: 'support',
+      classes: 'relative overflow-hidden bg-ink-950 py-20 sm:py-28',
       [
-        div(
-          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+        const div(
+          classes: 'pointer-events-none absolute -right-10 top-1/2 '
+              '-translate-y-1/2 select-none',
+          attributes: {'aria-hidden': 'true'},
           [
+            span(
+              classes: 'showcase-ghost font-display font-extrabold '
+                  'text-ink-100/[0.03]',
+              [Component.text('Thanks')],
+            ),
+          ],
+        ),
+
+        div(
+          classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          [
+            const _BandHead(
+              index: '02',
+              eyebrow: 'Support the work',
+              title: 'Buy me a coffee.',
+              lead: 'Some of what I build is open and free to use. If it saved '
+                  'you an afternoon, this is the tip jar — entirely optional, '
+                  'and it never changes what I publish.',
+            ),
+
             div(
-              classes: 'reveal flex flex-col items-start justify-between '
-                  'gap-8 border border-ink-800 bg-ink-900 p-8 sm:p-10 '
-                  'lg:flex-row lg:items-center',
+              classes: 'reveal mt-12 grid gap-6 sm:grid-cols-3',
               [
-                div(
-                  classes: 'max-w-lg',
-                  [
-                    div(
-                      classes: 'flex items-center gap-3',
-                      [
-                        span(
-                          classes: 'text-iris-400',
-                          [AppIcons.coffee(classes: 'h-5 w-5')],
-                        ),
-                        const span(
-                          classes: 'type-eyebrow font-mono text-ink-400',
-                          [Component.text('If something here helped')],
-                        ),
-                      ],
-                    ),
-                    const p(
-                      classes: 'mt-5 font-display text-xl font-bold '
-                          'tracking-tight text-ink-100 sm:text-2xl',
-                      [Component.text('Buy me a coffee.')],
-                    ),
-                    const p(
-                      classes: 'mt-3 text-sm leading-relaxed text-ink-400',
-                      [
-                        Component.text(
-                          'Some of what I build is open and free to use. If it '
-                          'saved you an afternoon, this is the tip jar — '
-                          'entirely optional, and it never changes what I '
-                          'publish.',
-                        ),
-                      ],
-                    ),
-                  ],
+                _note(
+                  'coffee',
+                  'No account needed',
+                  'A one-off, in whatever amount makes sense. No sign-up, no '
+                  'subscription.',
                 ),
-                div(
-                  classes: 'shrink-0',
-                  [
-                    CtaButton(
-                      label: 'Buy me a coffee',
-                      href: SiteConfig.buyMeACoffeeUrl,
-                      variant: CtaVariant.outline,
-                    ),
-                  ],
+                _note(
+                  'github',
+                  'It funds the open work',
+                  'Packages, write-ups and the things I give away rather than '
+                  'invoice for.',
+                ),
+                _note(
+                  'mail',
+                  'Not a substitute for hiring me',
+                  'If you actually need something built, the form above is the '
+                  'better door.',
+                ),
+              ],
+            ),
+
+            div(
+              classes: 'reveal mt-12',
+              [
+                CtaButton(
+                  label: 'Buy me a coffee',
+                  href: SiteConfig.buyMeACoffeeUrl,
                 ),
               ],
             ),
@@ -228,4 +249,87 @@ class _Support extends StatelessComponent {
       ],
     );
   }
+
+  static Component _note(String icon, String title, String body) => div(
+        classes: 'border-t border-ink-800 pt-6',
+        [
+          span(
+            classes: 'text-iris-400',
+            [AppIcons.social(icon, classes: 'h-5 w-5')],
+          ),
+          p(
+            classes: 'mt-5 font-display text-base font-bold tracking-tight '
+                'text-ink-100',
+            [Component.text(title)],
+          ),
+          p(
+            classes: 'mt-2.5 text-sm leading-relaxed text-ink-400',
+            [Component.text(body)],
+          ),
+        ],
+      );
 }
+
+/// Numbered band heading, matching the pattern `/projects` and `/services`
+/// use — an oversized ghosted numeral, the title, and a fading divider.
+///
+/// Kept local rather than lifted into `core/`: the two other pages build theirs
+/// from repository data with live counts, and a shared component would end up
+/// carrying parameters that only one caller ever uses.
+class _BandHead extends StatelessComponent {
+  const _BandHead({
+    required this.index,
+    required this.eyebrow,
+    required this.title,
+    required this.lead,
+  });
+
+  final String index;
+  final String eyebrow;
+  final String title;
+  final String lead;
+
+  @override
+  Component build(BuildContext context) {
+    return div([
+      div(
+        classes: 'reveal relative',
+        [
+          // Texture, never content — hidden from the accessibility tree and
+          // unselectable, sitting behind the words it echoes.
+          div(
+            classes: 'pointer-events-none absolute -left-3 -top-20 -z-10 '
+                'select-none font-display font-extrabold leading-none '
+                'tracking-tighter text-ink-100/[0.035] '
+                'text-[clamp(6rem,13vw,10rem)]',
+            attributes: const {'aria-hidden': 'true'},
+            [Component.text(index)],
+          ),
+
+          div(
+            classes: 'flex items-center gap-3',
+            [
+              const span(classes: 'h-px w-6 bg-iris-500', []),
+              span(
+                classes: 'type-eyebrow font-mono text-ink-400',
+                [Component.text(eyebrow)],
+              ),
+            ],
+          ),
+
+          h2(
+            classes: 'type-section mt-5 font-display font-bold text-ink-100',
+            [Component.text(title)],
+          ),
+
+          p(
+            classes: 'mt-5 max-w-lg text-sm leading-relaxed text-ink-400',
+            [Component.text(lead)],
+          ),
+        ],
+      ),
+      const div(classes: 'divider mt-10', []),
+    ]);
+  }
+}
+
