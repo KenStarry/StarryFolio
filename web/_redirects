@@ -1,0 +1,6 @@
+# `/cv` predates the documents hub and is what a recruiter guesses, so it is
+# kept as a permanent redirect rather than a second page competing with
+# /documents for the same query. Cloudflare Workers static assets read this
+# file; anything it does not match falls through to the Worker.
+/cv /documents 301
+/resume /documents 301
