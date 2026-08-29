@@ -138,6 +138,22 @@ class _Featured extends StatelessComponent {
     final t = testimonial;
     final runs = t.runs;
 
+    // Display type does not survive length. `type-quote` tops out at 2rem,
+    // which is right for a line somebody will read in one breath and wrong
+    // for a paragraph: a hundred words at that size runs past twenty lines
+    // and stops being a pull-quote at all.
+    //
+    // So the scale steps down as the quote grows. The band keeps its
+    // emphasis, its mark and its byline either way, and a long quote reads as
+    // considered rather than as a layout that gave up. Classes are literals
+    // because the Tailwind scanner reads this source (CLAUDE.md §8).
+    final words = t.quote.split(RegExp(r'\s+')).length;
+    final scale = words <= 45
+        ? 'type-quote'
+        : words <= 80
+            ? 'text-xl leading-relaxed sm:text-2xl sm:leading-snug'
+            : 'text-lg leading-relaxed sm:text-xl sm:leading-relaxed';
+
     return figure(
       classes: 'reveal mt-14 grid gap-10 lg:grid-cols-[1fr_15rem] lg:gap-16',
       [
@@ -162,8 +178,8 @@ class _Featured extends StatelessComponent {
           // Everything interpolated goes through [_esc] first, so authored
           // content still cannot inject markup.
           blockquote(
-            classes: 'type-quote mt-6 font-display font-bold leading-snug '
-                'tracking-tight text-ink-300',
+            classes: '$scale mt-6 font-display font-bold tracking-tight '
+                'text-ink-300',
             [
               RawText(
                 '${_esc(runs.before)}'

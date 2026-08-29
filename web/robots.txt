@@ -1,4 +1,23 @@
+# Everything here is meant to be found. There is nothing to hide behind a
+# Disallow, and a rule that blocks nothing is a rule the next person has to
+# read and then decide is safe to ignore.
 User-agent: *
+Allow: /
+
+# Answer engines are a real discovery surface now, and several of them ship a
+# crawler that is separate from the one their search index uses. They are
+# covered by the wildcard above; they are named here so the permission is a
+# decision on the record rather than an accident of not having thought about
+# it. Being quoted in an answer is worth more than the page view it costs.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
 Allow: /
 
 Sitemap: https://kenstarry.com/sitemap.xml

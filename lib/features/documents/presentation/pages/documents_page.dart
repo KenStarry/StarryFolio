@@ -412,7 +412,7 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.documents,
-        title: 'Documents & CV · ${SiteConfig.name}',
+        title: '${SiteConfig.name} CV · Flutter Developer Resume',
         description:
             'Download the CV of ${SiteConfig.name}, ${SiteConfig.role} in '
             '${SiteConfig.location}: plus the full record, a print-ready '

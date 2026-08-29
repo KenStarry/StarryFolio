@@ -58,8 +58,17 @@ void main() {
         // emitted verbatim and is *not* subject to Jaspr's head-override
         // system, so a page-level tag would duplicate rather than replace it.
         // Per-page canonical, Open Graph and JSON-LD live in `core/seo/`.
+        //
+        // `twitter:card` is a genuine site-wide constant: every page shares as
+        // a large image card, and no page overrides it.
+        //
+        // The `robots` directive used to sit here too, and that was a bug. It
+        // is emitted verbatim, so `/404` and `/thanks` — which set their own
+        // `noindex` through `PageMeta` — shipped *both* tags and told crawlers
+        // to index and not index the same page. It now lives in `PageMeta`
+        // alongside the canonical link, where the override system applies and
+        // exactly one directive can survive per page.
         meta(name: 'twitter:card', content: 'summary_large_image'),
-        meta(name: 'robots', content: 'index, follow, max-image-preview:large'),
       ],
       body: App(),
     ),

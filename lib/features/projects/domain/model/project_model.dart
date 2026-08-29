@@ -31,6 +31,7 @@ class ProjectModel {
     this.featured = false,
     this.coverImage,
     this.mockupImage,
+    this.applicationCategory,
   });
 
   /// URL segment: `/projects/<slug>`.
@@ -94,6 +95,47 @@ class ProjectModel {
       .map((l) => l.url)
       .firstOrNull;
 
+  /// The store listings, if any.
+  ///
+  /// A project with one of these is a thing a person can install, which is a
+  /// different kind of search result from a page describing one — see
+  /// [SchemaOrg.mobileApplication].
+  List<AppLink> get storeLinks =>
+      links.where((l) => l.isStore).toList(growable: false);
+
+  bool get isInstallableApp => storeLinks.isNotEmpty;
+
+  /// schema.org `applicationCategory`, for a project that ships to a store.
+  ///
+  /// Always a value from schema.org's own enumeration — `MultimediaApplication`,
+  /// `HealthApplication`, `BusinessApplication` — never a phrase invented here.
+  /// It is what turns a case study from *a page about an app* into *an app*,
+  /// which is the difference between being reachable from "Flutter portfolio"
+  /// and being reachable from "offline music player".
+  ///
+  /// Null for anything with no store listing: a category on something nobody
+  /// can install is a claim with nothing behind it.
+  final String? applicationCategory;
+
+  /// The `<title>` for this project's case study.
+  ///
+  /// `name · tagline`, not `name · Ken Starry`. The title is the strongest
+  /// on-page signal there is, and half of it was going to the site name — a
+  /// query nobody types, already declared to scrapers through `og:site_name`,
+  /// and appended to results by Google on its own. The tagline is where the
+  /// searchable words actually live: "Flow Music Player · An offline player
+  /// built to rival Poweramp" can be found by someone looking for a music
+  /// player, where "Flow Music Player, Ken Starry" can only be found by
+  /// someone who already knows both names.
+  ///
+  /// The trailing full stop goes: taglines are written as sentences, and a
+  /// full stop mid-title reads as a truncation.
+  String get seoTitle {
+    final phrase =
+        tagline.endsWith('.') ? tagline.substring(0, tagline.length - 1) : tagline;
+    return '$name · $phrase';
+  }
+
   /// Path under `web/`, e.g. `images/criblynk.png`.
   final String? coverImage;
 
@@ -154,6 +196,7 @@ class ProjectModel {
         coverImage: map['coverImage']?.toString(),
         mockupImage: map['mockupImage']?.toString(),
         featured: map['featured'] == true,
+        applicationCategory: map['applicationCategory']?.toString(),
       );
 
   Map<String, dynamic> toMap() => {
@@ -172,6 +215,7 @@ class ProjectModel {
         'features': [for (final f in features) f.toMap()],
         'modules': [for (final m in modules) m.toMap()],
         'links': [for (final link in links) link.toMap()],
+        'applicationCategory': applicationCategory,
         'coverImage': coverImage,
         'mockupImage': mockupImage,
         'featured': featured,

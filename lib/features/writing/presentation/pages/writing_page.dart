@@ -270,9 +270,10 @@ class _Meta extends StatelessComponent {
   Component build(BuildContext context) {
     return const PageMeta(
       path: RoutePaths.writing,
-      title: 'Writing · ${SiteConfig.name}',
-      description: 'Long-form notes on Flutter, architecture and shipping '
-          'mobile products, by ${SiteConfig.name}.',
+      title: 'Flutter Engineering Notes · ${SiteConfig.name}',
+      description: 'Long-form notes on Flutter, Dart, mobile architecture and '
+          'actually shipping products, written by ${SiteConfig.name}, a '
+          'Flutter developer in ${SiteConfig.location}.',
     );
   }
 }

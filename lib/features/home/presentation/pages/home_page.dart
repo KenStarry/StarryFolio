@@ -50,8 +50,15 @@ class HomePage extends AsyncStatelessComponent {
     return Component.fragment([
       const PageMeta(
         path: RoutePaths.home,
-        title: '${SiteConfig.name} · ${SiteConfig.role}',
-        description: SiteConfig.tagline,
+        title: '${SiteConfig.name} · Flutter & Mobile App Developer, Nairobi',
+        // Not `SiteConfig.tagline`. The tagline is written for a visitor who
+        // has already arrived and is reading the hero; a description is
+        // written for someone scanning ten blue links and deciding. It has to
+        // carry the words they typed — Flutter, mobile app developer, Nairobi,
+        // Kenya — in the first clause, before the personality.
+        description: '${SiteConfig.name}: Flutter and mobile app developer in '
+            '${SiteConfig.location}. I ship Android and iOS products end to '
+            'end, then fuss over the parts nobody was supposed to notice.',
       ),
       StructuredData(
         id: 'ld-person',

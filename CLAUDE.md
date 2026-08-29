@@ -25,9 +25,18 @@ not an improvement.
 The practical test, after **any** change:
 
 ```bash
-jaspr build --sitemap-domain https://kenstarry.com --sitemap-exclude '^/404'
-grep -c "Case study" build/jaspr/index.html   # expect 3, not 0
+jaspr build --sitemap-domain https://kenstarry.com \
+  --sitemap-exclude '^/(404|thanks)'
+grep -c "HealthX" build/jaspr/index.html          # expect 9, not 0
+grep -c "Flow Music Player" build/jaspr/index.html # expect 3, not 0
 ```
+
+Both strings come from `ProjectsLocalDatasource` through the async content
+path, so a zero means the repository never resolved and the page shipped a
+shell. The canary used to grep for `Case study`, which drifted onto `/about`
+and left the site's top-priority check reporting a regression on every build.
+**If a canary here starts failing, confirm the string still belongs on that
+page before you go looking for the bug.**
 
 If content renders in the browser but is missing from `build/jaspr/**/*.html`, it is
 invisible to crawlers. Ship nothing in that state.
@@ -289,9 +298,36 @@ record, not its screenshots.
 - **JSON-LD** via `StructuredData` + `SchemaOrg`. It goes in `Document.head`, so it survives
   into the HTML for crawlers that never run JS. Validate after changes:
   `python3 -c "..."` — or paste a page into Google's Rich Results Test.
-- **404 sets `noindex, follow`**, has no canonical, and is kept out of the sitemap via
-  `--sitemap-exclude '^/404'` — a noindex page listed in the sitemap is a crawl-budget
-  contradiction.
+- **`PageMeta` owns the `robots` directive, and `main.server.dart` must never carry one.**
+  Entries in that `head:` list are emitted verbatim and bypass the override system, so a
+  site-wide `index, follow` there plus a page-level `noindex` shipped *both* tags on `/404`
+  and `/thanks`. Google resolves a conflict to the most restrictive, so the behaviour was
+  accidentally right, but no other crawler owes us that reading. Indexable pages get
+  `index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`.
+- **404 and `/thanks` set `noindex, follow`**, have no canonical, and are kept out of the
+  sitemap via `--sitemap-exclude '^/(404|thanks)'` — a noindex page listed in the sitemap is
+  a crawl-budget contradiction.
+- **A `<title>` is written for a search box, not for a CV.** It is the strongest on-page
+  signal there is, so it leads with the query it should win and never spends its first half
+  on a word nobody types. `Projects · Ken Starry` won nothing; `Flutter App Case Studies ·
+  Ken Starry` does. Project pages use `ProjectModel.seoTitle` — `name · tagline` — because
+  the tagline is where the searchable words live: *Flow Music Player · An offline player
+  built to rival Poweramp* is reachable from **music player**, where `Flow Music Player, Ken
+  Starry` is reachable only by someone who already knows both names. The site name is
+  declared separately through `og:site_name` and appended to results by Google anyway.
+- **A project with a store listing also emits `SchemaOrg.mobileApplication`**, alongside its
+  `CreativeWork` rather than instead of it: one says this is documented work with an author,
+  the other says this is software with an install URL. Both are true. It is gated on
+  `ProjectModel.isInstallableApp`, and `applicationCategory` must be a value from
+  schema.org's own enumeration.
+- **Never invent `offers` or `aggregateRating`.** Both are required for Google's app rich
+  result and neither can be sourced from anything here. A fabricated rating gets every piece
+  of structured data on the domain discounted at once, and a made-up price is disproved the
+  moment the store page loads. The entity is worth having without the stars.
+- **Name variants belong in `SiteConfig.nameVariants`**, which feeds `Person.alternateName`
+  and is what teaches a crawler that `KenStarry` and `Ken Starry` are one person. Only forms
+  genuinely in use: inventing a variant to catch a query puts a false claim in
+  machine-readable data.
 - New images need `loading="lazy"` + `decoding="async"` and a descriptive `alt`.
 - External links get `rel="me noopener"` where they are identity profiles — `me` corroborates
   the `sameAs` entries in the Person JSON-LD.

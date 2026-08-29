@@ -627,9 +627,9 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.projects,
-        title: 'Projects · ${SiteConfig.name}',
-        description: 'Case studies from the mobile products I have designed '
-            'and shipped: enterprise systems, client work, pet projects and '
-            'one open source package. Including the parts that were hard.',
+        title: 'Flutter App Case Studies · ${SiteConfig.name}',
+        description: 'Flutter and mobile app case studies from Nairobi: a '
+            'telehealth platform, an offline music player, a rentals app and '
+            'an open source package. Including the parts that were hard.',
       );
 }

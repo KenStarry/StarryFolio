@@ -68,7 +68,13 @@ class SchemaOrg {
         '@type': 'Person',
         '@id': personId,
         'name': SiteConfig.name,
-        'alternateName': SiteConfig.shortName,
+        // A list, not a string. `KenStarry`, `kenstarry` and `Ken` are all
+        // forms in genuine use across the GitHub handle, the wordmark and the
+        // domain, and stating them is how a crawler learns they resolve to one
+        // person rather than to several who happen to look alike. It is the
+        // single property that does most of the work for a brand-name query.
+        'alternateName': SiteConfig.nameVariants,
+        'knowsLanguage': 'en',
         'url': SiteConfig.siteUrl,
         'email': 'mailto:${SiteConfig.email}',
         'jobTitle': SiteConfig.role,
@@ -120,6 +126,60 @@ class SchemaOrg {
           'url': SiteConfig.siteUrl,
         },
         if (repoUrl != null) 'codeRepository': repoUrl,
+      };
+
+  /// An app somebody can actually install.
+  ///
+  /// `MobileApplication` rather than the broader `SoftwareApplication`: the
+  /// only projects that reach this are ones with a Play or App Store listing,
+  /// so the narrower type is both true and more useful. It is what makes a
+  /// case study answerable for *offline music player* instead of only for the
+  /// product's own name — a `CreativeWork` describes a page about a thing,
+  /// where this describes the thing.
+  ///
+  /// Emitted **alongside** [creativeWork] rather than instead of it. The two
+  /// make different claims about the same project: one that it is a documented
+  /// piece of work with an author, one that it is software with an install
+  /// URL. Both are true, and a crawler picks whichever fits the query.
+  ///
+  /// Deliberately carries no `offers` and no `aggregateRating`. Both are
+  /// required for Google's app rich result and neither can be sourced from
+  /// anything here, so both would have to be invented. A fabricated rating is
+  /// the fastest way to have every piece of structured data on a domain
+  /// discounted at once, and a made-up price is a claim the visitor disproves
+  /// the moment the store page loads. The entity is worth having without the
+  /// stars.
+  static Map<String, Object?> mobileApplication({
+    required String name,
+    required String description,
+    required String slug,
+    required List<String> operatingSystems,
+    required List<String> installUrls,
+    String? applicationCategory,
+    String? image,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'MobileApplication',
+        'name': name,
+        'description': description,
+        'url': SiteConfig.absolute(RoutePaths.projectDetail(slug)),
+        if (applicationCategory != null)
+          'applicationCategory': applicationCategory,
+        if (operatingSystems.isNotEmpty)
+          'operatingSystem': operatingSystems.join(', '),
+        // `installUrl` is the store page; `downloadUrl` is a synonym Bing reads
+        // where Google reads the former. Listing the first store keeps the
+        // primary unambiguous, while `sameAs` carries the rest, so a product on
+        // two stores is one app with two listings rather than two apps.
+        if (installUrls.isNotEmpty) ...{
+          'installUrl': installUrls.first,
+          'downloadUrl': installUrls.first,
+          if (installUrls.length > 1) 'sameAs': installUrls,
+        },
+        'image': SiteConfig.absolute(image ?? SiteConfig.defaultOgImage),
+        'author': {'@id': personId},
+        'publisher': {'@id': personId},
       };
 
   /// An ordered list of the case studies, for the projects index.

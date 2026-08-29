@@ -3,81 +3,52 @@ import '../../domain/model/testimonial_model.dart';
 /// The testimonials, as compile-time constants.
 ///
 /// ─────────────────────────────────────────────────────────────────────────
-/// **Everything below is placeholder content, and every entry is marked
-/// `draft: true`.**
+/// **Only real quotes belong in this list.**
 ///
-/// While that flag is set, `TestimonialBand` renders a visible *Sample
-/// content* marker beside the heading. That is the safeguard: `git push` to
-/// `main` deploys this site, and a fabricated endorsement that looks real is
-/// the thing to avoid. One that labels itself is just a layout fixture.
+/// `git push` to `main` deploys this site, so a fabricated endorsement that
+/// looks real is the thing to avoid. Anything authored as a stand-in must
+/// carry `draft: true`, which makes `TestimonialBand` render a visible
+/// *Sample content* marker beside the heading, and it must never name a real
+/// person or organisation.
 ///
-/// The people and companies here are invented. **No real person or
-/// organisation is quoted**, deliberately — attributing an invented sentence
-/// to a real client would be a fabricated endorsement no matter what the
-/// comments around it say.
+/// Adding one:
 ///
-/// Replacing them:
-///
-/// 1. Swap `quote`, `name`, `role` and `company` for the real ones.
-/// 2. Set `source` to where it can be verified — a LinkedIn recommendation,
-///    a public review. A checkable quote is worth several unverifiable ones.
-/// 3. Point `projectSlug` at the case study the work belongs to.
-/// 4. Set `emphasis` on the featured entry to the clause worth reading if you
-///    only read one — a **verbatim substring** of `quote`. It is set bright
-///    against the rest; get it wrong and the whole quote just renders bright,
-///    which is the safe failure.
-/// 5. **Delete `draft: true`.** The sample marker disappears on its own.
-///
-/// The lengths here are chosen to exercise the layout: one long quote for the
-/// flat featured slot, then shorter ones that have to sit level in a grid.
-/// Real quotes that run much longer or shorter will change how the band sits.
+/// 1. Paste the quote verbatim. The only edit permitted is punctuation, to
+///    house style: this site does not use em dashes, so one inside a quote
+///    becomes a full stop or a comma. Never reword what somebody said.
+/// 2. `source` should point at somewhere it can be checked, where such a
+///    place exists. A verifiable quote is worth several unverifiable ones.
+/// 3. `projectSlug` links it to the build it came out of, if it came out of
+///    one.
+/// 4. `emphasis` is the clause set bright against the rest, and must be a
+///    **verbatim substring** of `quote`.
 /// ─────────────────────────────────────────────────────────────────────────
 abstract final class TestimonialsLocalDatasource {
-  static const List<TestimonialModel> testimonials = [
-    TestimonialModel(
-      slug: 'sample-featured',
-      quote: 'He took a brief that was half a slide deck and came back with a '
-          'shipped product. Design system, architecture, both store listings, '
-          'all of it, without needing a second engineer or a project manager '
-          'to sit between him and the work.',
-      // Must be a verbatim substring of `quote` — this is the clause set
-      // bright against the rest.
-      emphasis: 'came back with a shipped product',
-      name: 'Placeholder Name',
-      role: 'Head of Product',
-      company: 'Sample Company',
-      projectSlug: 'healthx',
-      featured: true,
-      draft: true,
-    ),
-    TestimonialModel(
-      slug: 'sample-two',
-      quote: 'The rebuild moved our store rating a full point. Same features, '
-          'a codebase the team could actually reason about.',
-      name: 'Placeholder Name',
-      role: 'Engineering Manager',
-      company: 'Sample Company',
-      projectSlug: 'britam-app',
-      draft: true,
-    ),
-    TestimonialModel(
-      slug: 'sample-three',
-      quote: 'Turned up with opinions about the empty states. That is the '
-          'part nobody scopes and everybody notices.',
-      name: 'Placeholder Name',
-      role: 'Design Lead',
-      company: 'Sample Company',
-      draft: true,
-    ),
-    TestimonialModel(
-      slug: 'sample-four',
-      quote: 'Handed over documentation we are still using a year later. '
-          'Rare, and worth saying out loud.',
-      name: 'Placeholder Name',
-      role: 'CTO',
-      company: 'Sample Company',
-      projectSlug: 'flow',
-      draft: true,
-    ),
-  ];
+  static const List<TestimonialModel> testimonials = [_sheilla];
+
+  /// The first one in, and deliberately not dressed up as something it is
+  /// not. The attribution says plainly that this is a supporter rather than a
+  /// client, because a reader works that out anyway and a quote that is
+  /// honest about its source is worth more than one pretending to be a
+  /// reference.
+  ///
+  /// Verbatim except for one em dash in `development isn't a career—it's a
+  /// calling`, which house style turns into a full stop. No word changed.
+  static const TestimonialModel _sheilla = TestimonialModel(
+    slug: 'sheilla',
+    quote: 'Ken is a rare breed of creator who builds with genuine soul. '
+        'Having been around his creative energy and witnessed how he builds, '
+        "I've watched his brilliant mind take abstract thoughts and "
+        'effortlessly translate them into clean, beautiful architecture. To '
+        "Ken, development isn't a career. It's a calling. He possesses an "
+        'inspiring dedication to the user, choosing true craftsmanship over '
+        "shortcuts to ensure every app is fulfilling. He doesn't just build "
+        'software people need; he creates unique experiences that people '
+        'love. His passion is completely captivating, and his heart for his '
+        'work makes him a truly remarkable person to know.',
+    emphasis: 'he creates unique experiences that people love',
+    name: 'Sheilla',
+    role: 'Day 1 supporter, and forever a fan',
+    featured: true,
+  );
 }

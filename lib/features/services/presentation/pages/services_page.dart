@@ -190,9 +190,10 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.services,
-        title: 'Services · ${SiteConfig.name}',
-        description: 'Mobile and web development, UI/UX design, desktop apps, '
-            'release engineering and consultancy, from a Flutter engineer who '
-            'owns the whole surface, design system through store listing.',
+        title: 'Flutter App Development Services in Kenya · '
+            '${SiteConfig.name}',
+        description: 'Hire a Flutter developer in Kenya for mobile and web '
+            'apps, UI/UX design, desktop builds and release engineering. One '
+            'engineer owning the whole surface, design system to store listing.',
       );
 }

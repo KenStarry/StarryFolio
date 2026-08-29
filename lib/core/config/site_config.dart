@@ -56,6 +56,30 @@ class SiteConfig {
   static const String ogImageAlt =
       '$name, $role. Apps people actually reopen.';
 
+  /// Handle on X, with the `@`. Sets `twitter:site` and `twitter:creator`,
+  /// which is what attaches a shared card to an account instead of letting it
+  /// sit anonymous in a timeline: the card gets a byline and the account gets
+  /// the click.
+  static const String xHandle = '@ken_starry';
+
+  /// The other spellings people actually type into a search box.
+  ///
+  /// Fed to `Person.alternateName`, which is how a crawler learns that the
+  /// one-word handle and the two-word name are the same entity rather than two
+  /// people who happen to look alike. Only forms that are genuinely in use
+  /// belong here: inventing a variant to catch a query puts a false claim in
+  /// machine-readable data, which is the category of error that gets a site's
+  /// structured data distrusted wholesale.
+  static const List<String> nameVariants = ['KenStarry', 'kenstarry', 'Ken'];
+
+  /// `og:locale`.
+  ///
+  /// `en_GB` rather than `en_KE`: the copy is in British spelling, and `en_KE`
+  /// is not on the list of locales scrapers recognise, so it would be dropped
+  /// rather than honoured. The country is carried by the `PostalAddress` in
+  /// the Person JSON-LD, which is where a crawler actually looks for it.
+  static const String ogLocale = 'en_GB';
+
   // ── Hero ──────────────────────────────────────────────────────────────────
 
   /// Avatar for the hero card, as a path under `web/`.
@@ -87,7 +111,7 @@ class SiteConfig {
   /// reaches the page, which is a stronger guarantee than the `draft` marker
   /// on its own. Leave it off until the quotes are real and cleared to
   /// publish.
-  static const bool showTestimonials = false;
+  static const bool showTestimonials = true;
 
   /// Whether the site paints its own pointer (`CustomCursor`).
   ///

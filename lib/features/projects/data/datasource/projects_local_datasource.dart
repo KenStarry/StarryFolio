@@ -29,6 +29,7 @@ abstract final class ProjectsLocalDatasource {
   static const List<ProjectModel> projects = [
     ProjectModel(
       slug: 'healthx',
+      applicationCategory: 'HealthApplication',
       name: 'HealthX',
       tagline: 'Care, a pharmacy and a doctor, in one app.',
       year: '2026',
@@ -266,6 +267,7 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'rezq',
+      applicationCategory: 'BusinessApplication',
       name: 'RezQ',
       tagline: 'Resume building, the right way round.',
       year: '2026',
@@ -398,6 +400,7 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'flow',
+      applicationCategory: 'MultimediaApplication',
       name: 'Flow Music Player',
       tagline: 'An offline player built to rival Poweramp.',
       year: '2026',
@@ -588,6 +591,7 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'britam-app',
+      applicationCategory: 'FinanceApplication',
       name: 'Britam App',
       tagline: 'Policies, investments and loans, finally in one place.',
       year: '',
@@ -633,6 +637,7 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'elvs',
+      applicationCategory: 'BusinessApplication',
       name: 'Elvs Mobile',
       tagline: 'Volunteer work, finally accounted for.',
       year: '',

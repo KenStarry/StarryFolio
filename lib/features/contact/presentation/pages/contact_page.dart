@@ -25,9 +25,12 @@ class ContactPage extends StatelessComponent {
     return Component.fragment([
       const PageMeta(
         path: RoutePaths.contact,
-        title: 'Contact · ${SiteConfig.name}',
-        description: 'Start a project, ask a question, or just say hello, by '
-            'form, email, WhatsApp or wherever you already are.',
+        title: 'Hire a Flutter Developer in Kenya · Contact '
+            '${SiteConfig.name}',
+        description: 'Start a Flutter or mobile app project with '
+            '${SiteConfig.name} in ${SiteConfig.location}. Ask a question, or '
+            'just say hello, by form, email, WhatsApp or wherever you already '
+            'are.',
       ),
       StructuredData(id: 'ld-contact', SchemaOrg.contactPage()),
 

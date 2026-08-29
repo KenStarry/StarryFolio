@@ -80,7 +80,7 @@ class _CaseStudy extends StatelessComponent {
     return article([
       PageMeta(
         path: RoutePaths.projectDetail(project.slug),
-        title: '${project.name}, ${SiteConfig.name}',
+        title: project.seoTitle,
         description: project.tagline,
         image: project.ogImage ?? SiteConfig.defaultOgImage,
         type: 'article',
@@ -97,6 +97,25 @@ class _CaseStudy extends StatelessComponent {
           repoUrl: project.repoUrl,
         ),
       ),
+      // Only for projects with a store listing. A case study for something
+      // unreleased is a `CreativeWork` and nothing more; claiming it is an
+      // installable app would be the one kind of structured-data error that is
+      // worse than having none.
+      if (project.isInstallableApp)
+        StructuredData(
+          id: 'ld-app',
+          SchemaOrg.mobileApplication(
+            name: project.name,
+            description: project.tagline,
+            slug: project.slug,
+            operatingSystems: [
+              for (final p in project.platforms) p.label,
+            ],
+            installUrls: [for (final l in project.storeLinks) l.url],
+            applicationCategory: project.applicationCategory,
+            image: project.ogImage,
+          ),
+        ),
       StructuredData(
         id: 'ld-breadcrumbs',
         SchemaOrg.breadcrumbs([

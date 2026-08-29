@@ -47,10 +47,29 @@ class PageMeta extends StatelessComponent {
       title: title,
       meta: {'description': description},
       children: [
+        // The robots directive is emitted *here*, not in `main.server.dart`'s
+        // `head:` list, and it has to be. Entries there bypass the override
+        // system, so a site-wide `index, follow` there plus a page-level
+        // `noindex` shipped both tags on `/404` and `/thanks` — one page
+        // carrying two contradictory directives. Google resolves a conflict to
+        // the most restrictive, so the behaviour happened to be right, but
+        // that is the crawler being forgiving rather than the page being
+        // correct, and no other crawler owes us the same reading.
         if (noIndex)
           const meta(id: 'robots', name: 'robots', content: 'noindex, follow')
-        else
+        else ...[
+          const meta(
+            id: 'robots',
+            name: 'robots',
+            // `max-snippet:-1` and `max-video-preview:-1` lift the default caps
+            // on how much of a page a result may quote. Nothing here is worth
+            // withholding from a search result, and a longer snippet is a
+            // bigger target for a query to match against.
+            content: 'index, follow, max-image-preview:large, '
+                'max-snippet:-1, max-video-preview:-1',
+          ),
           link(id: 'canonical', rel: 'canonical', href: url),
+        ],
         meta(id: 'og-type', attributes: {'property': 'og:type', 'content': type}),
         meta(id: 'og-url', attributes: {'property': 'og:url', 'content': url}),
         meta(id: 'og-title', attributes: {'property': 'og:title', 'content': title}),
@@ -89,6 +108,23 @@ class PageMeta extends StatelessComponent {
             'content': SiteConfig.ogImageAlt,
           },
         ),
+        // Names the publication rather than the page. It is what a feed sets
+        // as the small attribution line above a shared card, and without it a
+        // scraper falls back to printing the bare domain.
+        const meta(
+          id: 'og-site-name',
+          attributes: {
+            'property': 'og:site_name',
+            'content': SiteConfig.name,
+          },
+        ),
+        const meta(
+          id: 'og-locale',
+          attributes: {
+            'property': 'og:locale',
+            'content': SiteConfig.ogLocale,
+          },
+        ),
         // Twitter reads og:* for everything except the alt text, which it
         // wants under its own namespace.
         meta(id: 'tw-title', name: 'twitter:title', content: title),
@@ -98,6 +134,16 @@ class PageMeta extends StatelessComponent {
           id: 'tw-image-alt',
           name: 'twitter:image:alt',
           content: SiteConfig.ogImageAlt,
+        ),
+        // Attaches the card to an account. `site` is the publisher and
+        // `creator` the author; on a one-person site they are the same handle,
+        // and stating both is what turns an anonymous card in a timeline into
+        // one with a byline that can be followed back here.
+        const meta(id: 'tw-site', name: 'twitter:site', content: SiteConfig.xHandle),
+        const meta(
+          id: 'tw-creator',
+          name: 'twitter:creator',
+          content: SiteConfig.xHandle,
         ),
       ],
     );

@@ -23,6 +23,16 @@ ones were verified by building the site and reading the generated HTML.
 If you only read two: **[2](./02-rendering-and-hydration.md)** and
 **[5](./05-seo.md)**. Together they explain why the code is shaped the way it is.
 
+## Off-site surfaces
+
+Not stack documentation, and deliberately not numbered into the sequence above:
+these are assets that live somewhere else but are built from this repo's facts,
+kept here so the two cannot drift apart.
+
+| File | Is | Published to |
+|---|---|---|
+| [GitHub profile README](./github-profile-readme.md) | The profile page above the pinned repos | `KenStarry/KenStarry` |
+
 ## The 60-second version
 
 Jaspr is a web framework where you write **Dart instead of JavaScript**, and describe HTML
