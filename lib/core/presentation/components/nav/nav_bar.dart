@@ -9,11 +9,15 @@ import '../app_icons.dart';
 
 // `Home` earns a tab now that Services and Works are both standalone pages —
 // without it there is no labelled way back from either.
+//
+// `/writing` is deliberately absent. The route, the pages and the sitemap
+// entries all still exist — it is only the tab that is gone, because seven
+// items had the bar reading as a site map rather than a navigation. Add the
+// line back when the section has enough posts to earn the slot.
 const _links = <({String label, String href})>[
   (label: 'Home', href: RoutePaths.home),
   (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
-  (label: 'Writing', href: RoutePaths.writing),
   (label: 'About', href: RoutePaths.about),
   (label: 'Documents', href: RoutePaths.documents),
   (label: 'Contact', href: RoutePaths.contact),

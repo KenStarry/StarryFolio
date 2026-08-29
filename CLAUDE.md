@@ -95,7 +95,12 @@ abstract repository, never on `*_impl`. Models live in `domain/`.
 Extract to `core/` once it is used in 2+ places.
 
 Major Current features: `home`, `projects`, `services`, `about`, `contact`, `writing`,
-`not_found`.
+`documents`, `testimonials`, `not_found`.
+
+`/writing` has **no nav tab** — seven of them read as a site map rather than a
+navigation. The route, the pages and the sitemap entries all still exist, and
+the footer carries the link so the section is not orphaned. Add the tab back
+when it has enough posts to earn the slot.
 
 ---
 
@@ -502,6 +507,53 @@ radios, and sibling selectors hide non-matching cards (`#pf-*` in
 would ship crawlers one category and hide the rest behind JS, which §0 forbids.
 Every card stays in the document; `display:none` is presentational.
 
+**`SiteConfig.showTestimonials` is the blanket off-switch.** While it is
+`false` the repository is not read and the band never reaches the page — a
+stronger guarantee than the `draft` marker alone, and the right state to deploy
+in until the quotes are real and cleared to publish. It sits alongside
+`SiteConfig.customCursor` and works the same way.
+
+**Placeholder testimonials must carry `draft: true`.** `git push` to `main`
+deploys this site, and a fabricated endorsement that *looks* real is the thing
+to avoid — one that announces itself is just a layout fixture. While any entry
+is a draft, `TestimonialBand` renders a visible **Sample content** marker beside
+the heading. Clear the flag when the quote is real and the marker disappears on
+its own; it is the same mechanism `ExperienceModel` uses for unconfirmed dates.
+
+**Never attribute an invented quote to a real person or organisation**, even
+behind the draft flag. The current placeholders say `Placeholder Name` at
+`Sample Company` for exactly that reason.
+
+`TestimonialBand` renders **nothing** when the list is empty — no heading, no
+empty state, no "coming soon", because a section announcing it has no social
+proof is worse than no section.
+
+Attribution is required by the model: a quote with no name is dropped by the
+repository rather than rendered, because an anonymous testimonial reads as
+invented even when it is not. `source` links to somewhere it can be verified;
+`projectSlug` links to the build it came out of.
+
+The lead quote is set **flat, not on `.card-invert`** — the home page already
+spends its one permitted inversion on the featured service card, and flat is
+how `/projects` presents its featured work anyway. It is composed as a magazine
+pull-quote: an oversized opening mark, the quote at display scale, and the
+byline in its own column behind a vertical rule. Three devices, none of them a
+box.
+
+`TestimonialModel.emphasis` is the clause set bright (`ink-100`) against the
+rest of the quote (`ink-300`) — the site's two-tone headline device applied to
+running text, at a narrower tonal gap than `TwoToneTitle` uses because a quote
+has to stay readable across four lines. It must be a **verbatim substring** of
+`quote`; anything else renders the whole quote bright, which is the safe
+failure.
+
+**That blockquote is a single `RawText`, and it has to be.** Jaspr indents child
+components onto their own lines, and that whitespace collapses to a rendered
+space between inline siblings — a `<span>` ending mid-sentence produced
+`product .` with a gap before the full stop. One node has no siblings to be
+separated from. Everything interpolated goes through the file's `_esc` helper,
+so authored content still cannot inject markup.
+
 **Motion is scroll-driven, and the base state is always visible.** Every
 entrance animation hangs off `animation-timeline: view()` or `scroll()` inside
 an `@supports` guard, with the *un-animated* state being the visible one. A
@@ -520,11 +572,19 @@ The vocabulary, all in `web/styles.tw.css`:
 | `.reveal-media` | a cover uncovers upward from a slight overscale |
 | `.press` | `scale(0.97)` on `:active`, spring on release |
 | `.to-top` / `.to-top-btn` | the back-to-top control's appearance and hover |
+| `.hero-far` / `.hero-mid` / `.hero-near` | the hero's three parallax planes |
 
 Two rules that are easy to get wrong:
 
 - **`.stagger` replaces `.reveal` on its children — never both.** Both animate
   the same element on the same timeline and the later declaration silently wins.
+- **The hero's parallax rides `translate`, never `transform`.** Every element
+  in the hero already animates `transform` through `.rise`, and a second
+  animation on the same property overwrites the first. The independent
+  `translate` property lets the entrance and the parallax coexist without
+  either knowing about the other — the same separation the custom cursor uses.
+  The planes deliberately *diverge* (the ghost sinks while the copy lifts):
+  moving everything one way at different speeds reads as lag, not depth.
 - **Never put `.reveal-media` on an element that owns a `transform`.** It
   animates `transform`, and with `both` fill it *holds* its end value once out
   of range, overriding any hover scale. Put it on a wrapper instead — that is

@@ -35,7 +35,10 @@ class HeroSection extends StatelessComponent {
                   'lg:gap-20',
               [
                 // ── Copy ──
+                // The near parallax plane: lifts furthest and dims slightly as
+                // the hero leaves, so it passes *in front of* the portrait.
                 div(
+                  classes: 'hero-near',
                   [
                     if (SiteConfig.available) _availability(),
 

@@ -6,10 +6,17 @@ import '../../config/site_config.dart';
 import '../../routing/route_paths.dart';
 import 'app_icons.dart';
 
+/// Carries every page, including the two the nav bar does not.
+///
+/// `/writing` has no tab — seven of them read as a site map rather than a
+/// navigation — but a page with no inbound link is orphaned for readers and
+/// for crawlers alike. The footer is where it stays reachable.
 const _footerLinks = <({String label, String href})>[
   (label: 'Services', href: RoutePaths.services),
   (label: 'Works', href: RoutePaths.projects),
+  (label: 'Writing', href: RoutePaths.writing),
   (label: 'About', href: RoutePaths.about),
+  (label: 'Documents', href: RoutePaths.documents),
   (label: 'Contact', href: RoutePaths.contact),
 ];
 

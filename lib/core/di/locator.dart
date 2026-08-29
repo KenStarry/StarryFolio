@@ -6,6 +6,8 @@ import '../../features/services/data/repository/services_repository_impl.dart';
 import '../../features/services/domain/repository/services_repository.dart';
 import '../../features/documents/data/repository/documents_repository_impl.dart';
 import '../../features/documents/domain/repository/documents_repository.dart';
+import '../../features/testimonials/data/repository/testimonials_repository_impl.dart';
+import '../../features/testimonials/domain/repository/testimonials_repository.dart';
 import '../../features/writing/data/repository/writing_repository_impl.dart';
 import '../../features/writing/domain/repository/writing_repository.dart';
 
@@ -25,6 +27,8 @@ abstract final class Locator {
   static ServicesRepository services = const ServicesRepositoryImpl();
   static WritingRepository writing = const WritingRepositoryImpl();
   static DocumentsRepository documents = const DocumentsRepositoryImpl();
+  static TestimonialsRepository testimonials =
+      const TestimonialsRepositoryImpl();
 
   /// Restores the default wiring. Call from `tearDown` in tests.
   static void reset() {
@@ -33,5 +37,6 @@ abstract final class Locator {
     services = const ServicesRepositoryImpl();
     writing = const WritingRepositoryImpl();
     documents = const DocumentsRepositoryImpl();
+    testimonials = const TestimonialsRepositoryImpl();
   }
 }

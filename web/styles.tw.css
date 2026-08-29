@@ -1461,6 +1461,43 @@
       transparent 72%
     );
   }
+
+  /* ── Scroll-driven hero ───────────────────────────────────────────────
+     Three depth planes that separate as the hero scrolls away. No JS, no
+     listener: one scroll timeline over the first viewport, so the effect
+     tracks the scrollbar exactly and costs nothing to run.
+
+     **Parallax rides `translate`, never `transform`.** Every element in the
+     hero already animates `transform` through `.rise`, and a second
+     animation on the same property would simply overwrite the first. Using
+     the independent `translate` property lets the entrance and the parallax
+     coexist on one element without either knowing about the other — the
+     same separation the custom cursor uses.
+
+     Directions are chosen so the planes *diverge*: the ghost sinks while the
+     copy lifts, which is what reads as depth. Moving everything the same way
+     at different speeds only reads as lag. */
+  @keyframes hero-far  { to { translate: 0 3.5rem; } }
+  @keyframes hero-mid  { to { translate: 0 -1.25rem; } }
+  @keyframes hero-near { to { translate: 0 -3rem; opacity: 0.72; } }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-far,
+      .hero-mid,
+      .hero-near {
+        animation: linear both;
+        animation-timeline: scroll(root block);
+        /* Resolves over the first viewport — past that the hero is gone and
+           there is nothing left to separate. */
+        animation-range: 0 100vh;
+      }
+
+      .hero-far  { animation-name: hero-far; }
+      .hero-mid  { animation-name: hero-mid; }
+      .hero-near { animation-name: hero-near; }
+    }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1506,6 +1543,14 @@
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
+  }
+
+  .hero-far,
+  .hero-mid,
+  .hero-near {
+    animation: none !important;
+    translate: none !important;
+    opacity: 1 !important;
   }
 
   .draw-rule { transform: none !important; }

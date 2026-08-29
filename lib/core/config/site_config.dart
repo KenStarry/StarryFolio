@@ -73,7 +73,21 @@ class SiteConfig {
 
   /// Named in the About section's "Currently" panel. Kept here so the panel
   /// never has to hard-code a project name that could go stale.
-  static const String currentSideProject = 'CribLynk';
+  static const String currentSideProject = 'RezQ';
+
+  /// Whether the home page carries the testimonials band.
+  ///
+  /// A blanket off-switch, separate from whether there is anything to show.
+  /// `TestimonialBand` already renders nothing when the list is empty, so this
+  /// is not about the empty case — it is for the case where the quotes exist
+  /// but should not be up yet: placeholders still in place, permission not
+  /// confirmed, a name being changed.
+  ///
+  /// While it is `false` the repository is not even read and the band never
+  /// reaches the page, which is a stronger guarantee than the `draft` marker
+  /// on its own. Leave it off until the quotes are real and cleared to
+  /// publish.
+  static const bool showTestimonials = false;
 
   /// Whether the site paints its own pointer (`CustomCursor`).
   ///

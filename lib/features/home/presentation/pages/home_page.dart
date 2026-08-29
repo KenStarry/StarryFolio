@@ -8,6 +8,7 @@ import '../../../../core/seo/structured_data.dart';
 import '../../../about/domain/model/about_profile.dart';
 import '../components/about_section.dart';
 import '../components/contact_section.dart';
+import '../../../testimonials/presentation/components/testimonial_band.dart';
 import '../components/hero_section.dart';
 import '../components/honours_band.dart';
 import '../components/services_section.dart';
@@ -35,6 +36,11 @@ class HomePage extends AsyncStatelessComponent {
     final featured = await Locator.projects.getProjects();
     final services = await Locator.services.getServices();
     final about = await Locator.about.getProfile();
+    // Skipped entirely when the band is switched off — no read, no component,
+    // nothing in the HTML.
+    final said = SiteConfig.showTestimonials
+        ? await Locator.testimonials.getTestimonials()
+        : null;
 
     // Resolved once: the profile feeds both the About band and the `knowsAbout`
     // claim in the Person JSON-LD, and those two must describe the same person.
@@ -74,6 +80,16 @@ class HomePage extends AsyncStatelessComponent {
       ),
 
       WorkSection(projects: featured.getOrElse((_) => const [])), // base
+
+      // Sits between the work and the ask: someone who has just looked at the
+      // projects is at the exact point of wondering what it is like to hire
+      // the person who built them. Renders nothing while there are no quotes,
+      // so the band's absence costs the page nothing.
+      if (said != null)
+        TestimonialBand(
+          testimonials: said.getOrElse((_) => const []),
+        ),
+
       const ContactSection(),       // raised
     ]);
   }

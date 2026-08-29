@@ -29,7 +29,9 @@ class PortraitFrame extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return const div(
-      classes: 'stack group relative mx-auto w-full max-w-md lg:mx-0 '
+      // `hero-mid` is the middle parallax plane. It rides `translate`, leaving
+      // `transform` free for the stack's own hover fan.
+      classes: 'stack hero-mid group relative mx-auto w-full max-w-md lg:mx-0 '
           'lg:max-w-none',
       [
         // Accent bloom. Larger than the stack so its edge never resolves into
@@ -40,10 +42,13 @@ class PortraitFrame extends StatelessComponent {
           [],
         ),
 
-        // Ghost wordmark, bleeding past the card on both sides.
+        // Ghost wordmark, bleeding past the card on both sides. The far
+        // parallax plane — it sinks as the rest lifts, and that divergence is
+        // what reads as depth rather than as lag.
         div(
-          classes: 'pointer-events-none absolute -inset-x-16 inset-y-0 -z-10 '
-              'flex items-center justify-center overflow-visible',
+          classes: 'hero-far pointer-events-none absolute -inset-x-16 '
+              'inset-y-0 -z-10 flex items-center justify-center '
+              'overflow-visible',
           attributes: {'aria-hidden': 'true'},
           [
             span(
