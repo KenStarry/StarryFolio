@@ -52,18 +52,18 @@ abstract final class AboutLocalDatasource {
       slug: 'healthx',
       role: 'Senior Flutter Engineer & UI/UX',
       company: 'HealthX Africa',
-      period: 'Jan 2026 — Present',
+      period: 'Jan 2026 - Present',
       kind: 'Full-time',
       location: 'Nairobi',
       current: true,
       projectSlug: 'healthx',
       summary: 'Sole engineer and designer on Kenya\'s most comprehensive '
-          'telehealth platform — research, brand, architecture, development, '
-          'QA and a dual-store release, all of it owned end to end.',
+          'telehealth platform. Research, brand, architecture, development, '
+          'QA and a dual-store release. If it shipped, it was me.',
       highlights: [
         'Zero to both stores in under three months',
         'Product UI/UX across 10+ feature modules, with no designer or PM',
-        'Established the company brand identity — now used company-wide',
+        'Established the company brand identity, now used company-wide',
         'Feature-driven Clean Architecture on Riverpod 3',
         'Real-time video consultations on LiveKit, e-pharmacy, biometric auth',
         'Kenya DPA 2019 compliance, staged rollouts, TestFlight betas',
@@ -80,13 +80,14 @@ abstract final class AboutLocalDatasource {
       slug: 'dentsu',
       role: 'Flutter Developer',
       company: 'Dentsu Kenya',
-      period: 'Apr 2024 — Sep 2025',
+      period: 'Apr 2024 - Sep 2025',
       kind: 'Consultant',
       location: 'Nairobi',
       projectSlug: 'britam-app',
       summary: 'A full architectural rebuild of the legacy MyBritam insurance '
-          'platform — the kind of work where a mistyped field has a financial '
-          'consequence.',
+          'platform. Insurance is the kind of work where a mistyped field has '
+          'a financial consequence, which does wonders for your attention to '
+          'detail.',
       highlights: [
         'Play Store rating from 3.1 to 4.1 through stability and UI/UX work',
         '100% feature parity across Android, iOS and Web from one codebase',
@@ -105,12 +106,13 @@ abstract final class AboutLocalDatasource {
       slug: 'podii',
       role: 'Flutter Developer',
       company: 'Podii Consultants',
-      period: 'May 2023 — Mar 2024',
+      period: 'May 2023 - Mar 2024',
       kind: 'Full-time',
       location: 'Nairobi',
       projectSlug: 'elvs',
-      summary: 'Internal tooling and the offline problem — building for people '
-          'whose connectivity cannot be assumed.',
+      summary: 'Internal tooling, and my first real fight with the offline '
+          'problem. Building for people whose connectivity you simply cannot '
+          'assume changes what finished means.',
       highlights: [
         'ELVS Mobile: a business workflow app with role-based access control',
         'Offline sync and state restoration on SQLite, built for data integrity '
@@ -125,11 +127,15 @@ abstract final class AboutLocalDatasource {
   static const List<EducationModel> education = [
     EducationModel(
       slug: 'degree',
-      qualification: 'BSc Computer Science — First Class Honours',
+      qualification: 'BSc Computer Science, First Class Honours',
       institution: 'Masinde Muliro University of Science and Technology',
       period: '2024',
-      note: 'The fundamentals that do not expire. Everything framework-shaped '
-          'came after — and keeps coming.',
+      // Kept straight. A credential is the one place on this site where
+      // formality is the point, and a joke here would undercut the thing a
+      // reader is being asked to take seriously.
+      note: 'Four years of theory that still shows up in the work, usually at '
+          'the least convenient moment. Everything framework-shaped came '
+          'after, and keeps coming.',
       focus: ['Algorithms', 'Systems', 'Databases', 'HCI'],
     ),
   ];
@@ -144,7 +150,7 @@ abstract final class AboutLocalDatasource {
     SkillGroupModel(
       slug: 'core',
       name: 'Core',
-      note: 'The language and the frameworks the work is actually made of.',
+      note: 'The languages and frameworks the work is actually made of.',
       skills: [
         SkillModel('Dart', SkillLevel.core),
         SkillModel('Flutter', SkillLevel.core),
@@ -171,7 +177,8 @@ abstract final class AboutLocalDatasource {
     SkillGroupModel(
       slug: 'backend',
       name: 'Backend & cloud',
-      note: 'Enough of the other side to design an API I can actually consume.',
+      note: 'Enough of the other side to design an API I will not curse at '
+          'later.',
       skills: [
         SkillModel('Supabase', SkillLevel.core),
         SkillModel('Firebase', SkillLevel.core),
@@ -185,7 +192,7 @@ abstract final class AboutLocalDatasource {
     SkillGroupModel(
       slug: 'craft',
       name: 'Craft',
-      note: 'The last 10% — where a build stops looking like a build.',
+      note: 'The last 10%, where a build stops looking like a build.',
       skills: [
         SkillModel('Design systems', SkillLevel.core),
         SkillModel('Motion & easing', SkillLevel.core),
@@ -198,7 +205,8 @@ abstract final class AboutLocalDatasource {
     SkillGroupModel(
       slug: 'ship',
       name: 'Ship',
-      note: 'The half of the job that happens after the code is written.',
+      note: 'The half of the job nobody puts on a CV, and the half that '
+          'decides whether any of it reaches a phone.',
       skills: [
         SkillModel('CI/CD', SkillLevel.core),
         SkillModel('GitHub Actions', SkillLevel.core),
@@ -231,7 +239,7 @@ abstract final class AboutLocalDatasource {
       title: 'Systemise it',
       icon: 'layers',
       artefact: 'Tokens and a component library',
-      blurb: 'Type, spacing, colour, motion and every state — decided once, in '
+      blurb: 'Type, spacing, colour, motion and every state: decided once, in '
           'code, before screen one.',
     ),
     ProcessStepModel(
@@ -265,7 +273,7 @@ abstract final class AboutLocalDatasource {
     MilestoneModel(
       year: '2023',
       title: 'Paid to write Dart',
-      note: 'Podii, and the offline problem — building for connectivity you '
+      note: 'Podii, and the offline problem, building for connectivity you '
           'cannot assume.',
     ),
     MilestoneModel(
@@ -277,13 +285,13 @@ abstract final class AboutLocalDatasource {
     MilestoneModel(
       year: '2025',
       title: 'Three platforms, one codebase',
-      note: 'MyBritam on Android, iOS and Web — and a Play rating from 3.1 to '
+      note: 'MyBritam on Android, iOS and Web, and a Play rating from 3.1 to '
           '4.1.',
     ),
     MilestoneModel(
       year: '2026',
       title: 'Zero to both stores in three months',
-      note: 'HealthX, solo — research, brand, architecture, QA and release.',
+      note: 'HealthX, solo: research, brand, architecture, QA and release.',
     ),
   ];
 

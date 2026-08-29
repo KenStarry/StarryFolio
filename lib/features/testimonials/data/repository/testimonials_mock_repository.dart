@@ -23,7 +23,7 @@ class TestimonialsMockRepository implements TestimonialsRepository {
     return const Right([
       TestimonialModel(
         slug: 'sample-one',
-        quote: 'PLACEHOLDER — layout only. Replace with a real quote before '
+        quote: 'PLACEHOLDER, layout only. Replace with a real quote before '
             'this is ever wired up at the composition root.',
         name: 'Sample Name',
         role: 'Sample Role',
@@ -32,7 +32,7 @@ class TestimonialsMockRepository implements TestimonialsRepository {
       ),
       TestimonialModel(
         slug: 'sample-two',
-        quote: 'PLACEHOLDER — layout only.',
+        quote: 'PLACEHOLDER, layout only.',
         name: 'Sample Name',
         role: 'Sample Role',
       ),

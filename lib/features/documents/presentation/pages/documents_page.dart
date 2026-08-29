@@ -235,7 +235,7 @@ class _DocumentBand extends StatelessComponent {
                                   classes: 'shrink-0 pt-1.5 font-mono '
                                       'text-iris-400',
                                   attributes: {'aria-hidden': 'true'},
-                                  [Component.text('—')],
+                                  [Component.text('·')],
                                 ),
                                 span([Component.text(line)]),
                               ],
@@ -341,14 +341,14 @@ class _DocumentBand extends StatelessComponent {
   /// where it came from can be answered without a round trip.
   static String _requestUrl(DocumentModel document) {
     final subject = Uri.encodeComponent(
-      'Document request — ${document.title}',
+      'Document request, ${document.title}',
     );
     final body = Uri.encodeComponent(
       'Hi Ken,\n\n'
       "I'd like a copy of your ${document.title.toLowerCase()} "
       '(${document.tagline})\n\n'
       'Who I am:\nWhat it is for:\n\n'
-      '— found via ${SiteConfig.domain}${RoutePaths.documents}',
+      'Found via ${SiteConfig.domain}${RoutePaths.documents}',
     );
     return 'mailto:${SiteConfig.email}?subject=$subject&body=$body';
   }
@@ -412,10 +412,10 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.documents,
-        title: 'Documents & CV — ${SiteConfig.name}',
+        title: 'Documents & CV · ${SiteConfig.name}',
         description:
             'Download the CV of ${SiteConfig.name}, ${SiteConfig.role} in '
-            '${SiteConfig.location} — plus the full record, a print-ready '
+            '${SiteConfig.location}: plus the full record, a print-ready '
             'portfolio and degree verification on request.',
       );
 }

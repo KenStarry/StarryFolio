@@ -54,7 +54,7 @@ class SiteConfig {
   static const String ogImageHeight = '630';
 
   static const String ogImageAlt =
-      '$name — $role. Apps people actually reopen.';
+      '$name, $role. Apps people actually reopen.';
 
   // ── Hero ──────────────────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ class SiteConfig {
   /// Describes what is actually in the frame rather than claiming to be a
   /// photograph of a person — the avatar is an illustration.
   static const String portraitAlt =
-      "$name's avatar — a ginger cat in a hoodie working at a laptop";
+      "$name's avatar: a ginger cat in a hoodie, hunched over a laptop";
 
   /// Named in the About section's "Currently" panel. Kept here so the panel
   /// never has to hard-code a project name that could go stale.
@@ -110,32 +110,44 @@ class SiteConfig {
   static const String cvFile = '/cv.pdf';
 
   static const bool available = true;
-  static const String availabilityLabel = 'Available for select work';
+  static const String availabilityLabel =
+      'Free for new work, and unreasonably keen';
 
-  /// The introduction column's statement — the reference's "Product Designer
-  /// and Developer, based in California." Short, factual, three lines.
+  /// The introduction column's statement: the first line anyone actually
+  /// reads.
+  ///
+  /// **One short sentence, and never more.** It sits directly under a name set
+  /// at display scale, and a paragraph there asks a visitor to start reading
+  /// before they have decided to.
+  ///
+  /// It carries no job title and no location on purpose. The portrait card
+  /// beside it already prints [role] and [location], so stating them here
+  /// spends the most-read line on a repeat. That leaves it free to be the one
+  /// line with a joke in it.
   static const String heroStatement =
-      'Flutter engineer and mobile product designer, based in Nairobi.';
+      'I build whole apps, then argue with myself about the spacing.';
 
   static const String tagline =
-      'I design and ship polished mobile products end to end — design system, '
-      'architecture, store listing.';
+      'I design and ship mobile products end to end, from the first design '
+      'token to the store listing. Then I fuss over the parts nobody was '
+      'supposed to notice.';
 
   /// The small paragraph under [heroStatement]. Deliberately short: the hero
   /// is a poster, not an essay.
   static const String heroLead =
-      'I own the whole surface — design system, architecture, release. Apps '
-      'people actually reopen.';
+      'Design system, architecture, release. All of it, aimed at one thing: '
+      'an app people open again tomorrow.';
 
   // ── About ─────────────────────────────────────────────────────────────────
 
   static const List<String> bio = [
-    "I care about the last 10% — the easing curve on a sheet, the empty state "
-        "nobody scoped, the release build that just works.",
-    "Today I own the full mobile lifecycle at a Kenyan telehealth platform: "
-        "brand, design system, architecture, QA, and shipping to both stores. "
-        "Alongside that I build bespoke Flutter products for businesses that "
-        "have outgrown a website.",
+    "The last 10% is where I live: the easing curve on a sheet, the empty "
+        "state nobody scoped, the release build that works first try. Yes, I "
+        "have been told this is a lot. I remain unbothered.",
+    "Right now that means owning the whole mobile lifecycle at a Kenyan "
+        "telehealth platform: brand, design system, architecture, QA, and the "
+        "shipping to both stores. Alongside it I build Flutter products for "
+        "businesses that have outgrown a website and know it.",
   ];
 
   /// The line the numbers band is built around. Ken's own words, not a
@@ -147,9 +159,9 @@ class SiteConfig {
   /// Short, punchy facts. Used large in the numbers band and compact as
   /// floating pills over the hero portrait.
   static const List<({String value, String label})> stats = [
-    (value: '5+', label: 'years in Flutter'),
-    (value: '2', label: 'app stores shipped to'),
-    (value: '100%', label: 'of the mobile stack owned'),
+    (value: '5+', label: 'years deep in Flutter'),
+    (value: '2', label: 'app stores survived'),
+    (value: '100%', label: 'of the stack, mine'),
   ];
 
   /// Places the work has been done. Rendered as the marquee in the enterprise
@@ -181,7 +193,7 @@ class SiteConfig {
   /// labelled with where it came from.
   static String get whatsappUrl =>
       'https://wa.me/$whatsappNumber'
-      '?text=${Uri.encodeComponent('Hi Ken — I found you via kenstarry.com.')}';
+      '?text=${Uri.encodeComponent('Hi Ken, I found you via kenstarry.com.')}';
   static String get buyMeACoffeeUrl => 'https://buymeacoffee.com/$buyMeACoffee';
 
   static const List<SocialLink> socials = [

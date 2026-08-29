@@ -168,7 +168,7 @@ class ProjectShowcase extends StatelessComponent {
             if (mockup != null)
               img(
                 src: '/$mockup',
-                alt: '${project.name} — ${project.tagline}',
+                alt: '${project.name}, ${project.tagline}',
                 // The featured mockup is the largest paint on this page and
                 // sits near the fold, so it is loaded eagerly and prioritised.
                 // Intrinsic ratio only — the browser needs *a* ratio to

@@ -154,9 +154,9 @@ class _Header extends StatelessComponent {
       meta: '${SiteConfig.location} · UTC+3',
       title: '${SiteConfig.name},',
       titleTail: 'end to end.',
-      lead: 'A Flutter engineer who owns the whole surface — design system, '
-          'architecture, release. This is the long version: the roles, the '
-          'tools, the process, and the part that is not work.',
+      lead: 'The long version. Roles, tools, how I actually work, and the '
+          'parts that are not work at all. Fair warning: I enjoy this more '
+          'than is strictly normal.',
       aside: AboutDossier(
         currentCompany: profile.currentRole?.company ?? '',
       ),
@@ -327,8 +327,8 @@ class _Milestones extends StatelessComponent {
       id: 'milestones',
       classes: 'relative tl-6',
       eyebrow: 'Milestones',
-      heading: 'The road',
-      headingTail: 'so far.',
+      heading: 'How it went,',
+      headingTail: 'roughly.',
       children: [MilestoneSpine(milestones: profile.milestones)],
     );
   }
@@ -378,9 +378,10 @@ class _Close extends StatelessComponent {
                       'text-ink-400',
                   [
                     Component.text(
-                      'If any of it sounds like the person your product needs, '
-                      'the fastest way to find out is to tell me what your '
-                      'users keep coming back for.',
+                      'If that sounds like the person your product needs, '
+                      'the quickest way to find out is to tell me what your '
+                      'users keep coming back for. I reply faster than is '
+                      'probably wise.',
                     ),
                   ],
                 ),
@@ -413,10 +414,10 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.about,
-        title: 'About — ${SiteConfig.name}',
-        description: 'Flutter engineer and mobile product designer in Nairobi '
-            '— five years of experience, the full mobile lifecycle owned, and '
-            'the toolkit, process and roles behind it.',
+        title: 'About · ${SiteConfig.name}',
+        description: 'Flutter engineer and product designer in Nairobi. Five '
+            'years of it, the full mobile lifecycle owned, and the toolkit, '
+            'process and roles behind the work.',
         type: 'profile',
       );
 }

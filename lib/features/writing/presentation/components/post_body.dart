@@ -164,7 +164,7 @@ Component _list(List<String> items, bool ordered) {
           span(
             classes: 'prose-li-mark',
             attributes: const {'aria-hidden': 'true'},
-            [Component.text(ordered ? '${i + 1}.' : '—')],
+            [Component.text(ordered ? '${i + 1}.' : '·')],
           ),
           span(inline(item)),
         ],

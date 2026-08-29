@@ -26,7 +26,7 @@ class ThanksPage extends StatelessComponent {
       [
         PageMeta(
           path: RoutePaths.thanks,
-          title: 'Message sent — ${SiteConfig.name}',
+          title: 'Message sent · ${SiteConfig.name}',
           description: 'Your message has been sent.',
           noIndex: true,
         ),
@@ -40,7 +40,7 @@ class ThanksPage extends StatelessComponent {
                 h1(
                   classes: 'type-section mt-5 font-display font-extrabold '
                       'text-ink-100',
-                  [Component.text('Got it — thank you.')],
+                  [Component.text('Got it, thank you.')],
                 ),
                 p(
                   classes: 'mt-6 text-sm leading-relaxed text-ink-400',

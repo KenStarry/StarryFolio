@@ -608,7 +608,27 @@ cursor", never "no cursor at all". It is the site's only inline script;
 source, so a class built by concatenation gets purged. Design tokens live in
 `web/styles.tw.css`; change `--color-ink-200` and the pale moves everywhere.
 
-**Copy:** warm and human, never system-speak. "This page drifted off", not "Error 404".
+**Copy: no em dashes. Anywhere.** Not in prose, not as a bullet, not as a
+separator, not in a date range. They read as machine-written and the brand does
+not want that. Use a colon for an elaboration, a comma for an aside, a full stop
+for a second clause, `·` for a separator or bullet, and a plain hyphen for a date
+range. `dart analyze` will not catch one, so grep the built HTML:
+
+```bash
+python3 -c "import re,pathlib,glob;print(sum(re.sub(r'<[^>]+>',' ',pathlib.Path(f).read_text()).count(chr(8212)) for f in glob.glob('build/jaspr/**/index.html',recursive=True) if 'packages/' not in f))"
+```
+
+**Voice: goofy, not corporate.** Ken likes this work and the copy should sound
+like it. Self-aware, a bit playful, happy to admit to losing a weekend to
+spacing. What it must never become is either a CV read aloud or a startup
+landing page: no "leverage", no "passionate about", no "solutions". The test is
+whether a sentence is more fun to read than the same fact stated plainly. If it
+is not, it is just longer.
+
+Restraint still applies in two places: the credential surfaces
+(`HonoursBand`, `SealedDocument`) stay dignified, because formality *is* the
+aesthetic there, and error copy stays warm and plain: "This page drifted off",
+not "Error 404".
 
 ---
 

@@ -36,7 +36,7 @@ class ProjectCover extends StatelessComponent {
         if (cover != null)
           img(
             src: '/$cover',
-            alt: '${project.name} — ${project.tagline}',
+            alt: '${project.name}, ${project.tagline}',
             // Cards sit below the fold on every page that uses them.
             attributes: const {'loading': 'lazy', 'decoding': 'async'},
             classes: 'h-full w-full object-cover transition-transform '
@@ -54,7 +54,7 @@ class ProjectCover extends StatelessComponent {
             [
               img(
                 src: '/$mockup',
-                alt: '${project.name} — ${project.tagline}',
+                alt: '${project.name}, ${project.tagline}',
                 attributes: const {'loading': 'lazy', 'decoding': 'async'},
                 // Overscaled past the box height and bottom-anchored, so the
                 // devices read large and the frame crops their base rather

@@ -42,20 +42,20 @@ abstract final class WritingLocalDatasource {
     date: 'Apr 2024',
     dateIso: '2024-04-06',
     readMinutes: 8,
-    excerpt: 'Four ways to colour an SVG in Flutter — and why the obvious one '
+    excerpt: 'Four ways to colour an SVG in Flutter, and why the obvious one '
         'falls apart the moment the artwork gets interesting.',
     dek: 'Can you name four different ways to style an SVG in Flutter? Most '
         'people get to two. The gap between them is where the good-looking '
         'work lives.',
     coverImage: 'images/writing/svg-styling-cover.webp',
-    coverAlt: 'Flutter SVG styling — the article cover',
+    coverAlt: 'Flutter SVG styling, the article cover',
     tags: ['Flutter', 'SVG', 'CustomPaint', 'Shaders'],
     sourceUrl:
         'https://github.com/KenStarry/Multi_Wayed_Flutter/tree/main/lib/svg_styling',
     sourceLabel: 'Full source on GitHub',
     body: [
       PostProse(
-        'It never gets as basic as this. And yet — while working with SVGs '
+        'It never gets as basic as this. And yet, while working with SVGs '
         'seems simple enough, can you tell me four different ways of styling '
         'one?',
       ),
@@ -77,7 +77,7 @@ abstract final class WritingLocalDatasource {
       // ── 1 ──
       PostHeading('1. The flutter_svg package'),
       PostProse(
-        'You have almost certainly met this one — it is the popular choice in '
+        'You have almost certainly met this one. It is the popular choice in '
         'the Flutter world. The `flutter_svg` package lets us work with SVGs '
         'in a straightforward way.',
       ),
@@ -154,7 +154,7 @@ abstract final class WritingLocalDatasource {
         ),
       ]),
       PostProse(
-        'Yeah — not as pleasing as you had hoped. That is the limitation. '
+        'Yeah, not as pleasing as you had hoped. That is the limitation. '
         '`BlendMode.srcIn` replaces **every** painted pixel, so the whole '
         'illustration collapses into one silhouette. For an icon that is '
         'exactly right. For artwork with more than one colour in it, you have '
@@ -192,7 +192,7 @@ abstract final class WritingLocalDatasource {
         inset: true,
       ),
       PostProse(
-        'It is a little more flexible, though — `ColorFiltered` wraps *any* '
+        'It is a little more flexible, though, `ColorFiltered` wraps *any* '
         'widget, not just an SVG. Which of the two you reach for is mostly '
         'preference.',
       ),
@@ -202,7 +202,7 @@ abstract final class WritingLocalDatasource {
       PostProse(
         'For simpler SVGs like icons, `ColorFiltered` and `colorFilter` work '
         'absolutely great. More complex artwork needs a finer-grained '
-        'approach — and that is where Flutter Shape Maker comes in.',
+        'approach, and that is where Flutter Shape Maker comes in.',
       ),
       PostNote(
         'Flutter Shape Maker auto-generates responsive `CustomPaint` code for '
@@ -241,7 +241,7 @@ abstract final class WritingLocalDatasource {
               alt: 'The Generate Code button',
             ),
             PostNote(
-              'Toggle it to **Responsive** for the best results — the '
+              'Toggle it to **Responsive** for the best results, the '
               'generated paths are then expressed as fractions of `size`, so '
               'the shape scales instead of clipping.',
               tone: PostNoteTone.tip,
@@ -258,7 +258,7 @@ abstract final class WritingLocalDatasource {
           blocks: [
             PostProse(
               'Drop it into a new Dart file. Below is a snippet of the '
-              'generated class — the real one runs to roughly 1,500 lines, one '
+              'generated class: the real one runs to roughly 1,500 lines, one '
               '`Path` and one `Paint` per shape in the drawing.',
             ),
             PostCode(
@@ -290,7 +290,7 @@ abstract final class WritingLocalDatasource {
               'This is the whole point of the technique: every shape now has '
               'its **own** `Paint`. Change `paint_0_fill.color` and you have '
               'recoloured exactly one part of the illustration, leaving the '
-              'rest alone — which is the thing neither of the first two '
+              'rest alone, which is the thing neither of the first two '
               'methods can do.',
             ),
           ],
@@ -351,11 +351,11 @@ abstract final class WritingLocalDatasource {
         filename: 'shader_mask.dart',
       ),
       PostList([
-        '`child` — the widget to apply the gradient to. Any widget, not just '
+        '`child`: the widget to apply the gradient to. Any widget, not just '
             'an SVG.',
-        '`shaderCallback` — returns the gradient you want: `LinearGradient`, '
+        '`shaderCallback`: returns the gradient you want: `LinearGradient`, '
             '`SweepGradient`, `RadialGradient`.',
-        '`bounds` — the size constraints of the child. Here, the SVG\'s '
+        '`bounds`: the size constraints of the child. Here, the SVG\'s '
             '200×200.',
       ]),
       PostImage(
@@ -374,17 +374,17 @@ abstract final class WritingLocalDatasource {
       // ── Close ──
       PostHeading('So which one?'),
       PostProse(
-        'Each has its advantages, and a lot of it comes down to preference — '
+        'Each has its advantages, and a lot of it comes down to preference, '
         'but not all of it:',
       ),
       PostList([
-        '**One-colour icons** — `colorFilter` on `SvgPicture`. Nothing else '
+        '**One-colour icons**, `colorFilter` on `SvgPicture`. Nothing else '
             'is worth the typing.',
-        '**Recolouring a non-SVG widget** — `ColorFiltered`, because it wraps '
+        '**Recolouring a non-SVG widget**: `ColorFiltered`, because it wraps '
             'anything.',
-        '**Complex artwork you need real control over** — Flutter Shape '
+        '**Complex artwork you need real control over**, Flutter Shape '
             'Maker. It is the only one that keeps the shapes separable.',
-        '**Gradients** — `ShaderMask`, over whichever of the above got you '
+        '**Gradients**: `ShaderMask`, over whichever of the above got you '
             'the shape.',
       ]),
       PostProse(
@@ -404,7 +404,7 @@ abstract final class WritingLocalDatasource {
     date: 'Coming',
     readMinutes: 6,
     excerpt: 'A provider read is only legal inside a synchronous build. Once '
-        'you await, you are somewhere else entirely — and the crawler gets a '
+        'you await, you are somewhere else entirely, and the crawler gets a '
         'spinner.',
     tags: ['Jaspr', 'Riverpod', 'SEO'],
   );

@@ -54,9 +54,9 @@ class WorkSection extends StatelessComponent {
     return SectionBlock(
       id: 'work',
       eyebrow: 'Selected work',
-      heading: 'All creative works,\nselected projects.',
-      lead: 'Products where I owned the whole surface — design system, '
-          'architecture, release.',
+      heading: 'Things I built,\nand still like.',
+      lead: 'Products where the whole surface was mine: design system, '
+          'architecture, release. No handoffs, no telephone game.',
       children: [
         if (feature != null)
           div(
@@ -104,8 +104,10 @@ class WorkSection extends StatelessComponent {
               [
                 Component.text(
                   remaining == 1
-                      ? 'One more project, with its full case study.'
-                      : 'More projects, each with its own case study.',
+                      ? 'One more, with the full case study and an honest '
+                          'account of what went sideways.'
+                      : 'More of them, each with a case study and an honest '
+                          'account of what went sideways.',
                 ),
               ],
             ),

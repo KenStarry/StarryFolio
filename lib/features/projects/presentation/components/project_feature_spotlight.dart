@@ -139,7 +139,7 @@ class ProjectFeatureSpotlight extends StatelessComponent {
 
             img(
               src: '/$image',
-              alt: '${feature.title} — ${feature.label}',
+              alt: '${feature.title}, ${feature.label}',
               // Spotlights are always below the fold on a case study.
               attributes: const {
                 'loading': 'lazy',

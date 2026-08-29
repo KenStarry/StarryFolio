@@ -187,7 +187,7 @@ class _NavBarView extends StatelessComponent {
   Component _logo() => const a(
         href: RoutePaths.home,
         classes: 'group flex items-center gap-3',
-        attributes: {'aria-label': '${SiteConfig.name} — home'},
+        attributes: {'aria-label': '${SiteConfig.name}, home'},
         [
           span(
             classes: 'relative flex h-9 w-9 shrink-0 overflow-hidden '

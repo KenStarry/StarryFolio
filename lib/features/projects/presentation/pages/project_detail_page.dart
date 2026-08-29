@@ -39,7 +39,7 @@ class ProjectDetailPage extends AsyncStatelessComponent {
         [
           PageMeta(
             path: RoutePaths.projectDetail(slug),
-            title: 'Project not found — ${SiteConfig.name}',
+            title: 'Project not found · ${SiteConfig.name}',
             description: error,
             noIndex: true,
           ),
@@ -80,7 +80,7 @@ class _CaseStudy extends StatelessComponent {
     return article([
       PageMeta(
         path: RoutePaths.projectDetail(project.slug),
-        title: '${project.name} — ${SiteConfig.name}',
+        title: '${project.name}, ${SiteConfig.name}',
         description: project.tagline,
         image: project.ogImage ?? SiteConfig.defaultOgImage,
         type: 'article',
@@ -235,7 +235,7 @@ class _Hero extends StatelessComponent {
                       ),
                       img(
                         src: '/$mockup',
-                        alt: '${project.name} — ${project.tagline}',
+                        alt: '${project.name}, ${project.tagline}',
                         attributes: const {
                           'decoding': 'async',
                           'fetchpriority': 'high',
@@ -356,7 +356,7 @@ class _ModulesIntro extends StatelessComponent {
                           'One nav could not serve both a person buying '
                           'medicine and a person recording how their day felt '
                           'without compromising each. So the app re-skins '
-                          'around whichever world you are in — colour, '
+                          'around whichever world you are in: colour, '
                           'navigation and home all change. Account, wallet and '
                           'identity never do. The clinical half runs again in '
                           'the browser, for the times a phone is the wrong '

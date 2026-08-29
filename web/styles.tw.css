@@ -520,6 +520,84 @@
     letter-spacing: -0.05em;
   }
 
+  /* The footer wordmark — the motif at its largest scale on the site.
+     Sized so `kenstarry` spans the container at desktop widths, and hung so
+     the lower third of the letterforms is clipped by the footer's own edge.
+     A word cut off at the baseline reads as embossed into the page; the same
+     word sitting fully inside its box just reads as very large text. */
+  .ghost-footer {
+    font-size: clamp(2.75rem, 17vw, 13.5rem);
+    line-height: 0.75;
+    letter-spacing: -0.055em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     FOOTER INDEX
+
+     The footer's links are set as ruled rows rather than a bare stack: a
+     hairline per row, the label, and an arrow that arrives from the left on
+     hover. It reads as an index at the back of a book, which is what a
+     footer sitemap actually is.
+
+     The arrow is translated *and* faded rather than hidden, so the row's
+     height never changes and the column cannot jitter as the pointer runs
+     down it.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .foot-link {
+    @apply relative flex items-center gap-2 border-t border-ink-800 py-2.5
+           text-sm text-ink-400;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft);
+  }
+
+  .foot-link:hover,
+  .foot-link:focus-visible {
+    @apply border-ink-700 text-ink-100;
+  }
+
+  .foot-link-mark {
+    @apply text-iris-400;
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    transition: opacity 0.35s var(--ease-soft),
+                transform 0.35s var(--ease-soft);
+  }
+
+  .foot-link:hover .foot-link-mark,
+  .foot-link:focus-visible .foot-link-mark {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The page you are on. Lit rather than underlined — an underline here would
+     read as a hover state that got stuck, which is the same mistake the nav
+     avoids. */
+  .foot-link-here {
+    @apply border-ink-700 text-iris-300;
+  }
+
+  .foot-link-here .foot-link-mark {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* A bordered square for a profile icon. Same object as the nav's mobile
+     menu socials, one size down. */
+  .foot-social {
+    @apply inline-flex h-10 w-10 items-center justify-center border
+           border-ink-800 text-ink-400;
+    transition: color 0.4s var(--ease-soft),
+                border-color 0.4s var(--ease-soft),
+                background-color 0.4s var(--ease-soft),
+                transform 0.4s var(--ease-spring);
+  }
+
+  .foot-social:hover {
+    @apply bg-ink-900 text-iris-300;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    transform: translateY(-2px);
+  }
+
   /* Ruled meta rows under the featured copy. */
   .meta-row {
     @apply grid grid-cols-[7rem_1fr] gap-4 border-t border-ink-700 py-3.5;

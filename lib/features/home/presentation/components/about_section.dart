@@ -75,8 +75,10 @@ class AboutSection extends StatelessComponent {
                   'text-ink-400 sm:text-[0.9375rem]',
               [
                 Component.text(
-                  'Five years, four teams, and the same job every time: own '
-                  'the whole surface — design system, architecture, release.',
+                  'Five years, four teams, and one job description that '
+                  'never really changes: do the whole thing. Design system, '
+                  'architecture, release. Then poke at the last 10% until it '
+                  'stops bothering me.',
                 ),
               ],
             ),

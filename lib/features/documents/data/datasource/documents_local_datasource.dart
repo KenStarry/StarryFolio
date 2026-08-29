@@ -41,7 +41,7 @@ abstract final class DocumentsLocalDatasource {
       'images/cv-page-3.webp',
     ],
     summary: [
-      'The document version — the one that goes into an application form or '
+      'The document version. The one that goes into an application form or '
           'an applicant tracking system. Same facts as the record further down '
           'this page, laid out for a reader who has ninety seconds and a '
           'shortlist to cut.',
@@ -59,7 +59,7 @@ abstract final class DocumentsLocalDatasource {
   static const DocumentModel _degree = DocumentModel(
     slug: 'degree',
     title: 'Degree certificate',
-    tagline: 'BSc Computer Science — First Class Honours.',
+    tagline: 'BSc Computer Science, First Class Honours.',
     access: DocumentAccess.onRequest,
     issuer: 'Masinde Muliro University of Science and Technology',
     format: 'Scan',
@@ -68,7 +68,7 @@ abstract final class DocumentsLocalDatasource {
       'The certificate itself carries a full legal name, a registration '
           'number and a signature. None of that needs to sit on a public URL '
           'waiting to be scraped, so it is not published here.',
-      'The claim, though, is not a secret — it is on the CV, in the JSON-LD '
+      'The claim, though, is not a secret. It is on the CV, in the JSON-LD '
           'and stated in full below. Ask and the scan comes back the same day.',
     ],
     contains: [

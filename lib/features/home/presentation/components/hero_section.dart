@@ -142,7 +142,7 @@ class HeroSection extends StatelessComponent {
               target: Target.blank,
               attributes: {
                 'rel': 'me noopener',
-                'aria-label': '${social.label} — ${social.handle}',
+                'aria-label': '${social.label}, ${social.handle}',
               },
               classes: 'text-ink-400 transition-colors duration-300 '
                   'hover:text-iris-400',

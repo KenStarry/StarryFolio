@@ -35,43 +35,43 @@ class App extends StatelessComponent {
       routes: [
         Route(
           path: RoutePaths.home,
-          title: '${SiteConfig.name} — ${SiteConfig.role}',
+          title: '${SiteConfig.name} · ${SiteConfig.role}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const HomePage()),
         ),
         Route(
           path: RoutePaths.projects,
-          title: 'Projects — ${SiteConfig.name}',
+          title: 'Projects · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ProjectsPage()),
         ),
         Route(
           path: RoutePaths.writing,
-          title: 'Writing — ${SiteConfig.name}',
+          title: 'Writing · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const WritingPage()),
         ),
         Route(
           path: RoutePaths.documents,
-          title: 'Documents & CV — ${SiteConfig.name}',
+          title: 'Documents & CV · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const DocumentsPage()),
         ),
         Route(
           path: RoutePaths.about,
-          title: 'About — ${SiteConfig.name}',
+          title: 'About · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const AboutPage()),
         ),
         Route(
           path: RoutePaths.services,
-          title: 'Services — ${SiteConfig.name}',
+          title: 'Services · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ServicesPage()),
         ),
         Route(
           path: RoutePaths.contact,
-          title: 'Contact — ${SiteConfig.name}',
+          title: 'Contact · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ContactPage()),
         ),
@@ -96,13 +96,13 @@ class App extends StatelessComponent {
           ),
         Route(
           path: RoutePaths.thanks,
-          title: 'Message sent — ${SiteConfig.name}',
+          title: 'Message sent · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ThanksPage()),
         ),
         Route(
           path: RoutePaths.notFound,
-          title: 'Not found — ${SiteConfig.name}',
+          title: 'Not found · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const NotFoundPage()),
         ),

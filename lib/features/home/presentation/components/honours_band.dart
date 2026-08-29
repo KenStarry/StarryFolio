@@ -55,14 +55,20 @@ class HonoursBand extends StatelessComponent {
     final degree = education;
     if (degree == null) return const div([]);
 
-    // `qualification` is authored as `BSc Computer Science — First Class
+    // `qualification` is authored as `BSc Computer Science, First Class
     // Honours`. The honours half is the headline and the subject is the
-    // qualifier, so the two are split rather than set as one long line — and
-    // split here rather than stored apart, because every other surface wants
+    // qualifier, so the two are split rather than set as one long line, and
+    // split here rather than stored apart because every other surface wants
     // the whole string.
-    final parts = degree.qualification.split('—');
+    //
+    // Falls back to setting the whole string bright when there is no comma to
+    // split on: better a single-tone line than the qualification printed
+    // twice, which is what the previous separator-based split did the moment
+    // the separator changed.
+    final parts = degree.qualification.split(',');
     final subject = parts.first.trim();
-    final honour = parts.length > 1 ? parts[1].trim() : degree.qualification;
+    final honour =
+        parts.length > 1 ? parts.sublist(1).join(',').trim() : '';
 
     return section(
       classes: 'relative bg-ink-900 pb-20 sm:pb-24',
@@ -147,12 +153,16 @@ class HonoursBand extends StatelessComponent {
                               'leading-tight tracking-tight text-ink-100 '
                               'sm:text-[1.75rem]',
                           [
-                            Component.text(honour),
-                            const Component.text(' '),
-                            span(
-                              classes: 'font-bold text-ink-400',
-                              [Component.text(subject)],
-                            ),
+                            if (honour.isEmpty)
+                              Component.text(subject)
+                            else ...[
+                              Component.text(honour),
+                              const Component.text(' '),
+                              span(
+                                classes: 'font-bold text-ink-400',
+                                [Component.text(subject)],
+                              ),
+                            ],
                           ],
                         ),
                         p(

@@ -294,7 +294,7 @@ class SchemaOrg {
       {
         '@context': _context,
         '@type': 'Blog',
-        'name': 'Writing — ${SiteConfig.name}',
+        'name': 'Writing · ${SiteConfig.name}',
         'url': SiteConfig.absolute(RoutePaths.writing),
         'author': {'@id': personId},
         'blogPost': [

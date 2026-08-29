@@ -278,11 +278,11 @@ class _Header extends StatelessComponent {
       ghost: 'Work',
       path: RoutePaths.projects,
       meta: '${featured.length} featured',
-      title: 'All creative works,',
-      titleTail: 'selected projects.',
-      lead: 'Everything worth showing, grouped by what it was built for. Each '
-          'one has a short case study — what it does, what was hard, and what '
-          'I would redo given another pass.',
+      title: 'The work,',
+      titleTail: 'with receipts.',
+      lead: 'Grouped by who it was for. Each one has a case study covering '
+          'what it does, what was genuinely hard, and what I would redo given '
+          'another go at it. That last part is the useful one.',
       facts: [
         (value: count.toString().padLeft(2, '0'), label: 'Case studies'),
         (
@@ -517,7 +517,7 @@ class _PackageFeature extends StatelessComponent {
             if (project.coverImage case final cover?)
               img(
                 src: '/$cover',
-                alt: '${project.name} — ${project.tagline}',
+                alt: '${project.name}, ${project.tagline}',
                 classes: 'h-full w-full object-cover transition-transform '
                     'duration-700 ease-soft group-hover:scale-[1.03]',
                 attributes: const {'loading': 'lazy', 'decoding': 'async'},
@@ -575,7 +575,7 @@ class _PackageFeature extends StatelessComponent {
                         const span(
                           classes: 'shrink-0 pt-1.5 font-mono text-iris-400',
                           attributes: {'aria-hidden': 'true'},
-                          [Component.text('—')],
+                          [Component.text('·')],
                         ),
                         span([Component.text(line)]),
                       ],
@@ -627,9 +627,9 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.projects,
-        title: 'Projects — ${SiteConfig.name}',
-        description: 'Case studies from the mobile products I have designed and '
-            'shipped — enterprise systems, client work and pet projects, with '
-            'what was hard in each.',
+        title: 'Projects · ${SiteConfig.name}',
+        description: 'Case studies from the mobile products I have designed '
+            'and shipped: enterprise systems, client work, pet projects and '
+            'one open source package. Including the parts that were hard.',
       );
 }

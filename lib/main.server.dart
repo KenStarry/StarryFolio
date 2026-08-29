@@ -16,7 +16,7 @@ void main() {
 
   runApp(
     const Document(
-      title: '${SiteConfig.name} — ${SiteConfig.role}',
+      title: '${SiteConfig.name} · ${SiteConfig.role}',
       lang: 'en',
       meta: {
         'description': SiteConfig.tagline,

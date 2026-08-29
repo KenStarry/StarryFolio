@@ -34,7 +34,7 @@ enum ProjectKind {
     slug: 'open-source',
     title: 'Open source & tooling',
     lead: 'Code other developers depend on. Published, versioned, tested and '
-        'maintained in the open — which is a different discipline from '
+        'maintained in the open, which is a different discipline from '
         'shipping an app, and a harder one to fake.',
   );
 

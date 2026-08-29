@@ -35,7 +35,7 @@ class PostDetailPage extends AsyncStatelessComponent {
         [
           PageMeta(
             path: RoutePaths.post(slug),
-            title: 'Piece not found — ${SiteConfig.name}',
+            title: 'Piece not found · ${SiteConfig.name}',
             description: error,
             noIndex: true,
           ),
@@ -82,7 +82,7 @@ class _Article extends StatelessComponent {
     return article([
       PageMeta(
         path: RoutePaths.post(post.slug),
-        title: '${post.title} — ${SiteConfig.name}',
+        title: '${post.title}, ${SiteConfig.name}',
         description: post.excerpt,
         image: post.coverImage == null
             ? SiteConfig.defaultOgImage

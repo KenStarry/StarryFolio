@@ -113,8 +113,8 @@ const String _script = '''
     var el = e.target;
     var hit = el && el.closest ? el.closest(INTERACTIVE) : null;
     var textual = !!(hit && hit.matches(TEXTUAL));
-    // A text field is not also "active" — it fades the pair out, and lighting
-    // them up on the way would be a flicker.
+    // A text field is not also "active": it fades the pair out, and
+    // lighting them up on the way would be a flicker.
     body.classList.toggle('cursor-active', !!hit && !textual);
     body.classList.toggle('cursor-text', textual);
   }, { passive: true });

@@ -25,8 +25,8 @@ class ContactPage extends StatelessComponent {
     return Component.fragment([
       const PageMeta(
         path: RoutePaths.contact,
-        title: 'Contact — ${SiteConfig.name}',
-        description: 'Start a project, ask a question, or just say hello — by '
+        title: 'Contact · ${SiteConfig.name}',
+        description: 'Start a project, ask a question, or just say hello, by '
             'form, email, WhatsApp or wherever you already are.',
       ),
       StructuredData(id: 'ld-contact', SchemaOrg.contactPage()),
@@ -51,7 +51,7 @@ class _Header extends StatelessComponent {
       title: 'Tell me what',
       titleTail: 'you are building.',
       lead: 'A brief, a rough idea, or a question about something on this '
-          'site — all welcome. I read everything and usually reply within a '
+          'site: all welcome. I read everything and usually reply within a '
           'day.',
       facts: [
         (
@@ -165,7 +165,7 @@ class _Support extends StatelessComponent {
               eyebrow: 'Support the work',
               title: 'Buy me a coffee.',
               lead: 'Some of what I build is open and free to use. If it saved '
-                  'you an afternoon, this is the tip jar — entirely optional, '
+                  'you an afternoon, this is the tip jar: entirely optional, '
                   'and it never changes what I publish.',
             ),
 

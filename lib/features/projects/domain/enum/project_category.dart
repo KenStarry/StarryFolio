@@ -18,7 +18,7 @@ enum ProjectCategory {
     slug: 'commercial',
     title: 'Client work',
     lead: 'Products for businesses that had outgrown a website. Shipped end to '
-        'end — brand and design system through to the store listing.',
+        'end: brand and design system through to the store listing.',
   ),
   personal(
     label: 'Pet project',

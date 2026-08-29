@@ -302,7 +302,7 @@ class _Sent extends StatelessComponent {
         p(
           classes: 'mt-6 font-display text-2xl font-bold tracking-tight '
               'text-ink-100',
-          [Component.text('Got it — thank you.')],
+          [Component.text('Got it, thank you.')],
         ),
         p(
           classes: 'mt-3 max-w-sm text-sm leading-relaxed text-ink-400',

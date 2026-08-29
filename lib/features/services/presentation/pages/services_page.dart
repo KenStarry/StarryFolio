@@ -107,9 +107,10 @@ class _Header extends StatelessComponent {
       meta: SiteConfig.availabilityLabel,
       title: 'What I build,',
       titleTail: 'and how I work.',
-      lead: 'Six things I get hired for — usually several at once, which is '
-          'the point. One person across design, build and release is how the '
-          'seams disappear.',
+      lead: 'Six things people hire me for, usually several at once, which '
+          'is sort of the whole point. One person across design, build and '
+          'release means nothing gets lost in the handover, mostly because '
+          'there is not one.',
       facts: [
         (
           value: services.length.toString().padLeft(2, '0'),
@@ -152,9 +153,11 @@ class _Close extends StatelessComponent {
                       'text-ink-400',
                   [
                     Component.text(
-                      'Most projects are two or three of these at once. Tell me '
-                      'what your users keep coming back for and I will tell you '
-                      'what it actually takes.',
+                      'Most projects are two or three of these at once, and '
+                      'the boundaries matter less than you think. Tell me what '
+                      'your users keep coming back for and I will tell you '
+                      'what it actually takes, including the parts you were '
+                      'hoping to skip.',
                     ),
                   ],
                 ),
@@ -187,9 +190,9 @@ class _Meta extends StatelessComponent {
   @override
   Component build(BuildContext context) => const PageMeta(
         path: RoutePaths.services,
-        title: 'Services — ${SiteConfig.name}',
+        title: 'Services · ${SiteConfig.name}',
         description: 'Mobile and web development, UI/UX design, desktop apps, '
-            'release engineering and consultancy — from a Flutter engineer who '
+            'release engineering and consultancy, from a Flutter engineer who '
             'owns the whole surface, design system through store listing.',
       );
 }

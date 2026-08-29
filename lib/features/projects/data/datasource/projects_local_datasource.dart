@@ -30,7 +30,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'healthx',
       name: 'HealthX',
-      tagline: 'Care, a pharmacy and a doctor — in one app.',
+      tagline: 'Care, a pharmacy and a doctor, in one app.',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -47,17 +47,18 @@ abstract final class ProjectsLocalDatasource {
       ],
       summary: [
         'HealthX Africa puts consultations, appointments, prescriptions and '
-            'pharmacy delivery behind one login — video calls with a doctor, a '
+            'pharmacy delivery behind one login: video calls with a doctor, a '
             'prescription photographed and filled, and the order tracked to the '
             'door.',
-        'I own the full mobile lifecycle here: the design system and brand '
-            'through architecture, QA and shipping to both stores. The hard '
-            'part is that health data is unforgiving — every screen has to '
-            'degrade honestly when the network does not cooperate.',
+        'I own the full mobile lifecycle here: design system and brand '
+            'through architecture, QA and both store listings. No designer, '
+            'no PM, which is either a dream or a warning depending on the '
+            'week. The hard part is that health data is unforgiving, so every '
+            'screen has to degrade honestly when the network does not.',
       ],
       highlights: [
         'Clean Architecture across seven feature modules, sharing one shell',
-        'Riverpod 3 with codegen throughout — no hand-rolled providers',
+        'Riverpod 3 with codegen throughout, no hand-rolled providers',
         'Semantic theming via a HealthXColors ThemeExtension, not scattered hex',
         'Stateful shell navigation that keeps each tab’s stack alive',
         'On-device PDF receipt generation for orders and consultations',
@@ -71,7 +72,7 @@ abstract final class ProjectsLocalDatasource {
           name: 'Clinical',
           tagline: 'Care, delivered.',
           blurb: 'The transactional half. See a doctor, fill a prescription, '
-              'track it to the door — efficient, trustworthy, get-in-get-out.',
+              'track it to the door: efficient, trustworthy, get-in-get-out.',
           accent: '#E9552B',
           surfaces: ['Home', 'Bookings', 'Consult', 'Pharmacy', 'Labs'],
           features: [
@@ -92,7 +93,7 @@ abstract final class ProjectsLocalDatasource {
             label: 'Pharmacy',
             title: 'Photograph the script. Track the box.',
             description: 'A prescription is uploaded as a photo, verified by a '
-                'pharmacist, and the resulting order is tracked to the door — '
+                'pharmacist, and the resulting order is tracked to the door, '
                 'the whole path in one place instead of three phone calls.',
             points: [
               'Upload, verification and dispatch as one tracked flow',
@@ -105,7 +106,7 @@ abstract final class ProjectsLocalDatasource {
             label: 'Appointments',
             title: 'Booking that survives a bad signal.',
             description: 'Slots, reminders and rescheduling built for mid-range '
-                'phones on unreliable networks — every action queues locally and '
+                'phones on unreliable networks: every action queues locally and '
                 'reconciles when the connection returns.',
             points: [
               'Optimistic booking with server reconciliation on reconnect',
@@ -133,7 +134,7 @@ abstract final class ProjectsLocalDatasource {
           name: 'Bloom',
           tagline: 'Grow, daily.',
           blurb: 'The reflective half. Record how the day felt, breathe, track '
-              'a cycle — calm, unhurried, warm. One account and one wallet, '
+              'a cycle: calm, unhurried, warm. One account and one wallet, '
               'seen through a different lens.',
           accent: '#16A34A',
           badge: 'In build',
@@ -144,7 +145,7 @@ abstract final class ProjectsLocalDatasource {
               label: 'Journal',
               title: 'Record how the day felt.',
               description: 'A low-friction daily entry that asks for a feeling '
-                  'before it asks for a number — the habit has to survive a bad '
+                  'before it asks for a number. The habit has to survive a bad '
                   'day to be worth anything.',
               image: 'images/healthx-mockup.webp',
             ),
@@ -182,7 +183,7 @@ abstract final class ProjectsLocalDatasource {
           kind: 'Surface',
           tagline: 'The same care, on a bigger screen.',
           blurb: 'The clinical half again, in the browser. Not a cut-down '
-              'companion — the same consultations, the same pharmacy, the same '
+              'companion: the same consultations, the same pharmacy, the same '
               'records, for the moments a phone is simply the wrong tool. Bloom '
               'stays on mobile, where a reflective habit belongs.',
           accent: '#E9552B',
@@ -192,7 +193,7 @@ abstract final class ProjectsLocalDatasource {
             ProjectFeature(
               label: 'Consult',
               title: 'Take the call at a desk.',
-              description: 'The same consultation, joined from a laptop — '
+              description: 'The same consultation, joined from a laptop, '
                   'useful when you need to take notes, or when the person who '
                   'books the appointment is not the person attending it.',
             ),
@@ -207,7 +208,7 @@ abstract final class ProjectsLocalDatasource {
               label: 'Orders',
               title: 'A wide screen is a better dashboard.',
               description: 'Order history, delivery status and repeat orders '
-                  'laid out at once instead of paged through — the view that '
+                  'laid out at once instead of paged through, the view that '
                   'suits someone managing care for a whole household.',
             ),
             ProjectFeature(
@@ -246,11 +247,13 @@ abstract final class ProjectsLocalDatasource {
       platforms: [ProjectPlatform.android],
       stack: ['Flutter', 'Riverpod', 'Firebase', 'Google Maps'],
       summary: [
-        'A marketplace that connects tenants with verified landlords — listings, '
+        'A marketplace that connects tenants with verified landlords: listings, '
             'viewings and payment tracking in one place instead of scattered across '
             'chat threads.',
-        'The hard part was trust, not CRUD: verification flows, dispute-friendly '
-            'audit trails, and making a listing feel worth believing.',
+        'The hard part was trust, not CRUD: verification flows, '
+            'dispute-friendly audit trails, and making a listing feel worth '
+            'believing. Anyone who has hunted for a flat over WhatsApp knows '
+            'exactly which problem this is solving.',
       ],
       highlights: [
         'Offline-first listing cache so browsing survives a bad connection',
@@ -283,9 +286,11 @@ abstract final class ProjectsLocalDatasource {
             'inverts that: you build a master profile once in the Workshop, cut '
             'role-specific snapshots from it, and generate a polished PDF from '
             'any role using interchangeable templates.',
-        'The interesting half is the PDF engine. Each section dispatches its own '
-            'rendering per template, so adding a template is a new builder '
-            'rather than a rewrite of every section.',
+        'It exists because I got tired of keeping eleven slightly different '
+            'copies of my own CV in sync. The interesting half is the PDF '
+            'engine: each section dispatches its own rendering per template, '
+            'so adding a template is a new builder rather than a rewrite of '
+            'every section.',
       ],
       highlights: [
         'Master profile → role snapshot → PDF, instead of a document per job',
@@ -293,7 +298,7 @@ abstract final class ProjectsLocalDatasource {
             'and PdfColor palette',
         'Strategy-dispatch section enum, so a new template does not touch '
             'existing section code',
-        'A borderless design system — depth carried by a three-level shadow '
+        'A borderless design system, depth carried by a three-level shadow '
             'ramp and surface contrast, never by lines',
         'Local-first on Hive, with PDF thumbnails rastered on device',
       ],
@@ -304,7 +309,7 @@ abstract final class ProjectsLocalDatasource {
         ProjectFeature(
           label: 'Workshop',
           title: 'Write your career once.',
-          description: 'The master profile lives in the Workshop — eight '
+          description: 'The master profile lives in the Workshop, eight '
               'sections covering everything you have ever done. Nothing else '
               'in the app works until this exists, so it is the part that had '
               'to feel effortless.',
@@ -312,7 +317,7 @@ abstract final class ProjectsLocalDatasource {
             'Eight sections: personal, summary, experience, education, skills, '
                 'projects, socials, hobbies',
             'Edited in place, never through a wizard',
-            'Held locally on Hive — it works with no account and no signal',
+            'Held locally on Hive: it works with no account and no signal',
           ],
           image: 'images/rezq-mockup.webp',
         ),
@@ -320,7 +325,7 @@ abstract final class ProjectsLocalDatasource {
           label: 'Roles',
           title: 'A snapshot per job, not a document per job.',
           description: 'A Role is a tailored view of the master profile for a '
-              'target job — pick the experience that matters, choose a template '
+              'target job: pick the experience that matters, choose a template '
               'and a theme, and the PDF follows. Editing the profile updates '
               'every role that draws on it.',
           points: [
@@ -333,7 +338,7 @@ abstract final class ProjectsLocalDatasource {
         ProjectFeature(
           label: 'Templates',
           title: 'Three templates, each with its own voice.',
-          description: 'Maverick, Zenith and Visiona are not colour swaps — '
+          description: 'Maverick, Zenith and Visiona are not colour swaps, '
               'each carries its own typographic ramp, spacing tokens and PDF '
               'colour palette, browsable by tone.',
           points: [
@@ -353,12 +358,12 @@ abstract final class ProjectsLocalDatasource {
           points: [
             'Strategy dispatch keeps templates and sections independent',
             'Async TTF loading with a typography ramp per document',
-            'Generated on device — no server round trip to see your CV',
+            'Generated on device, no server round trip to see your CV',
           ],
           image: 'images/rezq-mockup.webp',
         ),
         ProjectFeature(
-          label: 'Next — Smart Import',
+          label: 'Next, Smart Import',
           title: 'Upload an old CV, watch the Workshop fill in.',
           description: 'The Workshop has a cold-start wall: typing a whole '
               'career into a blank screen is the single biggest reason people '
@@ -372,13 +377,13 @@ abstract final class ProjectsLocalDatasource {
           ],
         ),
         ProjectFeature(
-          label: 'Next — Live links',
+          label: 'Next, Live links',
           title: 'A resume that is a link, not an attachment.',
           description: 'Every competitor ends at "Download PDF". A live link '
               'would let a role be shared as a URL that stays current when the '
               'profile behind it changes.',
           points: [
-            'Spec only — nothing wired yet',
+            'Spec only, nothing wired yet',
             'The role stays the source of truth, not the download',
           ],
         ),
@@ -411,20 +416,21 @@ abstract final class ProjectsLocalDatasource {
       ],
       summary: [
         'A local music player for people who still keep their library on the '
-            'device — parametric EQ, gapless playback, internet radio and a '
+            'device: parametric EQ, gapless playback, internet radio and a '
             'home-screen widget, with no account and no streaming tier.',
-        'The audio path runs on SoLoud through FFI rather than on the platform '
-            'player, which is what makes a real parametric EQ and scheduled '
-            'playback possible at all. Most of the work is in the engine, not '
-            'the screens.',
+        'The audio path runs on SoLoud through FFI rather than the platform '
+            'player, which is the only reason a real parametric EQ and '
+            'scheduled playback are possible at all. Most of the work is in '
+            'the engine rather than the screens, which is an odd thing to say '
+            'about a music player until you try building an EQ without one.',
       ],
       highlights: [
-        'C++ SoLoud audio engine over FFI — parametric EQ, buses, scheduling',
+        'C++ SoLoud audio engine over FFI: parametric EQ, buses, scheduling',
         'Home-screen widget painted in Dart and pushed to Android as raw pixels, '
             'so the in-app preview runs the identical painter',
         'Shorebird code push for Dart-only patches without a Play review',
         'Internet radio over the radio-browser.info directory',
-        'flutter_extend — an in-house extension package with its own test suite',
+        'flutter_extend, an in-house extension package with its own test suite',
       ],
       // Drawn from the project's own reference doc. Every image is the same
       // composite mockup for now; swap each `image:` as real screenshots land.
@@ -455,7 +461,7 @@ abstract final class ProjectsLocalDatasource {
           points: [
             'Albums, artists, playlists, folders and settings are all findable',
             'A command palette sits on the same index',
-            'The ranking engine knows nothing about music — it is testable alone',
+            'The ranking engine knows nothing about music. It is testable alone',
           ],
           image: 'images/flow-mockup.webp',
         ),
@@ -502,7 +508,7 @@ abstract final class ProjectsLocalDatasource {
         ProjectFeature(
           label: 'Radio',
           title: 'Built, tested, and deliberately switched off.',
-          description: 'Internet radio is whole and wired — a distinct playback '
+          description: 'Internet radio is whole and wired, a distinct playback '
               'mode rather than a track with odd properties, mutually exclusive '
               'with the queue in both directions. It ships behind a flag that '
               'is currently false, because the public station directory is '
@@ -527,7 +533,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'eduflow',
       name: 'EduFlow',
-      tagline: 'Junior-secondary school operations in one app.',
+      tagline: 'A whole school, running off one app.',
       year: '2025',
       status: ProjectStatus.shipped,
       category: ProjectCategory.commercial,
@@ -559,7 +565,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'healthx-portal',
       name: 'HealthX Customer Portal',
-      tagline: 'The same care, without installing anything.',
+      tagline: 'Consultations and prescriptions, no download required.',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -567,7 +573,7 @@ abstract final class ProjectsLocalDatasource {
       platforms: [ProjectPlatform.web],
       stack: [],
       summary: [
-        'The browser counterpart to the HealthX app — consultations, '
+        'The browser counterpart to the HealthX app: consultations, '
             'prescriptions, orders and health records for people who would '
             'rather not install anything, or who are reaching for a laptop '
             'rather than a phone.',
@@ -583,7 +589,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'britam-app',
       name: 'Britam App',
-      tagline: 'Policies, investments and loans in one app.',
+      tagline: 'Policies, investments and loans, finally in one place.',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -605,7 +611,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'britam-portal',
       name: 'Britam Customer Portal',
-      tagline: 'Self-service for policies, on the web.',
+      tagline: 'Everything the app does, in a browser tab.',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -628,7 +634,7 @@ abstract final class ProjectsLocalDatasource {
     ProjectModel(
       slug: 'elvs',
       name: 'Elvs Mobile',
-      tagline: 'Volunteer reporting, tracked end to end.',
+      tagline: 'Volunteer work, finally accounted for.',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.commercial,
@@ -702,7 +708,7 @@ abstract final class ProjectsLocalDatasource {
             'third codebase. Thirteen releases later it is 37 extensions '
             'across 12 core types, with 80 tests and CI gating every pull '
             'request.',
-        'The interesting part is not the extension list — the docs cover that '
+        'The interesting part is not the extension list, the docs cover that '
             'better than a case study can. It is that a package other people '
             'depend on has to be maintained differently from an app you own: '
             'nothing can be renamed on a whim, and every removal needs a '
@@ -710,7 +716,7 @@ abstract final class ProjectsLocalDatasource {
       ],
       highlights: [
         '13 releases over a year of continuous maintenance, v0.0.1 to v0.3.1',
-        '37 extensions across 12 types — String, BuildContext, Widget, File, '
+        '37 extensions across 12 types: String, BuildContext, Widget, File, '
             'DateTime, num, Color and more',
         '80 tests in 13 files, run by GitHub Actions on every pull request',
         'CI also enforces formatting: `dart format --set-exit-if-changed`',
@@ -722,7 +728,7 @@ abstract final class ProjectsLocalDatasource {
         ProjectFeature(
           label: 'Ergonomics',
           title: 'The call site is the design.',
-          description: 'Every extension was judged by one question — does the '
+          description: 'Every extension was judged by one question, does the '
               'line that uses it read better than the line it replaces? Where '
               'the answer was no, it did not ship, however useful the helper '
               'was in isolation.',
@@ -755,13 +761,13 @@ abstract final class ProjectsLocalDatasource {
           title: 'CI that can actually fail.',
           description: 'A solo package is where test suites usually go to die. '
               'This one runs `flutter test` and a formatting check on every '
-              'pull request, against a pinned Flutter version — so a red '
+              'pull request, against a pinned Flutter version, so a red '
               'branch cannot be merged and a reformatted file cannot sneak in '
               'unreviewed.',
           points: [
             'GitHub Actions, pinned to Flutter 3.27.1',
             '80 tests across generators, strings, dates, files, lists, numbers',
-            '51+ pull requests — features branched, reviewed and merged rather '
+            '51+ pull requests: features branched, reviewed and merged rather '
                 'than pushed to main',
           ],
         ),

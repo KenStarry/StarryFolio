@@ -26,7 +26,7 @@ class AboutMockRepository implements AboutRepository {
         slug: 'placeholder',
         role: 'Placeholder Engineer',
         company: 'Placeholder Co.',
-        period: '2024 — Present',
+        period: '2024 - Present',
         current: true,
         summary: 'Stand-in copy so the timeline can be checked without real '
             'content.',
@@ -39,7 +39,7 @@ class AboutMockRepository implements AboutRepository {
         slug: 'placeholder',
         qualification: 'BSc, Placeholder',
         institution: 'Placeholder University',
-        period: '2016 — 2020',
+        period: '2016 - 2020',
       ),
     ],
     skillGroups: [

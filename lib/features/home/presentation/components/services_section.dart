@@ -40,11 +40,12 @@ class ServicesSection extends StatelessComponent {
     return SectionBlock(
       id: 'services',
       eyebrow: 'Services',
-      heading: 'What I do,\nand how deep.',
+      heading: 'What I do,\nand how far in.',
       tone: SectionTone.raised,
-      lead: 'Six things I get hired for — usually several at once, which is '
-          'the point. One person across design, build and release is how the '
-          'seams disappear.',
+      lead: 'Six things people hire me for, usually several at once, which '
+          'is sort of the whole point. One person across design, build and '
+          'release means nothing gets lost in the handover, mostly because '
+          'there is not one.',
       children: [
         if (error != null)
           ErrorNotice(message: error!)

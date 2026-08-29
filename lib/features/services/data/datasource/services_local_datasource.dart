@@ -13,11 +13,11 @@ abstract final class ServicesLocalDatasource {
     ServiceModel(
       slug: 'mobile-development',
       title: 'Mobile\ndevelopment',
-      blurb: 'iOS and Android from one Flutter codebase — architecture, state, '
+      blurb: 'iOS and Android from one Flutter codebase: architecture, state, '
           'offline behaviour and a release pipeline that runs itself.',
       detail: 'The core of what I do. One Flutter codebase serving both stores, '
           'built to hold up on a mid-range Android phone with two bars of '
-          'signal — because that is what most of your users actually have. '
+          'signal, because that is what most of your users actually have. '
           'Clean Architecture, a real state layer, and offline behaviour '
           'designed in from the first screen rather than bolted on when the '
           'complaints arrive.',
@@ -35,11 +35,11 @@ abstract final class ServicesLocalDatasource {
     ServiceModel(
       slug: 'ui-ux-design',
       title: 'UI/UX\ndesign',
-      blurb: 'A token-driven system before the first screen — type, colour, '
+      blurb: 'A token-driven system before the first screen: type, colour, '
           'motion and every state, so screen forty still looks like screen one.',
       detail: 'Design and build are the same job done twice when they are split '
-          'between two people. I set the system first — tokens, type ramp, '
-          'spacing, motion curves and every state a component can be in — then '
+          'between two people. I set the system first: tokens, type ramp, '
+          'spacing, motion curves and every state a component can be in, then '
           'build against it. The result is a product that stays coherent as it '
           'grows, and a handoff that is a codebase rather than a folder of '
           'screens.',
@@ -49,7 +49,7 @@ abstract final class ServicesLocalDatasource {
       deliverables: [
         'Design tokens wired into the code, not just the Figma file',
         'A component library with empty, loading and error states drawn',
-        'Motion spec — durations, curves and what they signal',
+        'Motion spec: durations, curves and what they signal',
         'Accessibility passes on contrast, target size and focus order',
       ],
     ),
@@ -61,7 +61,7 @@ abstract final class ServicesLocalDatasource {
       detail: 'Sites built to be found. Static rendering where the content is '
           'the point, so crawlers and social scrapers get real HTML instead of '
           'an empty shell waiting on a bundle. Where an app needs to be an app, '
-          'Flutter Web or a hydrated island — but only where the interaction '
+          'Flutter Web or a hydrated island, but only where the interaction '
           'actually earns the JavaScript.',
       icon: 'globe',
       ctaQuestion: 'Need a web presence?',
@@ -76,11 +76,11 @@ abstract final class ServicesLocalDatasource {
     ServiceModel(
       slug: 'desktop-apps',
       title: 'Desktop\napplications',
-      blurb: 'macOS, Windows and Linux from the same codebase — for tools that '
+      blurb: 'macOS, Windows and Linux from the same codebase, for tools that '
           'belong on a real machine rather than in a tab.',
       detail: 'Some work does not belong in a browser tab. Internal tools, '
           'operator consoles and anything that needs the filesystem, a serial '
-          'port or hardware acceleration ships better as a desktop build — and '
+          'port or hardware acceleration ships better as a desktop build, and '
           'with Flutter that is the same codebase you already have, not a '
           'second team.',
       icon: 'monitor',
@@ -117,10 +117,10 @@ abstract final class ServicesLocalDatasource {
       slug: 'consultancy',
       title: 'Consultancy\n& review',
       blurb: 'A second pair of eyes on an architecture, a codebase or a team '
-          'that has hit the wall — and a written route out.',
+          'that has hit the wall, and a written route out.',
       detail: 'Sometimes the useful thing is not another pair of hands. I read '
           'the codebase, talk to the people building it, and write down what is '
-          'actually slowing you down — with an order to fix it in. Equally '
+          'actually slowing you down, with an order to fix it in. Equally '
           'useful before you start, when the decision is which architecture to '
           'commit to and how much it will cost you later.',
       icon: 'compass',
@@ -128,7 +128,7 @@ abstract final class ServicesLocalDatasource {
       tags: ['Architecture review', 'Code audit', 'Mentoring'],
       deliverables: [
         'A written review you can hand to a board or an engineer',
-        'A prioritised list — what to fix now, next and never',
+        'A prioritised list: what to fix now, next and never',
         'Pairing sessions with the team who will own it afterwards',
         'Follow-up once the changes have had time to land',
       ],

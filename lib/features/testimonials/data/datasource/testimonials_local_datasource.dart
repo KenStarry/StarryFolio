@@ -37,7 +37,7 @@ abstract final class TestimonialsLocalDatasource {
     TestimonialModel(
       slug: 'sample-featured',
       quote: 'He took a brief that was half a slide deck and came back with a '
-          'shipped product. Design system, architecture, both store listings — '
+          'shipped product. Design system, architecture, both store listings, '
           'all of it, without needing a second engineer or a project manager '
           'to sit between him and the work.',
       // Must be a verbatim substring of `quote` — this is the clause set

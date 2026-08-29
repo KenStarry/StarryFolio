@@ -34,9 +34,9 @@ class ContactSection extends StatelessComponent {
                       classes: 'type-section mt-5 font-display font-bold '
                           'text-ink-100',
                       [
-                        Component.text('Any type of query'),
+                        Component.text('Got something'),
                         br(),
-                        Component.text('& discussion.'),
+                        Component.text('worth building?'),
                       ],
                     ),
                     p(
@@ -44,8 +44,9 @@ class ContactSection extends StatelessComponent {
                           'text-ink-400',
                       [
                         Component.text(
-                          'Tell me what your users keep coming back for. If an '
-                          'app makes that easier, I want to hear about it.',
+                          'Tell me what your users keep coming back for. If '
+                          'an app would make that easier, I am already halfway '
+                          'to sketching it.',
                         ),
                       ],
                     ),
@@ -93,7 +94,7 @@ class ContactSection extends StatelessComponent {
                             target: Target.blank,
                             attributes: {
                               'rel': 'me noopener',
-                              'aria-label': '${social.label} — ${social.handle}',
+                              'aria-label': '${social.label}, ${social.handle}',
                             },
                             classes: 'text-ink-400 transition-colors '
                                 'duration-300 hover:text-iris-400',

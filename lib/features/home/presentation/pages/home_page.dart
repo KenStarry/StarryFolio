@@ -50,7 +50,7 @@ class HomePage extends AsyncStatelessComponent {
     return Component.fragment([
       const PageMeta(
         path: RoutePaths.home,
-        title: '${SiteConfig.name} — ${SiteConfig.role}',
+        title: '${SiteConfig.name} · ${SiteConfig.role}',
         description: SiteConfig.tagline,
       ),
       StructuredData(

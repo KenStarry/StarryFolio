@@ -17,7 +17,7 @@ class NotFoundPage extends StatelessComponent {
       [
         PageMeta(
           path: RoutePaths.notFound,
-          title: 'Not found — ${SiteConfig.name}',
+          title: 'Not found · ${SiteConfig.name}',
           description: 'That page does not exist.',
           noIndex: true,
         ),
