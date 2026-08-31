@@ -268,3 +268,55 @@ jaspr build --sitemap-domain https://kenstarry.com --sitemap-exclude '^/404'
 ---
 
 Next: [State & Riverpod →](./06-state-and-riverpod.md)
+
+---
+
+## Favicons, and why Google showed a globe
+
+Google will only render a favicon in a search result if it is **square with sides a multiple
+of 48px**. That is not a ranking heuristic, it is a hard eligibility filter, and it is the
+whole reason the first indexed result for this site showed the generic globe.
+
+Two things were wrong at once:
+
+1. The head declared a **32x32** first. 32 is not a multiple of 48, so the most prominent
+   candidate was ineligible.
+2. **`/favicon.ico` returned 404.** Google probes that exact path independently of what the
+   head declares, so the fallback was missing too.
+
+The head now declares only `48x48` and `192x192`, and `web/favicon.ico` exists.
+
+### Regenerating
+
+`favicon-192.png` is the master. Everything else derives from it:
+
+```bash
+sips -z 48 48 web/favicon-192.png --out web/favicon-48.png
+python3 tools/make-favicon-ico.py
+```
+
+The `.ico` carries **one** 48x48 entry, as an embedded PNG. The format has allowed PNG
+payloads since Vista, so no BMP encoder is needed. Resist the urge to add the customary
+16x16 and 32x32 entries: a multi-size icon hands Google a non-compliant option to choose
+from, which is the bug this replaced. Browsers downscale 48 for a tab without complaint.
+
+Verify after any change:
+
+```bash
+grep -o '<link[^>]*icon[^>]*>' build/jaspr/index.html   # every size % 48 == 0
+file web/favicon.ico                                    # 48x48, PNG image data
+```
+
+Google refreshes a favicon only when it recrawls the home page, so expect days rather than
+minutes after a deploy.
+
+## One hostname
+
+`www.kenstarry.com` and `kenstarry.com` both served `200`, which is the same site at two
+addresses. Every canonical, every sitemap entry and every JSON-LD `url` in this repo says
+the apex, but a canonical is a **hint**, and Google indexed the `www` variant anyway.
+
+This cannot be fixed in this repo. `web/_redirects` matches paths, not hostnames, and the
+Worker never sees the request because static assets are served ahead of it. The fix is a
+**Redirect Rule** in the Cloudflare dashboard, 301, `www` to apex, preserving path and
+query. Once it is in place Google consolidates the two over a few weeks.

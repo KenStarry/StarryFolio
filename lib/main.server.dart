@@ -29,14 +29,32 @@ void main() {
         // stood in before. Each is composited onto the site ground with
         // rounded corners — a transparent favicon vanishes against browser
         // chrome of a similar tone.
-        link(rel: 'icon', href: '/favicon-32.png', attributes: {
+        //
+        // **Every declared size is a multiple of 48**, and that is a hard
+        // requirement rather than a preference. Google will only use a favicon
+        // in a search result if it is square with sides a multiple of 48px, so
+        // the 32x32 that used to lead this list was not merely redundant — it
+        // was an ineligible candidate offered first, and the result showed the
+        // generic globe. Browsers downscale 48 for a tab perfectly well; there
+        // is nothing a 32 was doing that is missed.
+        //
+        // `/favicon.ico` is listed *and* sits at the document root, because
+        // Google probes that exact path independently of what is declared
+        // here. It was a 404, which removed the fallback as well.
+        link(rel: 'icon', href: '/favicon.ico', attributes: {
+          'sizes': '48x48',
+        }),
+        link(rel: 'icon', href: '/favicon-48.png', attributes: {
           'type': 'image/png',
-          'sizes': '32x32',
+          'sizes': '48x48',
         }),
         link(rel: 'icon', href: '/favicon-192.png', attributes: {
           'type': 'image/png',
           'sizes': '192x192',
         }),
+        // 180x180 is Apple's own spec size and is not a multiple of 48. It
+        // stays as-is: it is for the iOS home screen, not for search, and the
+        // compliant sizes above mean Google never needs to fall back to it.
         link(rel: 'apple-touch-icon', href: '/apple-touch-icon.png'),
         link(rel: 'preconnect', href: 'https://fonts.googleapis.com'),
         link(

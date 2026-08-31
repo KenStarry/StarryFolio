@@ -328,6 +328,22 @@ record, not its screenshots.
   and is what teaches a crawler that `KenStarry` and `Ken Starry` are one person. Only forms
   genuinely in use: inventing a variant to catch a query puts a false claim in
   machine-readable data.
+- **Every declared favicon size must be a multiple of 48, and `/favicon.ico` must exist.**
+  Google only uses a favicon in a result if it is square with sides a multiple of 48px. The
+  head used to lead with a 32x32 and the root had no `.ico` at all, so Google had one
+  ineligible candidate and a 404 fallback, and the result showed the generic globe.
+  `web/favicon.ico` is a single 48x48 PNG-in-ICO entry, deliberately not the usual 16/32/48
+  set, because a 16x16 inside it just hands Google a non-compliant option again. Regenerate
+  it with the snippet in `docs/05-seo.md`. `apple-touch-icon.png` stays 180x180: that is
+  Apple's spec size, it is for the iOS home screen rather than for search, and the compliant
+  sizes above mean Google never falls back to it.
+- **One hostname, ever.** `www` and the apex must not both serve 200 — that is the same page
+  at two URLs, and a canonical tag is a hint Google is free to overrule. It did: the first
+  indexed result was `www.kenstarry.com` while every canonical, the sitemap and every JSON-LD
+  `url` said apex. Hostname redirects cannot be done in `web/_redirects` (it matches paths,
+  not hosts) and cannot be done in the Worker either, because static assets are served before
+  it. It is a **Cloudflare Redirect Rule**, and it lives in the dashboard rather than in this
+  repo, which is exactly why it is written down here.
 - New images need `loading="lazy"` + `decoding="async"` and a descriptive `alt`.
 - External links get `rel="me noopener"` where they are identity profiles — `me` corroborates
   the `sameAs` entries in the Person JSON-LD.
