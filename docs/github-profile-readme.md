@@ -8,9 +8,19 @@
   profile and the site describing two different careers. If they ever
   disagree, this file is wrong and the datasource is right.
 
-  The banner is `web/images/gh-banner.svg` in this repo, served from
-  kenstarry.com and built from the site's own design tokens. Camo caches it
-  hard: to change the art, change the FILENAME, not just the contents.
+  The banner is `web/images/gh-banner.svg` and the showcase cards are
+  `web/images/gh-card-*.svg`, all in this repo, served from kenstarry.com and
+  built from the site's own design tokens. The cards are generated: the
+  mockups carry alpha, so dropping them into a README raw would render a
+  device silhouette on the reader's theme background. Compositing them onto
+  the card's ink ground makes each one self-contained.
+
+  Camo caches these hard: to change the art, change the FILENAME, not just
+  the contents.
+
+  Deliberately no tables anywhere. Projects are cards, the way they are on
+  the site, and a table here would be the README's version of the vertical
+  list the design system already rules out.
 
   To publish: copy this file verbatim to `README.md` in the profile repo.
 -->
@@ -50,15 +60,29 @@ been told this is a lot. I remain unbothered.
 
 ## Shipped
 
-| | | |
-|---|---|---|
-| **HealthX** | Care, a pharmacy and a doctor in one app | [Play](https://play.google.com/store/apps/details?id=com.healthx.app&hl=en) · [App Store](https://apps.apple.com/ke/app/healthx-africa/id1570107533) · [**Case study**](https://kenstarry.com/projects/healthx) |
-| **Flow Music Player** | Offline player built to rival Poweramp. Parametric EQ, gapless playback, no account | [Play](https://play.google.com/store/apps/details?id=com.kenstarry.flow) · [**Case study**](https://kenstarry.com/projects/flow) |
-| **RezQ** | Resume building, the right way round | [Play](https://play.google.com/store/apps/details?id=com.kenstarry.rezq) · [**Case study**](https://kenstarry.com/projects/rezq) |
-| **Britam** | Policies, investments and loans, finally in one place | [Play](https://play.google.com/store/apps/details?id=com.app.britam) |
-| **Elvs Mobile** | Volunteer work, finally accounted for | [Play](https://play.google.com/store/apps/details?id=com.podii.elvs) |
+[![HealthX: care, a pharmacy and a doctor, in one app](https://kenstarry.com/images/gh-card-healthx.svg)](https://kenstarry.com/projects/healthx)
 
-<sub>Built with and for **Britam · Dentsu · HealthX · Podii** · [see all work](https://kenstarry.com/projects)</sub>
+<sub>**HealthX** on [Google Play](https://play.google.com/store/apps/details?id=com.healthx.app&hl=en) and the [App Store](https://apps.apple.com/ke/app/healthx-africa/id1570107533) · [read the case study](https://kenstarry.com/projects/healthx)</sub>
+
+<br/>
+
+[![Flow Music Player: an offline player built to rival Poweramp](https://kenstarry.com/images/gh-card-flow.svg)](https://kenstarry.com/projects/flow)
+
+<sub>**Flow Music Player** on [Google Play](https://play.google.com/store/apps/details?id=com.kenstarry.flow) · [read the case study](https://kenstarry.com/projects/flow)</sub>
+
+<br/>
+
+[![RezQ: resume building, the right way round](https://kenstarry.com/images/gh-card-rezq.svg)](https://kenstarry.com/projects/rezq)
+
+<sub>**RezQ** on [Google Play](https://play.google.com/store/apps/details?id=com.kenstarry.rezq) · [read the case study](https://kenstarry.com/projects/rezq)</sub>
+
+<br/>
+
+Also shipped: **Britam**, policies, investments and loans finally in one place,
+on [Google Play](https://play.google.com/store/apps/details?id=com.app.britam).
+And **Elvs Mobile**, volunteer work finally accounted for.
+
+<sub>Built with and for **Britam · Dentsu · HealthX · Podii** · [see all the work](https://kenstarry.com/projects)</sub>
 
 ---
 
