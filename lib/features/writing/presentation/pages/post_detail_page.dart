@@ -84,7 +84,9 @@ class _Article extends StatelessComponent {
         path: RoutePaths.post(post.slug),
         title: '${post.title} · ${SiteConfig.name}',
         description: post.excerpt,
-        image: post.coverImage == null
+        image: post.ogCard != null
+            ? '/${post.ogCard}'
+            : post.coverImage == null
             ? SiteConfig.defaultOgImage
             : '/${post.coverImage}',
         type: 'article',
@@ -97,7 +99,11 @@ class _Article extends StatelessComponent {
           slug: post.slug,
           keywords: post.tags,
           datePublished: post.dateIso,
-          image: post.coverImage == null ? null : '/${post.coverImage}',
+          image: post.ogCard != null
+              ? '/${post.ogCard}'
+              : post.coverImage == null
+                  ? null
+                  : '/${post.coverImage}',
         ),
       ),
       StructuredData(

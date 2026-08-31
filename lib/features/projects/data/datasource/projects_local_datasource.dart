@@ -29,6 +29,7 @@ abstract final class ProjectsLocalDatasource {
   static const List<ProjectModel> projects = [
     ProjectModel(
       slug: 'healthx',
+      ogCard: 'images/og-healthx.jpg',
       applicationCategory: 'HealthApplication',
       name: 'HealthX',
       tagline: 'Care, a pharmacy and a doctor, in one app.',
@@ -267,6 +268,7 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'rezq',
+      ogCard: 'images/og-rezq.jpg',
       applicationCategory: 'BusinessApplication',
       name: 'RezQ',
       tagline: 'Resume building, the right way round.',
@@ -400,9 +402,10 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'flow',
+      ogCard: 'images/og-flow.jpg',
       applicationCategory: 'MultimediaApplication',
       name: 'Flow Music Player',
-      tagline: 'An offline player built to rival Poweramp.',
+      tagline: 'Offline music, endlessly tunable and genuinely pretty.',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
@@ -658,6 +661,7 @@ abstract final class ProjectsLocalDatasource {
     // no pub.dev metrics, which would go stale between deploys anyway.
     ProjectModel(
       slug: 'flutter-extend',
+      ogCard: 'images/og-flutter-extend.jpg',
       name: 'flutter_extend',
       tagline: 'The boilerplate you stop writing.',
       year: '2025',

@@ -8,7 +8,7 @@
   profile and the site describing two different careers. If they ever
   disagree, this file is wrong and the datasource is right.
 
-  The banner is `web/images/gh-banner.svg` and the showcase cards are
+  The banner is `web/images/gh-banner-2.svg` and the showcase cards are
   `web/images/gh-card-*.svg`, all in this repo, served from kenstarry.com and
   built from the site's own design tokens. The cards are generated: the
   mockups carry alpha, so dropping them into a README raw would render a
@@ -28,7 +28,7 @@
 <div align="center">
 
 <a href="https://kenstarry.com">
-  <img src="https://kenstarry.com/images/gh-banner.svg" width="100%"
+  <img src="https://kenstarry.com/images/gh-banner-2.svg" width="100%"
        alt="Ken Starry, Flutter and Mobile App Developer in Nairobi, Kenya" />
 </a>
 
@@ -66,7 +66,7 @@ been told this is a lot. I remain unbothered.
 
 <br/>
 
-[![Flow Music Player: an offline player built to rival Poweramp](https://kenstarry.com/images/gh-card-flow.svg)](https://kenstarry.com/projects/flow)
+[![Flow Music Player: offline music, endlessly tunable and genuinely pretty](https://kenstarry.com/images/gh-card-flow-2.svg)](https://kenstarry.com/projects/flow)
 
 <sub>**Flow Music Player** on [Google Play](https://play.google.com/store/apps/details?id=com.kenstarry.flow) · [read the case study](https://kenstarry.com/projects/flow)</sub>
 

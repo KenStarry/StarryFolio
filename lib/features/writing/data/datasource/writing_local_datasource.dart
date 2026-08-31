@@ -48,6 +48,7 @@ abstract final class WritingLocalDatasource {
         'people get to two. The gap between them is where the good-looking '
         'work lives.',
     coverImage: 'images/writing/svg-styling-cover.webp',
+    ogCard: 'images/og-post-multi-wayed-svg-styling.jpg',
     coverAlt: 'Flutter SVG styling, the article cover',
     tags: ['Flutter', 'SVG', 'CustomPaint', 'Shaders'],
     sourceUrl:

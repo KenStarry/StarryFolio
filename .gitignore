@@ -12,3 +12,6 @@ web/styles.css
 .DS_Store
 .idea/
 .vscode/
+
+# Python bytecode from tools/
+__pycache__/

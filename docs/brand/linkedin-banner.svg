@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1584" height="396" viewBox="0 0 1584 396" role="img" aria-label="Flutter and Mobile App Developer, Nairobi Kenya, kenstarry.com">
+  <title>Ken Starry · LinkedIn cover</title>
+
+  <!--
+    LinkedIn personal profile cover. 1584x396 is the exact size LinkedIn wants;
+    anything else gets cropped by their own rules rather than by ours.
+
+    Two constraints shape this layout, and both are LinkedIn's, not the design
+    system's:
+
+      1. The profile photo sits over the BOTTOM LEFT of the cover. In this
+         coordinate space it occupies roughly x 60-330, y 210-396. Nothing
+         readable goes there. The ghost wordmark does, because it is texture
+         and losing part of it behind an avatar costs nothing.
+
+      2. Mobile crops the cover inward from both sides. The content block is
+         therefore kept between x 430 and x 1290 rather than run to the edges.
+
+    The banner deliberately does NOT repeat the name. LinkedIn prints it
+    directly underneath at display size, so spending the cover on it would say
+    the same thing twice and leave no room for the thing LinkedIn does not
+    show: what he does, and where to go next.
+
+    Source of truth for the exported PNG beside it. LinkedIn takes PNG or JPG,
+    never SVG, so this file is authored here and rendered out.
+  -->
+
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#282739"/>
+      <stop offset="0.55" stop-color="#2E2D42"/>
+      <stop offset="1" stop-color="#1E1F2B"/>
+    </linearGradient>
+    <clipPath id="frame"><rect width="1584" height="396"/></clipPath>
+  </defs>
+
+  <style>
+    .f { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; }
+    .m { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+  </style>
+
+  <g clip-path="url(#frame)">
+    <rect width="1584" height="396" fill="url(#ground)"/>
+
+    <!-- Ghost wordmark: texture, never content. Parked bottom-left where the
+         avatar will cover part of it, which is why it carries nothing to read. -->
+    <text class="f" x="-30" y="452" font-size="268" font-weight="800"
+          letter-spacing="-10" fill="#E9EBF7" opacity="0.028">kenstarry</text>
+
+    <!-- Content block, inside the mobile-safe band -->
+    <text class="m" x="430" y="80" font-size="15" letter-spacing="3.6" fill="#8A8EA8">NAIROBI · KENYA</text>
+
+    <text class="f" x="430" y="158" font-size="56" font-weight="600" letter-spacing="-1.2" fill="#8A8EA8">Flutter &amp; Mobile</text>
+    <text class="f" x="430" y="214" font-size="56" font-weight="800" letter-spacing="-1.2" fill="#E9EBF7">App Developer</text>
+
+    <text class="f" x="430" y="258" font-size="21" font-weight="400" fill="#8A8EA8">I build apps that move, breathe, and show off a little.</text>
+
+    <!-- The one thing LinkedIn does not print for him: where to go next. -->
+    <rect x="430" y="296" width="92" height="2.5" rx="1.25" fill="#D0D4ED"/>
+    <text class="m" x="430" y="344" font-size="26" letter-spacing="1.4" fill="#E9EBF7">kenstarry.com</text>
+
+    <!-- Stats, held to the right edge of the safe band -->
+    <g>
+      <line x1="1154" y1="86" x2="1154" y2="310" stroke="#434659" stroke-width="1"/>
+      <text class="f" x="1198" y="136" font-size="34" font-weight="800" fill="#E9EBF7">5+</text>
+      <text class="m" x="1198" y="160" font-size="12.5" letter-spacing="1.5" fill="#8A8EA8">YEARS IN FLUTTER</text>
+      <text class="f" x="1198" y="226" font-size="34" font-weight="800" fill="#E9EBF7">2</text>
+      <text class="m" x="1198" y="250" font-size="12.5" letter-spacing="1.5" fill="#8A8EA8">APP STORES SURVIVED</text>
+      <text class="m" x="1198" y="306" font-size="12.5" letter-spacing="1.5" fill="#8A8EA8">ANDROID · IOS · WEB</text>
+    </g>
+  </g>
+</svg>

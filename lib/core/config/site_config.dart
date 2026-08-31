@@ -149,7 +149,7 @@ class SiteConfig {
   /// spends the most-read line on a repeat. That leaves it free to be the one
   /// line with a joke in it.
   static const String heroStatement =
-      'I build whole apps, then argue with myself about the spacing.';
+      'I build apps that move, breathe, and show off a little.';
 
   static const String tagline =
       'I design and ship mobile products end to end, from the first design '
