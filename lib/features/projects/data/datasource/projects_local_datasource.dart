@@ -637,7 +637,6 @@ abstract final class ProjectsLocalDatasource {
     ),
     ProjectModel(
       slug: 'elvs',
-      applicationCategory: 'BusinessApplication',
       name: 'Elvs Mobile',
       tagline: 'Volunteer work, finally accounted for.',
       year: '',
@@ -650,12 +649,6 @@ abstract final class ProjectsLocalDatasource {
         'Tracks and manages the reports school volunteers submit and prepare, '
             'so a programme lead can see what has been filed without chasing '
             'anyone for it.',
-      ],
-      links: [
-        AppLink(
-          type: AppLinkType.playStore,
-          url: 'https://play.google.com/store/apps/details?id=com.podii.elvs',
-        ),
       ],
     ),
     // ── Open source ────────────────────────────────────────────────────────
