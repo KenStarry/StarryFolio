@@ -7,6 +7,7 @@ import '../../../routing/route_paths.dart';
 import '../../../state/controllers/nav_dropdown_controller.dart';
 import '../../../state/controllers/nav_menu_controller.dart';
 import '../app_icons.dart';
+import '../ghost_text.dart';
 
 /// One item in a dropdown, with a line saying what is behind it.
 ///
@@ -136,6 +137,42 @@ class _NavBarView extends StatelessComponent {
     return path == href || path.startsWith('$href/');
   }
 
+  /// The label of the page currently being viewed, if the nav knows it.
+  ///
+  /// Feeds the overlay's second watermark. The motif's rule is that a ghost
+  /// must echo something real nearby — this one echoes the single lit row in
+  /// the list below it, which makes it the one piece of texture on the site
+  /// that is also telling you where you are.
+  String? get _currentLabel {
+    for (final item in _links) {
+      if (item.children.isEmpty) {
+        if (_isActive(item.href)) return item.label;
+      } else {
+        final child = _activeChild(item);
+        if (child != null) return child.label;
+      }
+    }
+    return null;
+  }
+
+  /// The one child of [item] that should be lit, if any.
+  ///
+  /// **Most specific wins.** `_isActive` matches on prefix, so on
+  /// `/projects/mobile` both `All work` (`/projects`) and `Mobile apps`
+  /// (`/projects/mobile`) qualify — and lighting two entries in one menu tells
+  /// a reader exactly as much as lighting none. Picking the longest matching
+  /// href resolves it the way a router would: the collection page wins on its
+  /// own URL, and `All work` keeps the highlight everywhere under `/projects`
+  /// that no collection claims, which is every case study.
+  NavChild? _activeChild(NavItem item) {
+    NavChild? best;
+    for (final child in item.children) {
+      if (!_isActive(child.href)) continue;
+      if (best == null || child.href.length > best.href.length) best = child;
+    }
+    return best;
+  }
+
   /// Whether a tab should be lit — its own page, or any page beneath it.
   ///
   /// A parent lights when one of its children is current, so a reader on
@@ -220,83 +257,300 @@ class _NavBarView extends StatelessComponent {
           ],
         ),
 
-        if (isOpen)
-          div(
-            id: 'mobile-menu',
-            classes: 'relative border-t border-ink-700/70 bg-ink-900 px-6 '
-                'pb-8 pt-2 lg:hidden',
-            [
-              // The drawer flattens the tree rather than nesting a
-              // collapsible inside an already-collapsible menu. There is
-              // vertical room here that the bar does not have, and a
-              // disclosure inside a disclosure is two taps to reach a link
-              // that a heading and an indent reach in one.
-              for (final link in _links)
-                if (link.children.isEmpty)
-                  a(
-                    href: link.href,
-                    classes: 'flex items-center justify-between border-b '
-                        'border-ink-800 py-4 font-display text-lg '
-                        'font-semibold '
-                        '${_isActive(link.href) ? 'text-iris-300' : 'text-ink-100'}',
-                    attributes:
-                        _isActive(link.href) ? {'aria-current': 'page'} : null,
-                    onClick: () => context
-                        .read(navMenuControllerProvider.notifier)
-                        .close(),
-                    [
-                      Component.text(link.label),
-                      AppIcons.arrowUpRight(classes: 'h-4 w-4 text-iris-400'),
-                    ],
-                  )
-                else ...[
-                  p(
-                    classes: 'type-eyebrow border-b border-ink-800 pb-3 pt-6 '
-                        'font-mono text-ink-500',
-                    [Component.text(link.label)],
-                  ),
-                  for (final child in link.children)
-                    a(
-                      href: child.href,
-                      classes: 'flex items-center justify-between border-b '
-                          'border-ink-800 py-4 pl-4 font-display text-lg '
-                          'font-semibold '
-                          '${_isActive(child.href) ? 'text-iris-300' : 'text-ink-100'}',
-                      attributes: _isActive(child.href)
-                          ? {'aria-current': 'page'}
-                          : null,
-                      onClick: () => context
-                          .read(navMenuControllerProvider.notifier)
-                          .close(),
+        if (isOpen) _overlay(context),
+      ],
+    );
+  }
+
+  /// The mobile navigation, as a full-bleed contents page.
+  ///
+  /// Not a drawer. It covers the whole viewport — including the ground behind
+  /// the nav, so there is no seam where a sheet would meet the header — sets
+  /// its links at display scale with the same numbering the project bands use,
+  /// and hangs the wordmark behind it like every other full surface on the
+  /// site.
+  ///
+  /// It sits **below** the header in the stacking order, which is what lets
+  /// the button that opened it stay put and become the button that closes it.
+  /// Nothing is duplicated inside, and the close control never moves.
+  ///
+  /// The entrance is the time-based `.rise` stagger, never `.reveal`: this
+  /// opens above the fold with nothing to scroll, the same reason the hero and
+  /// the page headers use it.
+  ///
+  /// Every link closes it on the way out — otherwise tapping an in-page anchor
+  /// would leave the overlay covering the section it just jumped to.
+  Component _overlay(BuildContext context) {
+    void close() => context.read(navMenuControllerProvider.notifier).close();
+
+    /// Closes the overlay only for destinations that leave this page standing.
+    ///
+    /// **Closing on a real navigation breaks it.** `close()` drops the overlay
+    /// out of the tree, which removes the very anchor that was clicked — and
+    /// an element detached from the document during its own click handler
+    /// takes the pending default action with it. The top-level rows survived
+    /// it because they are direct children of the list; the nested ones go out
+    /// as part of a whole subtree, and stopped navigating altogether.
+    ///
+    /// Nothing is lost by leaving them alone: every one of these is a full
+    /// page load, and the overlay cannot outlive a document that is being
+    /// replaced. Only `mailto:` and in-page fragments need the manual close,
+    /// because those leave the page exactly where it is.
+    void Function()? closeIfStaying(String href) =>
+        href.startsWith('mailto:') || href.contains('#') ? close : null;
+
+    // One running index across the whole sheet, so a nested group's rows keep
+    // the cascade going rather than restarting it. `.d-N` tops out at 7; past
+    // that a row arrives on the last delay rather than not at all.
+    var step = 0;
+    String delay() {
+      step++;
+      return 'rise d-${step > 7 ? 7 : step}';
+    }
+
+    return div(
+      id: 'mobile-menu',
+      classes: 'nav-overlay lg:hidden',
+      // Escape closes. Focus is inside the overlay whenever it is open, so the
+      // handler does not need to sit on the document — and a listener added
+      // there would have nothing to remove it in a stateless component.
+      events: {'keydown': (event) => close()},
+      [
+        // ── Two watermarks, at different scales and depths ──
+        //
+        // The wordmark anchors the sheet, bleeding off the bottom-left corner
+        // the way the page headers and the footer do. Above it, the name of
+        // the page you are on, smaller and fainter, hung off the opposite
+        // corner — so the pair reads as *this site* and *you are here* rather
+        // than as one word repeated.
+        //
+        // Both obey the motif's rules: `aria-hidden`, unselectable, and each
+        // echoing something printed as real content a few rows away.
+        const GhostText(
+          SiteConfig.wordmark,
+          size: GhostSize.band,
+          faint: true,
+          classes: 'pointer-events-none absolute -bottom-5 -left-3',
+        ),
+        if (_currentLabel case final label?)
+          GhostText(
+            label,
+            size: GhostSize.small,
+            faint: true,
+            classes: 'pointer-events-none absolute -right-4 top-16 '
+                'text-right',
+          ),
+
+        div(
+          classes: 'relative mx-auto flex min-h-full w-full max-w-2xl '
+              'flex-col px-6 pb-12 pt-6 sm:px-8',
+          [
+            // ── The overlay's own bar ──
+            //
+            // Not decoration. The overlay is a sibling of the nav inside the
+            // sticky header, and a positioned element with a numeric z-index
+            // paints above one with `z-auto` in the same stacking context —
+            // so the sheet covers the button that opened it, leaving Escape
+            // as the only way out. Its own mark and its own close fixes that,
+            // and gives a full surface the chrome it should have had anyway.
+            div(
+              classes: 'rise flex h-14 items-center justify-between gap-4',
+              [
+                const div(
+                  classes: 'flex items-center gap-3',
+                  [
+                    span(
+                      classes: 'flex h-9 w-9 shrink-0 overflow-hidden '
+                          'rounded-full bg-ink-800 ring-1 ring-ink-700',
+                      attributes: {'aria-hidden': 'true'},
                       [
-                        Component.text(child.label),
-                        AppIcons.arrowUpRight(
-                          classes: 'h-4 w-4 text-iris-400',
+                        img(
+                          src: '/${SiteConfig.logoMark}',
+                          alt: '',
+                          attributes: {
+                            'width': '256',
+                            'height': '256',
+                            'loading': 'lazy',
+                            'decoding': 'async',
+                          },
+                          classes: 'h-full w-full object-cover',
                         ),
                       ],
                     ),
-                ],
-              div(
-                classes: 'mt-6 flex items-center gap-3',
-                [
-                  for (final social in SiteConfig.socials)
-                    a(
-                      href: social.url,
-                      target: Target.blank,
-                      attributes: {
-                        'rel': 'me noopener',
-                        'aria-label': social.label,
-                      },
-                      classes: 'inline-flex h-10 w-10 items-center '
-                          'justify-center border border-ink-700 text-ink-400 '
-                          'transition-colors hover:border-ink-500 '
-                          'hover:text-ink-200',
-                      [AppIcons.social(social.label)],
+                    span(
+                      classes: 'type-eyebrow font-mono text-ink-500',
+                      [Component.text('Menu')],
                     ),
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
+
+                button(
+                  classes: 'nav-close press',
+                  attributes: const {
+                    'type': 'button',
+                    'aria-label': 'Close menu',
+                  },
+                  onClick: close,
+                  [AppIcons.close(classes: 'h-5 w-5')],
+                ),
+              ],
+            ),
+
+            const div(classes: 'divider mt-2 mb-6', []),
+
+            nav(
+              attributes: const {'aria-label': 'Primary'},
+              [
+                for (final (i, link) in _links.indexed)
+                  if (link.children.isEmpty)
+                    a(
+                      href: link.href,
+                      classes: '${delay()} nav-row '
+                          '${_isActive(link.href) ? 'nav-row-here' : ''}',
+                      attributes: _isActive(link.href)
+                          ? {'aria-current': 'page'}
+                          : null,
+                      onClick: closeIfStaying(link.href),
+                      [
+                        span(
+                          classes: 'nav-num',
+                          attributes: const {'aria-hidden': 'true'},
+                          [Component.text('0${i + 1}')],
+                        ),
+                        span(
+                          classes: 'nav-item',
+                          [Component.text(link.label)],
+                        ),
+                        span(
+                          classes: 'nav-mark',
+                          attributes: const {'aria-hidden': 'true'},
+                          [AppIcons.arrowUpRight(classes: 'h-5 w-5')],
+                        ),
+                      ],
+                    )
+                  else
+                    div(
+                      classes: delay(),
+                      [
+                        // The parent labels its group rather than navigating.
+                        // Its own page is the first child underneath, and a
+                        // row that both navigates and heads a list is two
+                        // affordances sharing one tap target.
+                        div(
+                          classes: 'nav-row',
+                          [
+                            span(
+                              classes: 'nav-num',
+                              attributes: const {'aria-hidden': 'true'},
+                              [Component.text('0${i + 1}')],
+                            ),
+                            span(
+                              classes: 'nav-item nav-item-parent',
+                              [Component.text(link.label)],
+                            ),
+                          ],
+                        ),
+
+                        div(
+                          classes: 'nav-group py-3',
+                          [
+                            for (final child in link.children)
+                              a(
+                                href: child.href,
+                                // Resolved per child rather than hoisted: the
+                                // list is six entries at most, and a local
+                                // would need a Builder to scope it inside a
+                                // collection-for.
+                                classes: 'nav-sub '
+                                    '${child == _activeChild(link) ? 'nav-sub-here' : ''}',
+                                attributes: child == _activeChild(link)
+                                    ? {'aria-current': 'page'}
+                                    : null,
+                                onClick: closeIfStaying(child.href),
+                                [Component.text(child.label)],
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+              ],
+            ),
+
+            // Pushes the close block to the floor on a tall screen, so the
+            // overlay ends deliberately rather than trailing into empty ground.
+            const div(classes: 'min-h-12 flex-1', []),
+
+            div(
+              classes: '${delay()} border-t border-ink-800 pt-8',
+              [
+                if (SiteConfig.available)
+                  const div(
+                    classes: 'inline-flex items-center gap-2.5',
+                    [
+                      span(
+                        classes: 'h-1.5 w-1.5 shrink-0 rounded-full '
+                            'bg-iris-400 dot-live',
+                        [],
+                      ),
+                      span(
+                        classes: 'type-eyebrow font-mono text-ink-400',
+                        [Component.text(SiteConfig.availabilityLabel)],
+                      ),
+                    ],
+                  ),
+
+                a(
+                  href: 'mailto:${SiteConfig.email}',
+                  classes: 'group mt-5 flex items-center justify-between gap-4 '
+                      'border border-ink-700 bg-ink-850 px-5 py-4 '
+                      'transition-colors duration-300 hover:border-iris-500/50 '
+                      'hover:bg-ink-800',
+                  onClick: close,  // mailto: leaves this page standing.
+                  [
+                    const span(
+                      classes: 'min-w-0',
+                      [
+                        span(
+                          classes: 'type-eyebrow block font-mono text-ink-500',
+                          [Component.text('Start something')],
+                        ),
+                        span(
+                          classes: 'mt-1.5 block truncate font-display '
+                              'text-base font-bold text-ink-100',
+                          [Component.text(SiteConfig.email)],
+                        ),
+                      ],
+                    ),
+                    span(
+                      classes: 'shrink-0 text-iris-400 transition-transform '
+                          'duration-500 ease-soft group-hover:translate-x-1',
+                      [AppIcons.arrow()],
+                    ),
+                  ],
+                ),
+
+                div(
+                  classes: 'mt-6 flex items-center gap-2.5',
+                  [
+                    for (final social in SiteConfig.socials)
+                      a(
+                        href: social.url,
+                        target: Target.blank,
+                        // rel=me corroborates the `sameAs` entries in the
+                        // Person JSON-LD, so the profiles verify back here.
+                        attributes: {
+                          'rel': 'me noopener',
+                          'aria-label': social.label,
+                        },
+                        classes: 'foot-social press',
+                        [AppIcons.social(social.label)],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -323,6 +577,7 @@ class _NavBarView extends StatelessComponent {
   Component _dropdown(BuildContext context, NavItem item, String? openMenu) {
     final expanded = openMenu == item.label;
     final active = _isItemActive(item);
+    final here = _activeChild(item);
     final panelId = 'nav-panel-${item.label.toLowerCase()}';
 
     return div(
@@ -389,10 +644,8 @@ class _NavBarView extends StatelessComponent {
                   href: child.href,
                   classes: 'group block px-4 py-3 transition-colors '
                       'duration-300 hover:bg-ink-800 '
-                      '${_isActive(child.href) ? 'bg-ink-800' : ''}',
-                  attributes: _isActive(child.href)
-                      ? {'aria-current': 'page'}
-                      : null,
+                      '${child == here ? 'bg-ink-800' : ''}',
+                  attributes: child == here ? {'aria-current': 'page'} : null,
                   onClick: () => context
                       .read(navDropdownControllerProvider.notifier)
                       .close(),
@@ -400,7 +653,7 @@ class _NavBarView extends StatelessComponent {
                     span(
                       classes: 'flex items-center justify-between gap-3 '
                           'font-display text-sm font-bold '
-                          '${_isActive(child.href) ? 'text-iris-300' : 'text-ink-100'}',
+                          '${child == here ? 'text-iris-300' : 'text-ink-100'}',
                       [
                         Component.text(child.label),
                         span(

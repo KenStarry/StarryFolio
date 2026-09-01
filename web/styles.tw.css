@@ -536,6 +536,192 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     MOBILE OVERLAY
+
+     Not a drawer. A full-bleed contents page for the site.
+
+     The old version was a panel that grew out of the header and let the page
+     show through beneath it, which read as a dropdown that had got stuck. This
+     covers the whole viewport — including the ground *behind* the nav, so
+     there is no seam where a sheet meets a header — sets its links at display
+     scale with the band numbering the project pages use, and hangs the
+     wordmark behind it like every other full surface here.
+
+     It deliberately sits **below** the nav in the stacking order (`z-40`
+     against the header's `z-50`). The logo and the close button stay on top of
+     it and stay usable, so the control that opened the overlay is the same
+     control that closes it, in the same place, and nothing has to be
+     duplicated inside.
+
+     **Scroll lock is CSS, not script.** The overlay only exists in the DOM
+     while it is open, so `html:has(#mobile-menu)` is true exactly when it is —
+     no listener to add, none to forget to remove, and nothing to desync if a
+     route change closes the menu. `:has()` is unsupported only on browsers
+     that also lack the scroll-driven animation used across this site, and the
+     failure mode is the page scrolling behind a full-screen surface: untidy,
+     never broken.
+     ═══════════════════════════════════════════════════════════════════════ */
+  html:has(#mobile-menu) {
+    overflow: hidden;
+  }
+
+  /* The back-to-top control shares `z-40` with this overlay and comes later
+     in the document, so it would paint on top of it — a floating scroll
+     button over a full-screen navigation, pointing at a page you cannot see.
+     `BackToTop`'s own doc comment anticipated exactly this case and said the
+     navigation should win, so it is hidden while the overlay is open rather
+     than the overlay being lifted above it: raising the overlay would also
+     lift it over the header, which is what keeps the close button reachable.
+
+     Scoped through the same `:has()` as the scroll lock, so both facts about
+     "the menu is open" come from one place: the element existing at all. */
+  html:has(#mobile-menu) .to-top {
+    display: none;
+  }
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .nav-overlay {
+    @apply fixed inset-0 z-40 overflow-y-auto bg-ink-900;
+    /* Both watermarks bleed past a corner on purpose. `overflow-y: auto`
+       forces `overflow-x` to compute to `auto` as well, so without this the
+       overhang would put a horizontal scrollbar on a full-screen sheet.
+       `clip` rather than `hidden`: `hidden` on one axis would make this a
+       scroll container on both. */
+    overflow-x: clip;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-overlay {
+      animation: overlay-in 0.28s var(--ease-soft) both;
+    }
+  }
+
+  /* One row of the contents. The number sits in a fixed gutter so every label
+     starts on the same vertical — which is what makes five links read as an
+     index rather than as five unrelated buttons. */
+  .nav-row {
+    @apply relative flex items-baseline gap-5 border-b border-ink-800 py-3.5;
+    transition: border-color 0.35s var(--ease-soft);
+  }
+
+  .nav-row:hover,
+  .nav-row:focus-visible {
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+  }
+
+  .nav-num {
+    @apply w-7 shrink-0 font-mono text-[11px] text-ink-600;
+    transition: color 0.35s var(--ease-soft);
+  }
+
+  .nav-row:hover .nav-num,
+  .nav-row-here .nav-num {
+    @apply text-iris-400;
+  }
+
+  /* Set below the page-header scale on purpose. These are labels you scan,
+     not headlines you read: at display size five of them filled the viewport
+     and the groups underneath had nowhere to sit, which made a contents page
+     scroll to show its own contents. Sized against the viewport because it is
+     only ever shown on one. */
+  .nav-item {
+    @apply flex-1 font-display font-extrabold text-ink-100;
+    font-size: clamp(1.5rem, 7vw, 2.05rem);
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+  }
+
+  /* A group parent labels its children rather than navigating, so it sits back
+     the way the muted half of a two-tone heading does. */
+  .nav-item-parent {
+    @apply font-bold text-ink-400;
+  }
+
+  .nav-row-here .nav-item {
+    @apply text-iris-300;
+  }
+
+  .nav-mark {
+    @apply shrink-0 self-center text-ink-700;
+    transition: color 0.35s var(--ease-soft),
+                transform 0.45s var(--ease-spring);
+  }
+
+  .nav-row:hover .nav-mark,
+  .nav-row-here .nav-mark {
+    @apply text-iris-400;
+    transform: translate(2px, -2px);
+  }
+
+  /* The overlay's own bar. It exists because the overlay is a sibling of the
+     nav inside the sticky header, and a positioned element with a numeric
+     z-index paints above one with `z-auto` in the same stacking context — so
+     the sheet covers the very button that opened it. Rather than fight the
+     stacking order, the overlay carries its own mark and its own close, which
+     is what a full surface should have anyway. */
+  .nav-close {
+    @apply inline-flex h-11 w-11 shrink-0 items-center justify-center
+           border border-ink-700 text-ink-300;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft),
+                transform 0.45s var(--ease-spring);
+  }
+
+  .nav-close:hover,
+  .nav-close:focus-visible {
+    @apply bg-ink-850 text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    transform: rotate(90deg);
+  }
+
+  /* A nested group. The hairline spine is the device the experience entries on
+     /about use, so a sub-list reads as belonging to the heading above it
+     rather than as a second list that happens to be indented. */
+  .nav-group {
+    @apply relative ml-12 border-l border-ink-800 pl-5;
+  }
+
+  /* `min-height` rather than padding alone: a 15px label with `py-2.5` came
+     out around 42px, under the 44px floor a thumb actually needs, and the
+     miss rate on a list of six is what makes a menu feel broken even when
+     every link works. The row also spans the full column width, so the target
+     is the whole strip rather than the words in it. */
+  .nav-sub {
+    @apply relative flex min-h-12 items-center py-2 text-base text-ink-300;
+    transition: color 0.3s var(--ease-soft), transform 0.3s var(--ease-soft);
+  }
+
+  .nav-sub:hover {
+    @apply text-ink-100;
+    transform: translateX(2px);
+  }
+
+  .nav-sub-here {
+    @apply text-iris-300;
+  }
+
+  /* The tick on the spine, pulled back over the rule. */
+  /* The tick on the spine. Centred on the row rather than left to sit at the
+     top of it, since the row is now taller than the text inside it. */
+  .nav-sub::before {
+    content: "";
+    @apply absolute -left-5 h-px w-3 bg-ink-700;
+    top: 50%;
+    transition: background-color 0.3s var(--ease-soft),
+                width 0.3s var(--ease-soft);
+  }
+
+  .nav-sub:hover::before,
+  .nav-sub-here::before {
+    @apply w-4 bg-iris-500;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      ADDRESS CHIP
 
      A live URL set as a small monospace plate above a section title.
