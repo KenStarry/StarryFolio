@@ -6,6 +6,7 @@ import 'project_feature.dart';
 import 'project_module.dart';
 import '../enum/project_platform.dart';
 import '../enum/project_status.dart';
+import 'project_design.dart';
 
 /// A case study.
 ///
@@ -28,6 +29,8 @@ class ProjectModel {
     this.features = const [],
     this.modules = const [],
     this.links = const [],
+    this.domain = '',
+    this.design,
     this.featured = false,
     this.coverImage,
     this.mockupImage,
@@ -146,6 +149,67 @@ class ProjectModel {
   /// card in a category grid. Requires [mockupImage] — the flat treatment is
   /// built around a transparent device render and has nothing to show without
   /// one.
+  /// What field the project is *in* — `Healthcare`, `Music`, `Insurance`.
+  ///
+  /// Exists because a showcase band and the showcase inside it were printing
+  /// the same two lines twice: the band led with the name and tagline, then
+  /// `ProjectShowcase` printed the name and tagline again a few pixels below.
+  /// The fix is not to delete one of them but to give the band something to
+  /// say that the showcase does not — and the useful missing fact is what
+  /// sort of thing this is, which no other field carries.
+  ///
+  /// Deliberately free text rather than an enum. It is a one-word orientation
+  /// for a reader, not an axis anything filters on, and the three real axes
+  /// ([ProjectKind], [ProjectCategory], [ProjectPlatform]) already answer the
+  /// questions worth answering in a closed set. A fourth enum here would
+  /// invite exactly the collapsing those three exist to prevent.
+  ///
+  /// Empty is fine: the band falls back to the platform line it showed before.
+  final String domain;
+
+  /// The live web destination: the real href, plus the form a person reads.
+  ///
+  /// One getter returning both rather than two returning one each. The display
+  /// string is the href with its scheme stripped, so deriving them separately
+  /// would create two places for the label and the link to disagree — and a
+  /// chip whose text says one address while its href goes to another is the
+  /// kind of bug nobody notices until somebody clicks it.
+  ///
+  /// `https://portal.healthxafrica.com` reads as `portal.healthxafrica.com`.
+  /// The scheme is noise in a label: nobody says it aloud, and keeping it
+  /// makes a short chip wrap on a phone.
+  ///
+  /// Null when there is no web destination, which is most apps. A store link
+  /// is not an address, and setting `play.google.com/store/apps/...` in a
+  /// chrome-style plate would be dressing a download button as a location.
+  ({String href, String display})? get live {
+    // An address belongs to something that *lives* at one. The HealthX app
+    // carries a link to `portal.healthxafrica.com`, but that is a sibling
+    // product with its own case study — printing it above the app's band
+    // labelled the app with somebody else's address. A store listing is not
+    // an address either, so a phone-only product simply has none.
+    if (!platforms.contains(ProjectPlatform.web)) return null;
+
+    for (final entry in links) {
+      if (entry.type != AppLinkType.web) continue;
+      return (
+        href: entry.url,
+        display: entry.url
+            .replaceFirst(RegExp(r'^https?://'), '')
+            .replaceFirst(RegExp(r'/$'), ''),
+      );
+    }
+    return null;
+  }
+
+  /// The design side of this build, where design was a substantial part of it.
+  ///
+  /// **Presence is what puts a project in the `design` collection** — there is
+  /// no separate flag. A project either has design copy of its own or it is
+  /// not on that page, which makes it impossible for the collection to fill
+  /// itself with entries that have nothing design-specific to say.
+  final ProjectDesign? design;
+
   final bool featured;
 
   /// Transparent device mockup, for the flat featured treatment. Distinct from
@@ -236,6 +300,10 @@ class ProjectModel {
         mockupImage: map['mockupImage']?.toString(),
         mockupWidth: int.tryParse(map['mockupWidth']?.toString() ?? '') ?? 914,
         mockupHeight: int.tryParse(map['mockupHeight']?.toString() ?? '') ?? 1200,
+        domain: map['domain']?.toString() ?? '',
+        design: map['design'] is Map<String, dynamic>
+            ? ProjectDesign.fromMap(map['design'] as Map<String, dynamic>)
+            : null,
         featured: map['featured'] == true,
         applicationCategory: map['applicationCategory']?.toString(),
         ogCard: map['ogCard']?.toString(),
@@ -263,6 +331,8 @@ class ProjectModel {
         'mockupImage': mockupImage,
         'mockupWidth': mockupWidth,
         'mockupHeight': mockupHeight,
+        if (domain.isNotEmpty) 'domain': domain,
+        if (design != null) 'design': design!.toMap(),
         'featured': featured,
       };
 

@@ -42,7 +42,14 @@ class ProjectCard extends StatelessComponent {
     final links = project.links;
 
     return article(
-      classes: 'float-card group relative flex flex-col overflow-hidden '
+      // The card is a jump target. Collection pages list every project in
+      // their jump nav, and only the full-width showcase bands carried an id
+      // — so a pill for anything in the grid pointed at nothing and silently
+      // did nothing. `scroll-mt` clears the sticky nav on arrival, matching
+      // every other anchored element on the site.
+      id: project.slug,
+      classes: 'float-card group relative flex flex-col scroll-mt-28 '
+          'overflow-hidden '
           'border border-ink-700 bg-ink-800 $classes',
       attributes: {'data-cat': project.category.slug},
       [

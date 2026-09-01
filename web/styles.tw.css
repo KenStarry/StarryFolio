@@ -536,6 +536,49 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     ADDRESS CHIP
+
+     A live URL set as a small monospace plate above a section title.
+
+     It began as the address bar inside a drawn browser frame. The frame went
+     — every mockup here is a device render and did not need chrome around it
+     — but the address was the best part of it: a URL is the one label that
+     proves a thing is running rather than described. So it survives on its
+     own, as a chip you can actually click.
+
+     Deliberately *not* the `.pill` used for tags. A pill is a category and
+     sits on a rounded capsule; this is an address, so it keeps a square-ish
+     plate and a mono face, which is how a browser sets one. It reads as
+     borrowed from the machine rather than as another label.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .address-chip {
+    @apply inline-flex max-w-full items-center gap-2 rounded-sm border
+           border-ink-700 bg-ink-850 px-3 py-1.5 font-mono text-[11px]
+           text-ink-400;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft),
+                transform 0.35s var(--ease-soft);
+  }
+
+  .address-chip:hover,
+  .address-chip:focus-visible {
+    @apply bg-ink-800 text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* The live dot, sharing the hero's breathing animation — the address says
+     the thing is reachable, and the dot is what makes that read as *now*. */
+  .address-chip-dot {
+    @apply h-1.5 w-1.5 shrink-0 rounded-full bg-iris-400;
+  }
+
+  .address-chip-url {
+    @apply truncate;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      TESTIMONIAL OVERLAY
 
      A full quote, read in place, with **no JavaScript at all**.

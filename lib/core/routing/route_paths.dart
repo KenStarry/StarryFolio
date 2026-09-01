@@ -30,6 +30,15 @@ class RoutePaths {
   static const String notFound = '/404';
 
   static String projectDetail(String slug) => '$projects/$slug';
+
+  /// A curated collection under Works — `/projects/mobile`.
+  ///
+  /// Deliberately the **same namespace** as [projectDetail]: `/projects/mobile`
+  /// and `/projects/healthx` sit side by side, which is what makes both read
+  /// well. The cost is that a project slugged `mobile` would silently shadow
+  /// its collection page, so `ProjectsLocalDatasource` refuses to compile a
+  /// route list that contains one — see the guard there.
+  static String collection(String slug) => '$projects/$slug';
   static String post(String slug) => '$writing/$slug';
 
   /// Builds an in-page anchor href.

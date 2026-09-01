@@ -145,6 +145,15 @@ class ProjectShowcase extends StatelessComponent {
         ),
 
         // ── Mockup ──
+        //
+        // **Every mockup in this repo is a device render**, phone or laptop,
+        // keyed out onto its own alpha channel. There was briefly a second
+        // treatment here that wrapped web projects in drawn browser chrome, on
+        // the assumption a portal would arrive as a flat screenshot. Both web
+        // entries turned out to be laptop renders, so that chrome was a frame
+        // drawn around a device that already had one. Removed rather than left
+        // switchable: a branch with no true case is a branch that will be
+        // taken by mistake.
         div(
           classes: 'reveal relative flex items-center justify-center '
               '${reversed ? 'lg:order-1' : 'lg:order-2'}',

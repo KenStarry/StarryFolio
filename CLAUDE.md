@@ -117,10 +117,18 @@ Extract to `core/` once it is used in 2+ places.
 Major Current features: `home`, `projects`, `services`, `about`, `contact`, `writing`,
 `documents`, `testimonials`, `not_found`.
 
-The nav bar holds **five** tabs and stays at five. About is a dropdown parent
-over About / Testimonials / Documents — six was already at the edge of reading
-as a site map, so a new page nests rather than extends. `/writing` still has no
-tab at all; the footer index carries it.
+The nav bar holds **five** tabs and stays at five. Two of them are dropdown
+parents rather than links:
+
+```
+Home   Services   Works ▾   About ▾   Contact
+                     │         └─ About me · Testimonials · Documents
+                     └─ All work · Mobile · Web · Design · Packages · Writing
+```
+
+Six flat tabs was already at the edge of reading as a site map, so a new page
+**nests rather than extends**. `/writing` lives under Works — a post is a piece
+of work, and the dropdown has room a top-level bar does not.
 
 `/writing` has **no nav tab** — seven of them read as a site map rather than a
 navigation. The route, the pages and the sitemap entries all still exist, and
@@ -629,6 +637,41 @@ radios, and sibling selectors hide non-matching cards (`#pf-*` in
 `web/styles.tw.css`). This is not a stylistic choice — a Riverpod-filtered grid
 would ship crawlers one category and hide the rest behind JS, which §0 forbids.
 Every card stays in the document; `display:none` is presentational.
+
+**Works splits into collections, and a collection is a *view* rather than a
+fourth property.** `ProjectCollection` holds a predicate over the axes that
+already exist, so nothing on `ProjectModel` records which collection it is in:
+
+| Collection | Is |
+|---|---|
+| `mobile` | a product on android or iOS |
+| `web` | a product on web |
+| `design` | a project carrying a `ProjectDesign` block |
+| `packages` | `kind == package` |
+
+Storing membership would let the stored value disagree with the platforms next
+to it, and the first time they disagreed nobody would know which was lying.
+
+**`design` is the exception, and it earns it.** Whether design was a substantial
+part of a build cannot be derived, so it is opted into by the project carrying a
+`ProjectDesign` block — the same test the rest of the site uses, where a case
+study exists *because* there are `features` or `modules` rather than because a
+flag says so.
+
+**Collections overlap on purpose.** HealthX is in `mobile` and in `design`. That
+is only honest if the two pages say different things, which is why `design`
+reads from copy that exists nowhere else and renders as `DesignCase` bands
+(problem → system → shipped) rather than as project cards. If the design page
+ever reprints an engineering summary, the collection has stopped being a lens
+and become a duplicate.
+
+**Collections share the `/projects/<segment>` namespace with case studies.**
+`/projects/mobile` and `/projects/healthx` sit side by side, which is what makes
+both read well. The cost is that a project slugged `mobile` would take that URL
+and the collection would silently vanish, so
+`ProjectsLocalDatasource.caseStudySlugs` **throws** on a collision, naming the
+slug. A throw rather than an assert: asserts are stripped from release builds,
+and this has to fail during `jaspr build`.
 
 **Testimonials are a page, and the home band is a doorway to it.** `/testimonials`
 carries every quote in full plus the submission form; the home band shows one

@@ -11,6 +11,8 @@ import 'features/contact/presentation/pages/thanks_page.dart';
 import 'features/documents/presentation/pages/documents_page.dart';
 import 'features/not_found/presentation/pages/not_found_page.dart';
 import 'features/projects/data/datasource/projects_local_datasource.dart';
+import 'features/projects/domain/enum/project_collection.dart';
+import 'features/projects/presentation/pages/project_collection_page.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/services/presentation/pages/services_page.dart';
@@ -82,6 +84,20 @@ class App extends StatelessComponent {
           builder: (context, state) =>
               AppLayout(path: state.location, child: const ContactPage()),
         ),
+        // Collections first. They share the `/projects/<segment>` namespace
+        // with case studies, and `ProjectsLocalDatasource.caseStudySlugs`
+        // throws at build time if a project slug ever takes one of these —
+        // so the two lists cannot silently overlap.
+        for (final collection in ProjectCollection.values)
+          Route(
+            path: RoutePaths.collection(collection.slug),
+            title: '${collection.label} · ${SiteConfig.name}',
+            builder: (context, state) => AppLayout(
+              path: state.location,
+              child: ProjectCollectionPage(collection: collection),
+            ),
+          ),
+
         for (final slug in ProjectsLocalDatasource.caseStudySlugs)
           Route(
             path: RoutePaths.projectDetail(slug),

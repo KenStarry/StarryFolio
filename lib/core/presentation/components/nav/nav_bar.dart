@@ -28,13 +28,48 @@ typedef NavItem = ({String label, String href, List<NavChild> children});
 /// that are all, in the end, about the same person, and the bar got *shorter*
 /// while gaining a page.
 ///
-/// `/writing` remains deliberately absent. The route, the pages and the
-/// sitemap entries all still exist — the footer index carries it — and it
-/// earns a slot back when the section has enough posts to justify one.
+/// `/writing` lives under Works rather than as a tab of its own. A post is a
+/// piece of work, the dropdown has room a top-level bar does not, and it stops
+/// the section depending on the footer alone to be reachable.
 const _links = <NavItem>[
   (label: 'Home', href: RoutePaths.home, children: []),
   (label: 'Services', href: RoutePaths.services, children: []),
-  (label: 'Works', href: RoutePaths.projects, children: []),
+  (
+    label: 'Works',
+    href: RoutePaths.projects,
+    children: [
+      (
+        label: 'All work',
+        href: RoutePaths.projects,
+        blurb: 'Everything, with the flagships up front',
+      ),
+      (
+        label: 'Mobile apps',
+        href: '${RoutePaths.projects}/mobile',
+        blurb: 'Flutter apps shipped to both stores',
+      ),
+      (
+        label: 'Web',
+        href: '${RoutePaths.projects}/web',
+        blurb: 'Portals and sites, this one included',
+      ),
+      (
+        label: 'Design',
+        href: '${RoutePaths.projects}/design',
+        blurb: 'Systems, motion and interface craft',
+      ),
+      (
+        label: 'Packages',
+        href: '${RoutePaths.projects}/packages',
+        blurb: 'Code other developers build on',
+      ),
+      (
+        label: 'Writing',
+        href: RoutePaths.writing,
+        blurb: 'Notes from the build, when they are worth keeping',
+      ),
+    ],
+  ),
   (
     label: 'About',
     href: RoutePaths.about,

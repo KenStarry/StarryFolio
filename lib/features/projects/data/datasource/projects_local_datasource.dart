@@ -1,9 +1,11 @@
 import '../../../../core/domain/enum/app_link_type.dart';
 import '../../../../core/domain/model/app_link.dart';
 import '../../domain/enum/project_category.dart';
+import '../../domain/enum/project_collection.dart';
 import '../../domain/enum/project_kind.dart';
 import '../../domain/enum/project_platform.dart';
 import '../../domain/enum/project_status.dart';
+import '../../domain/model/project_design.dart';
 import '../../domain/model/project_feature.dart';
 import '../../domain/model/project_module.dart';
 import '../../domain/model/project_model.dart';
@@ -33,6 +35,7 @@ abstract final class ProjectsLocalDatasource {
       applicationCategory: 'HealthApplication',
       name: 'HealthX',
       tagline: 'Care, a pharmacy and a doctor, in one app.',
+      domain: 'Healthcare',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -40,6 +43,30 @@ abstract final class ProjectsLocalDatasource {
       platforms: [ProjectPlatform.android, ProjectPlatform.ios],
       mockupImage: 'images/healthx-mockup.webp',
       featured: true,
+      // ── Design ──
+      // **Authored scaffolding.** Drawn from what the app demonstrably does,
+      // not from a record of the decisions actually taken. Correct it and
+      // clear `draft` — the marker on the page disappears on its own.
+      design: ProjectDesign(
+        draft: true,
+        problem: 'Clinical information, read by people who are anxious, on '
+            'mid-range phones with unreliable signal. Every screen has to '
+            'degrade honestly: a stale result must never look like a fresh '
+            'one.',
+        system: [
+          'Semantic colour tokens through a ThemeExtension, never scattered hex',
+          'One type ramp across seven feature modules sharing a single shell',
+          'Every component drawn in its empty, loading, error and stale states',
+          'Motion spec tied to meaning: what moves, how far, and what it signals',
+        ],
+        shipped: [
+          'Brand and design system, from mark to component library',
+          'Store listing assets for both the App Store and Play',
+          'A component library the next engineer builds against, not around',
+        ],
+        note: 'The hardest part was not the visual language. It was deciding '
+            'what each screen does when the network gives up halfway.',
+      ),
       stack: [
         'Flutter',
         'Riverpod 3',
@@ -201,6 +228,7 @@ abstract final class ProjectsLocalDatasource {
       slug: 'criblynk',
       name: 'CribLynk',
       tagline: 'Rentals, minus the WhatsApp chaos.',
+      domain: 'Property',
       year: '2026',
       status: ProjectStatus.building,
       category: ProjectCategory.personal,
@@ -230,12 +258,32 @@ abstract final class ProjectsLocalDatasource {
       applicationCategory: 'BusinessApplication',
       name: 'RezQ',
       tagline: 'Resume building, the right way round.',
+      domain: 'Careers',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
       platforms: [ProjectPlatform.android],
       mockupImage: 'images/rezq-mockup.webp',
       featured: true,
+      // ── Design ──
+      // **Authored scaffolding.** See the note on HealthX.
+      design: ProjectDesign(
+        draft: true,
+        problem: 'A resume builder is a long form wearing a friendly face. The '
+            'work is making a dozen sections of structured data feel like '
+            'filling in one page, and making the result look designed rather '
+            'than templated.',
+        system: [
+          'A form system where every field states its purpose, not just its name',
+          'Section-by-section progress, so a long document never reads as one wall',
+          'Preview and edit sharing one type scale, so what you see is what exports',
+          'Empty states that suggest the next line rather than shrugging',
+        ],
+        shipped: [
+          'A reusable form component set with validation states drawn',
+          'Export styling that survives the jump from screen to PDF',
+        ],
+      ),
       stack: [
         'Flutter',
         'Riverpod 3',
@@ -364,12 +412,34 @@ abstract final class ProjectsLocalDatasource {
       applicationCategory: 'MultimediaApplication',
       name: 'Flow Music Player',
       tagline: 'Offline music, endlessly tunable and genuinely pretty.',
+      domain: 'Music',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
       platforms: [ProjectPlatform.android],
       mockupImage: 'images/flow-mockup.webp',
       featured: true,
+      // ── Design ──
+      // **Authored scaffolding.** See the note on HealthX.
+      design: ProjectDesign(
+        draft: true,
+        problem: 'A music player is judged almost entirely on feel. The '
+            'functionality is a solved problem, so everything that makes one '
+            'worth keeping lives in transitions, gesture weight and how the '
+            'artwork is treated.',
+        system: [
+          'Artwork-derived colour, sampled per track rather than themed globally',
+          'A single easing curve reused everywhere, so the app has one hand',
+          'Sheet and mini-player as one continuous element, never two views',
+          'Type scale tight enough to hold a long track title without truncating',
+        ],
+        shipped: [
+          'A motion vocabulary reused across every surface',
+          'A now-playing sheet that expands rather than replaces',
+        ],
+        note: 'This is the project where I lost a weekend to a single sheet '
+            'animation and would do it again.',
+      ),
       stack: [
         'Flutter',
         'BLoC',
@@ -498,6 +568,7 @@ abstract final class ProjectsLocalDatasource {
       slug: 'eduflow',
       name: 'EduFlow',
       tagline: 'A whole school, running off one app.',
+      domain: 'Education',
       year: '2025',
       status: ProjectStatus.shipped,
       category: ProjectCategory.commercial,
@@ -530,6 +601,7 @@ abstract final class ProjectsLocalDatasource {
       slug: 'healthx-portal',
       name: 'HealthX Customer Portal',
       tagline: 'Consultations and prescriptions, no download required.',
+      domain: 'Healthcare',
       year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -657,6 +729,7 @@ abstract final class ProjectsLocalDatasource {
       applicationCategory: 'FinanceApplication',
       name: 'Britam App',
       tagline: 'Policies, investments and loans, finally in one place.',
+      domain: 'Insurance',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -679,6 +752,7 @@ abstract final class ProjectsLocalDatasource {
       slug: 'britam-portal',
       name: 'Britam Customer Portal',
       tagline: 'Everything the app does, in a browser tab.',
+      domain: 'Insurance',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
@@ -702,6 +776,7 @@ abstract final class ProjectsLocalDatasource {
       slug: 'elvs',
       name: 'Elvs Mobile',
       tagline: 'Volunteer work, finally accounted for.',
+      domain: 'Logistics',
       year: '',
       status: ProjectStatus.shipped,
       category: ProjectCategory.commercial,
@@ -719,11 +794,88 @@ abstract final class ProjectsLocalDatasource {
     // exists. Every figure below is verifiable from the repository — release
     // count, test count, extension count, CI steps — so the case study needs
     // no pub.dev metrics, which would go stale between deploys anyway.
+    // ── This site ──────────────────────────────────────────────────────────
+    // The one project on this list you are looking at right now.
+    //
+    // Everything below is verifiable from the repository rather than authored,
+    // which is why it carries no `draft` marker: the stack, the rendering mode
+    // and the interaction choices are all facts about the code that produced
+    // the page you are reading. Only refine it if the site changes.
+    ProjectModel(
+      slug: 'kenstarry-com',
+      name: 'kenstarry.com',
+      tagline: 'A portfolio written in Dart, all the way down.',
+      domain: 'Portfolio',
+      year: '2026',
+      status: ProjectStatus.shipped,
+      category: ProjectCategory.personal,
+      mockupImage: 'images/portfolio-mockup.webp',
+      // 4:3 landscape, like the portal render — not the 914x1200 phone default.
+      // These drive the `width`/`height` attributes, so a wrong pair here is a
+      // layout shift on every page the showcase appears on.
+      mockupWidth: 1400,
+      mockupHeight: 1050,
+      platforms: [ProjectPlatform.web],
+      stack: [
+        'Dart',
+        'Jaspr',
+        'Tailwind CSS',
+        'Cloudflare Workers',
+        'Clean Architecture',
+      ],
+      summary: [
+        'A portfolio site built with Jaspr in static mode: every route is '
+            'pre-rendered to plain HTML at build time, so a crawler and a '
+            'reader are served exactly the same page. No client framework '
+            'renders the content.',
+        'The same architecture as the apps, on the web. Feature modules, '
+            'repositories returning Either, a composition root, and a design '
+            'system of two tones and a pale with no accent hue anywhere in the '
+            'layout.',
+      ],
+      highlights: [
+        'Statically pre-rendered: the content path never touches JavaScript',
+        'Three hydrated islands total: navigation and the two forms',
+        'Filtering, section rails and overlays built in CSS rather than script',
+        'Scroll-driven animation throughout, degrading to a finished page',
+        'Structured data, Open Graph and a sitemap generated at build time',
+      ],
+      design: ProjectDesign(
+        problem: 'A portfolio is judged on its own craft before anyone reads a '
+            'word of it. The brief was to prove the argument the copy makes: '
+            'that the last 10% is the product.',
+        system: [
+          'Two tones and a pale, with a single accent used only as signal',
+          'One inverted element per screen: a second cancels the first',
+          'An oversized ghost wordmark as the recurring depth motif',
+          'Two-tone display headings, one weight step apart, on every page',
+          'Motion that is scroll-driven, with the un-animated state visible',
+        ],
+        shipped: [
+          'A token set in CSS that moves the whole palette from one variable',
+          'A component library the site is assembled from, not decorated with',
+        ],
+        note: 'The constraint that shaped everything: if it cannot be seen by '
+            'a crawler with JavaScript off, it does not ship.',
+      ),
+      links: [
+        AppLink(
+          type: AppLinkType.web,
+          url: 'https://kenstarry.com',
+          label: 'Live site',
+        ),
+        AppLink(
+          type: AppLinkType.repo,
+          url: 'https://github.com/KenStarry/starry',
+        ),
+      ],
+    ),
     ProjectModel(
       slug: 'flutter-extend',
       ogCard: 'images/og-flutter-extend.jpg',
       name: 'flutter_extend',
       tagline: 'The boilerplate you stop writing.',
+      domain: 'Developer tooling',
       year: '2025',
       status: ProjectStatus.shipped,
       category: ProjectCategory.personal,
@@ -844,8 +996,33 @@ abstract final class ProjectsLocalDatasource {
   /// Slugs that actually have a case study written. Consumed by the router to
   /// pre-render one static page per *written-up* project — a project without a
   /// walkthrough gets no route, so it can neither be linked to nor found.
-  static List<String> get caseStudySlugs => projects
-      .where((p) => p.hasCaseStudy)
-      .map((p) => p.slug)
-      .toList(growable: false);
+  static List<String> get caseStudySlugs {
+    final slugs = [
+      for (final p in projects)
+        if (p.hasCaseStudy) p.slug,
+    ];
+
+    // `/projects/mobile` is a collection page and `/projects/healthx` is a
+    // case study — the same namespace, which is what makes both read well.
+    // The cost is that a project slugged `mobile` would take that URL and the
+    // collection would silently stop being reachable.
+    //
+    // A throw rather than an assert: asserts are stripped from a release
+    // build, and this has to fail during `jaspr build` — which is the only
+    // place it can be caught, because static generation is where the two
+    // route lists are combined. Failing here names the exact slug; failing
+    // later shows up as a page that quietly serves the wrong content.
+    final clash = slugs
+        .where(ProjectCollection.reservedSlugs.contains)
+        .toList(growable: false);
+    if (clash.isNotEmpty) {
+      throw StateError(
+        'Project slug(s) ${clash.join(', ')} collide with a collection page '
+        'under /projects. Rename the project, or rename the collection in '
+        'ProjectCollection.',
+      );
+    }
+
+    return List.unmodifiable(slugs);
+  }
 }

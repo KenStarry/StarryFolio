@@ -1,10 +1,8 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/server.dart';
-import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/di/locator.dart';
-import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/error_notice.dart';
 import '../../../../core/presentation/components/company_marquee.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
@@ -17,6 +15,10 @@ import '../../../../core/seo/structured_data.dart';
 import '../../domain/enum/project_category.dart';
 import '../../domain/enum/project_kind.dart';
 import '../../domain/model/project_model.dart';
+import '../../domain/enum/project_collection.dart';
+import '../components/address_chip.dart';
+import '../components/collection_tile.dart';
+import '../components/package_feature.dart';
 import '../components/project_bento.dart';
 import '../components/project_showcase.dart';
 import '../../../../core/presentation/components/jump_nav.dart';
@@ -171,6 +173,12 @@ class ProjectsPage extends AsyncStatelessComponent {
             jumpProjects: rest,
             featured: featured,
           ),
+
+          // The ways in, before the work itself. This page stays the full
+          // overview — it is the one that ranks and the one a link points at —
+          // so the collections are offered as doorways rather than replacing
+          // what is below them.
+          _Collections(projects: projects),
           // `timeline-scope` publishes the bands' timeline names to this
           // element's **subtree** only — so the rail has to live inside the
           // same wrapper as the bands, not beside it, or its dots would
@@ -223,11 +231,16 @@ class _BandHeading extends StatelessComponent {
                     'text-ink-100',
                 [Component.text(title)],
               ),
-              p(
-                classes: 'mt-5 text-sm leading-relaxed text-ink-400 '
-                    'sm:text-[0.9375rem]',
-                [Component.text(lead)],
-              ),
+              // Omitted rather than rendered empty. The featured band has no
+              // lead of its own — the showcase under it carries the tagline
+              // and the summary, and repeating either here is the duplication
+              // this heading exists to avoid.
+              if (lead.isNotEmpty)
+                p(
+                  classes: 'mt-5 text-sm leading-relaxed text-ink-400 '
+                      'sm:text-[0.9375rem]',
+                  [Component.text(lead)],
+                ),
             ],
           ),
           // The band number. Hidden on small screens — at that width it
@@ -343,11 +356,28 @@ class _Showcase extends StatelessComponent {
         div(
           classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
+            if (project.live case final live?)
+              div(
+                classes: 'reveal mb-6',
+                [
+                  AddressChip(
+                    url: live.display,
+                    href: live.href,
+                    label: project.name,
+                  ),
+                ],
+              ),
+
+            // Leads with the domain rather than the project name. The
+            // showcase directly below sets the name and the tagline as its
+            // own heading, so repeating them here printed the same two lines
+            // twice, a few pixels apart. `Healthcare` then HealthX tells a
+            // scanning reader something the name alone does not.
             _BandHeading(
               index: index,
               eyebrow: 'Featured',
-              title: project.name,
-              lead: project.tagline,
+              title: project.domain.isNotEmpty ? project.domain : project.name,
+              lead: '',
               count: 1,
               countLabel: 'flagship',
             ),
@@ -484,7 +514,7 @@ class _KindBand extends StatelessComponent {
               classes: 'mt-12',
               [
                 if (solo != null)
-                  _PackageFeature(project: solo)
+                  PackageFeature(project: solo)
                 else
                   ProjectBento(projects: projects),
               ],
@@ -496,130 +526,6 @@ class _KindBand extends StatelessComponent {
   }
 }
 
-/// One package, wide: artwork on the left, the record on the right.
-class _PackageFeature extends StatelessComponent {
-  const _PackageFeature({required this.project});
-
-  final ProjectModel project;
-
-  @override
-  Component build(BuildContext context) {
-    final href = RoutePaths.projectDetail(project.slug);
-
-    return div(
-      classes: 'float-card reveal grid overflow-hidden border border-ink-700 '
-          'bg-ink-900 lg:grid-cols-[1.1fr_1fr]',
-      [
-        Link(
-          to: href,
-          classes: 'reveal-media group block overflow-hidden bg-ink-850',
-          children: [
-            if (project.coverImage case final cover?)
-              img(
-                src: '/$cover',
-                alt: '${project.name}, ${project.tagline}',
-                classes: 'h-full w-full object-cover transition-transform '
-                    'duration-700 ease-soft group-hover:scale-[1.03]',
-                attributes: const {'loading': 'lazy', 'decoding': 'async'},
-              ),
-          ],
-        ),
-
-        div(
-          classes: 'flex flex-col justify-center p-8 sm:p-10',
-          [
-            div(
-              classes: 'flex flex-wrap items-center gap-3',
-              [
-                span(
-                  classes: 'type-eyebrow font-mono text-iris-400',
-                  [Component.text(kindEyebrow(project))],
-                ),
-                const span(classes: 'h-px w-8 bg-ink-600', []),
-                span(
-                  classes: 'border px-2.5 py-1 font-mono text-[10px] '
-                      'uppercase tracking-wider ${project.status.classes}',
-                  [Component.text(project.status.label)],
-                ),
-              ],
-            ),
-
-            h3(
-              classes: 'mt-6 font-display text-2xl font-extrabold '
-                  'tracking-tight text-ink-100 sm:text-3xl',
-              [
-                Link(
-                  to: href,
-                  classes: 'transition-colors duration-300 '
-                      'hover:text-iris-300',
-                  children: [Component.text(project.name)],
-                ),
-              ],
-            ),
-
-            p(
-              classes: 'mt-4 text-[0.9375rem] leading-relaxed text-ink-300',
-              [Component.text(project.tagline)],
-            ),
-
-            // The maintenance record — what a library is judged on, and the
-            // part a product card has no slot for.
-            if (project.highlights.isNotEmpty)
-              ul(
-                classes: 'mt-8 space-y-2.5',
-                [
-                  for (final line in project.highlights.take(3))
-                    li(
-                      classes: 'flex gap-3 text-sm leading-relaxed text-ink-400',
-                      [
-                        const span(
-                          classes: 'shrink-0 pt-1.5 font-mono text-iris-400',
-                          attributes: {'aria-hidden': 'true'},
-                          [Component.text('·')],
-                        ),
-                        span([Component.text(line)]),
-                      ],
-                    ),
-                ],
-              ),
-
-            div(
-              classes: 'mt-9 flex flex-wrap items-center gap-6',
-              [
-                Link(
-                  to: href,
-                  classes: 'link-line type-eyebrow inline-flex items-center '
-                      'font-mono text-ink-100',
-                  children: [const Component.text('Read the case study →')],
-                ),
-                for (final link in project.links)
-                  a(
-                    href: link.url,
-                    target: Target.blank,
-                    attributes: const {'rel': 'noopener'},
-                    classes: 'type-eyebrow inline-flex items-center gap-2 '
-                        'font-mono text-ink-400 transition-colors '
-                        'hover:text-ink-100',
-                    [
-                      AppIcons.byName(link.type.icon, classes: 'h-4 w-4'),
-                      Component.text(link.label ?? link.type.title),
-                    ],
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  /// The platform line, since a package that runs everywhere is worth saying
-  /// out loud — it is the practical difference from every app on this page.
-  static String kindEyebrow(ProjectModel project) =>
-      project.platforms.length >= 4
-          ? 'Every Flutter platform'
-          : project.platforms.map((item) => item.label).join(' · ');
-}
 
 class _Meta extends StatelessComponent {
   const _Meta();
@@ -632,4 +538,39 @@ class _Meta extends StatelessComponent {
             'telehealth platform, an offline music player, a rentals app and '
             'an open source package. Including the parts that were hard.',
       );
+}
+
+
+/// The four collection doorways, with live counts.
+///
+/// Counts are computed from the already-resolved list rather than re-read, so
+/// a tile can never claim a number the page below it does not show.
+class _Collections extends StatelessComponent {
+  const _Collections({required this.projects});
+
+  final List<ProjectModel> projects;
+
+  @override
+  Component build(BuildContext context) {
+    return section(
+      classes: 'bg-ink-900 pb-4 pt-2',
+      [
+        div(
+          classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
+          [
+            div(
+              classes: 'grid gap-4 sm:grid-cols-2 lg:grid-cols-4',
+              [
+                for (final collection in ProjectCollection.values)
+                  CollectionTile(
+                    collection: collection,
+                    count: collection.from(projects).length,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
