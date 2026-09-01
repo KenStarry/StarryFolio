@@ -5,35 +5,36 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 // `universal_web` rather than `dart:js_interop` directly: an island's Dart is
 // compiled for **both** targets — the server renders its initial markup — and
 // `dart:js_interop` does not exist on the VM, so importing it breaks the
-// server build outright. These shims conditionally export the real library on
-// web and throwing stubs elsewhere, which the `kIsWeb` guard below never
-// reaches.
+// server build outright.
 import 'package:universal_web/js_interop.dart';
 import 'package:universal_web/web.dart' as web;
 
 import '../../../features/contact/domain/model/contact_form_state.dart';
 
-part 'contact_form_controller.g.dart';
+part 'testimonial_form_controller.g.dart';
 
-/// Drives the contact form island.
+/// Drives the testimonial submission island.
 ///
-/// Client-side only, like every controller here — it calls `fetch`, which does
-/// not exist during the static build. The `kIsWeb` guard means a server-side
-/// render can never reach that code path.
+/// Reuses [ContactFormState] rather than declaring a near-identical enum and
+/// class beside it: the two forms have exactly the same lifecycle — idle,
+/// sending, sent, failed with a message — and a second copy would be two
+/// things to keep in step for no gain. If they ever diverge, that is the point
+/// to split them, not before.
+///
+/// Client-side only, like every controller here. It calls `fetch`, which does
+/// not exist during the static build; the `kIsWeb` guard is what keeps a
+/// server-side render from reaching it.
 @riverpod
-class ContactFormController extends _$ContactFormController {
-  /// Where the serverless function is mounted. Declared by `config.path` in
-  /// `netlify/functions/contact.mjs`; the form's own `action` points at the
-  /// same URL so the no-JavaScript path posts to exactly one place.
-  static const String endpoint = '/api/contact';
+class TestimonialFormController extends _$TestimonialFormController {
+  /// Where the serverless function is mounted. `functions/api/testimonial.js`
+  /// serves this path, and the form's own `action` points at the same URL so
+  /// the no-JavaScript path posts to exactly one place.
+  static const String endpoint = '/api/testimonial';
 
   @override
   ContactFormState build() => const ContactFormState();
 
   /// Posts [fields] as JSON and maps the reply onto a status.
-  ///
-  /// The function answers JSON for this content type and a 303 redirect for a
-  /// native form post, which is what lets one endpoint serve both paths.
   Future<void> submit(Map<String, String> fields) async {
     if (!kIsWeb || state.isSending) return;
 
@@ -94,7 +95,6 @@ class ContactFormController extends _$ContactFormController {
 
       state = ContactFormState(status: ContactStatus.failed, error: message);
     } catch (_) {
-      // Offline, DNS failure, request blocked — never a server message.
       state = const ContactFormState(
         status: ContactStatus.failed,
         error: 'Could not reach the server. Check your connection, or email '

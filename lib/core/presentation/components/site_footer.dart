@@ -16,6 +16,7 @@ const _footerLinks = <({String label, String href})>[
   (label: 'Works', href: RoutePaths.projects),
   (label: 'Writing', href: RoutePaths.writing),
   (label: 'About', href: RoutePaths.about),
+  (label: 'Testimonials', href: RoutePaths.testimonials),
   (label: 'Documents', href: RoutePaths.documents),
   (label: 'Contact', href: RoutePaths.contact),
 ];

@@ -49,7 +49,7 @@ class AppLayout extends StatelessComponent {
         // Both sit after the footer in source order so they are last in the
         // tab order and last in the accessibility tree — neither is content,
         // and the cursor pair is `aria-hidden` besides.
-        const BackToTop(),
+        BackToTop(path: path),
         if (SiteConfig.customCursor) const CustomCursor(),
       ],
     );

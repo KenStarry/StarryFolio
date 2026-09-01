@@ -68,8 +68,19 @@ AsyncStatelessComponent                       @client + ProviderScope
   └─ pre-rendered into HTML                     └─ hydrates after load
 ```
 
-Everything reachable from a `Route` builder is the content path. The **only** island is
-`core/presentation/components/nav/nav_bar.dart`.
+Everything reachable from a `Route` builder is the content path. There are
+**three** islands, and each one is a control rather than content:
+
+| Island | Why it needs to hydrate |
+|---|---|
+| `core/.../nav/nav_bar.dart` | the mobile drawer and the About dropdown |
+| `features/contact/.../contact_form.dart` | inline send status without leaving the page |
+| `features/testimonials/.../testimonial_form.dart` | the same, for submissions |
+
+Both forms are **enhancements over a working `<form>`** — real `action` and
+`method`, so a browser that never runs the island still posts to the same
+endpoint and lands on `/thanks`. Nothing an island renders is content a crawler
+needs.
 
 ---
 
@@ -105,6 +116,11 @@ Extract to `core/` once it is used in 2+ places.
 
 Major Current features: `home`, `projects`, `services`, `about`, `contact`, `writing`,
 `documents`, `testimonials`, `not_found`.
+
+The nav bar holds **five** tabs and stays at five. About is a dropdown parent
+over About / Testimonials / Documents — six was already at the edge of reading
+as a site map, so a new page nests rather than extends. `/writing` still has no
+tab at all; the footer index carries it.
 
 `/writing` has **no nav tab** — seven of them read as a site map rather than a
 navigation. The route, the pages and the sitemap entries all still exist, and
@@ -614,6 +630,32 @@ radios, and sibling selectors hide non-matching cards (`#pf-*` in
 would ship crawlers one category and hide the rest behind JS, which §0 forbids.
 Every card stays in the document; `display:none` is presentational.
 
+**Testimonials are a page, and the home band is a doorway to it.** `/testimonials`
+carries every quote in full plus the submission form; the home band shows one
+clause and links through, the same relationship Services and Works have to their
+pages. Three rules hold it together:
+
+- **Truncation is CSS, never Dart.** Cards clamp with `.quote-clamp`; the full
+  quote is always in the pre-rendered HTML. Cutting the string in the component
+  would delete content from the page, which §0 forbids.
+- **The "read in full" overlay is `:target`, not an island.** Same discipline as
+  the CSS-only project filtering: the panel is a URL, so it is shareable and
+  Back closes it. It cannot trap focus, which is paid down with a close control
+  as the panel's first child and the scrim as a second.
+- **A contributor's links are `PersonLink`, never `SocialLink`.** `SocialLink`
+  renders `rel="me"` and feeds `sameAs` — both assert *Ken owns that profile*.
+  Pointing those at somebody else's LinkedIn corrupts his own identity graph.
+  The two types exist separately so one can never be rendered by the other's
+  code path.
+
+**Nothing submitted publishes itself.** `functions/api/testimonial.js` sends an
+email containing a ready-to-paste `TestimonialModel`; a human adds it and pushes.
+That is the correct shape, not a static-site workaround: a public endpoint that
+wrote straight to the page would be a defacement vector. The form says so, and
+states in the reading path that a submission may be published with the sender's
+name and links. It is the one form on the site that publishes rather than
+delivers, and it has to say that before the submit button.
+
 **`SiteConfig.showTestimonials` is the blanket off-switch.** While it is
 `false` the repository is not read and the band never reaches the page — a
 stronger guarantee than the `draft` marker alone, and the right state to deploy
@@ -708,8 +750,7 @@ stops reading as a cursor and makes precise targeting harder at the exact
 moment you are aiming at something. It declines to run on coarse pointers and under
 reduced motion, and the native cursor is only hidden once the script has
 confirmed it is running (`body.has-cursor`) — so the failure mode is "no custom
-cursor", never "no cursor at all". It is the site's only inline script;
-`NavBar` remains the only `@client` island.
+cursor", never "no cursor at all". It is the site's only inline script.
 
 **Tailwind:** classes must be **string literals** — the scanner reads `.dart`
 source, so a class built by concatenation gets purged. Design tokens live in

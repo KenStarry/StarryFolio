@@ -520,6 +520,125 @@
     letter-spacing: -0.05em;
   }
 
+  /* The nav dropdown panel. Enters downward from the trigger it belongs to,
+     so it reads as unfolding out of the tab rather than appearing beside it.
+     Time-based rather than scroll-driven: the nav is fixed, and there is no
+     scroll relationship to hang a view timeline on. */
+  @keyframes nav-panel-in {
+    from { opacity: 0; transform: translate(-50%, -6px) scale(0.98); }
+    to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-panel {
+      animation: nav-panel-in 0.28s var(--ease-soft) both;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TESTIMONIAL OVERLAY
+
+     A full quote, read in place, with **no JavaScript at all**.
+
+     The mechanism is `:target` — the card's "read in full" is an ordinary
+     anchor to `#t-<slug>`, and the overlay for that id is `display:none`
+     until the URL points at it. Same discipline as the CSS-only project
+     filtering, and it buys three things a scripted modal does not:
+
+       * The full quote is in the pre-rendered HTML either way. Truncation is
+         `line-clamp` — presentational — so a crawler reads every word even
+         though a visitor sees four lines. Cutting the string in Dart would
+         have deleted content from the page, which CLAUDE.md §0 forbids.
+       * Every overlay is a shareable URL. A contributor can send someone
+         straight to their own note, which is most of the point of this page.
+       * Back closes it, because it is genuine navigation rather than state.
+
+     What `:target` cannot do is trap focus or close on Escape. That is a real
+     cost, and it is paid down deliberately: the overlay's first element is a
+     close link, the scrim behind it is also a close link, and the underlying
+     card stays in the document — so a keyboard user can always tab forward to
+     an exit and Back always works. A modal that traps focus but needs an
+     island to do it would be a worse trade on a page whose whole job is to be
+     readable without JavaScript.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .quote-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+  }
+
+  .quote-clamp-lg {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
+    overflow: hidden;
+  }
+
+  .t-overlay {
+    display: none;
+  }
+
+  .t-overlay:target {
+    @apply fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-8;
+  }
+
+  /* The scrim is a link, so a click anywhere outside the panel closes. */
+  .t-scrim {
+    @apply absolute inset-0 bg-ink-950/85;
+    backdrop-filter: blur(6px);
+  }
+
+  .t-panel {
+    @apply relative max-h-full w-full max-w-2xl overflow-y-auto border
+           border-ink-700 bg-ink-850 p-7 sm:p-10;
+    box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.9);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .t-overlay:target .t-panel {
+      animation: t-panel-in 0.42s var(--ease-soft) both;
+    }
+  }
+
+  @keyframes t-panel-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Sits above the scrim so it stays clickable. */
+  .t-close {
+    @apply absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center
+           justify-center rounded-full border border-ink-700 text-ink-400;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft);
+  }
+
+  .t-close:hover {
+    @apply bg-ink-800 text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+  }
+
+  /* A contributor's own profile, as a chip. Never `rel="me"` — see
+     `PersonLink`. */
+  .person-link {
+    @apply inline-flex items-center gap-2 border border-ink-700 px-3 py-1.5
+           font-mono text-[11px] text-ink-400;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft),
+                background-color 0.35s var(--ease-soft),
+                transform 0.35s var(--ease-soft);
+  }
+
+  .person-link:hover {
+    @apply bg-ink-800 text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+    transform: translateY(-2px);
+  }
+
   /* The footer wordmark — the motif at its largest scale on the site.
      Sized so `kenstarry` spans the container at desktop widths, and hung so
      the lower third of the letterforms is clipped by the footer's own edge.

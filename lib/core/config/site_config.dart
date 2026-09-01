@@ -109,8 +109,12 @@ class SiteConfig {
   ///
   /// While it is `false` the repository is not even read and the band never
   /// reaches the page, which is a stronger guarantee than the `draft` marker
-  /// on its own. Leave it off until the quotes are real and cleared to
-  /// publish.
+  /// on its own.
+  ///
+  /// **This gates the home band only.** `/testimonials` is a real route and
+  /// stays reachable either way — the page is where a contributor's link
+  /// points, and breaking those to hide a home section would be the wrong
+  /// trade.
   static const bool showTestimonials = true;
 
   /// Whether the site paints its own pointer (`CustomCursor`).

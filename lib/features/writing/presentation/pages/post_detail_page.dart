@@ -261,8 +261,12 @@ class _Body extends StatelessComponent {
             // Inline on narrow screens, where there is no room for a rail. It
             // is a `<nav>` either way, so the structure is the same for a
             // screen reader regardless of which one is showing.
-            if (headings.length > 2) _Contents(headings: headings),
-            PostBody(blocks: post.body),
+            if (headings.length > 2)
+              _Contents(
+                headings: headings,
+                path: RoutePaths.post(post.slug),
+              ),
+            PostBody(blocks: post.body, path: RoutePaths.post(post.slug)),
 
             if (post.tags.isNotEmpty)
               div(
@@ -290,9 +294,14 @@ class _Body extends StatelessComponent {
 /// section would need JS on a page that is otherwise entirely static, and the
 /// value of knowing *where you are* is small next to being able to jump.
 class _Contents extends StatelessComponent {
-  const _Contents({required this.headings});
+  const _Contents({required this.headings, required this.path});
 
   final List<PostHeading> headings;
+
+  /// This post's own path. Required for the same reason [PostBody] needs it:
+  /// `<base href="/">` makes a bare fragment resolve against the site root,
+  /// so every entry in this rail navigated to the home page.
+  final String path;
 
   @override
   Component build(BuildContext context) {
@@ -310,7 +319,7 @@ class _Contents extends StatelessComponent {
             for (final heading in headings)
               li([
                 a(
-                  href: '#${heading.anchor}',
+                  href: RoutePaths.anchor(path, heading.anchor),
                   classes: 'link-line text-sm text-ink-400 transition-colors '
                       'hover:text-ink-100',
                   [Component.text(heading.text)],

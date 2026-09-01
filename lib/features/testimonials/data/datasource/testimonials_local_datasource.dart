@@ -46,7 +46,13 @@ abstract final class TestimonialsLocalDatasource {
         'software people need; he creates unique experiences that people '
         'love. His passion is completely captivating, and his heart for his '
         'work makes him a truly remarkable person to know.',
-    emphasis: 'he creates unique experiences that people love',
+    // Still a verbatim substring, and one word was not changed — but a
+    // longer span than the original, because `emphasis` now does two jobs.
+    // Inside the full quote it is the clause set bright; on the home band it
+    // stands *alone* as the pull-quote. A fragment starting mid-sentence on a
+    // lowercase `he` reads fine in context and loses its subject out of it.
+    emphasis: "He doesn't just build software people need; he creates unique "
+        'experiences that people love.',
     name: 'Sheilla',
     role: 'Day 1 supporter, and forever a fan',
     featured: true,

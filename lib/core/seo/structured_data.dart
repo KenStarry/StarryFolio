@@ -308,6 +308,62 @@ class SchemaOrg {
         },
       };
 
+  /// The testimonials, as a list of `Review`s.
+  ///
+  /// `Review` rather than `ItemList` of names, because a review carries an
+  /// `author` — which is the whole point of publishing one. Each author gets
+  /// their own `Person` node with their profile links as `sameAs`, so a
+  /// contributor's credit is machine-readable and not just visible.
+  ///
+  /// The reviewed thing is Ken's professional service rather than the website,
+  /// and it is deliberately **not** given an aggregate rating. Star ratings on
+  /// hand-collected testimonials are the classic rich-result abuse, and there
+  /// is no rating here to aggregate: nobody was asked for a score.
+  ///
+  /// Drafts are filtered by the caller, not here — a placeholder must never
+  /// reach the structured data, and the page already knows which entries are
+  /// real.
+  static Map<String, Object?> reviews({
+    required List<
+            ({
+              String quote,
+              String author,
+              String role,
+              List<String> sameAs,
+            })>
+        items,
+  }) =>
+      {
+        '@context': _context,
+        '@type': 'ItemList',
+        'itemListElement': [
+          for (final (index, item) in items.indexed)
+            {
+              '@type': 'ListItem',
+              'position': index + 1,
+              'item': {
+                '@type': 'Review',
+                'reviewBody': item.quote,
+                'author': {
+                  '@type': 'Person',
+                  'name': item.author,
+                  if (item.role.isNotEmpty) 'jobTitle': item.role,
+                  if (item.sameAs.isNotEmpty) 'sameAs': item.sameAs,
+                },
+                'itemReviewed': {
+                  '@type': 'Service',
+                  'name': SiteConfig.role,
+                  'provider': {
+                    '@type': 'Person',
+                    '@id': personId,
+                    'name': SiteConfig.name,
+                  },
+                },
+              },
+            },
+        ],
+      };
+
   /// Trail shown under the result title in search. [crumbs] is ordered
   /// root-first as `(label, path)`.
   /// One written piece.

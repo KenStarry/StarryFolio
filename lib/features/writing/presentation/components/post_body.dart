@@ -1,6 +1,7 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../../../../core/routing/route_paths.dart';
 import '../../domain/model/post_block.dart';
 
 /// Renders a post's [PostBlock] list into the article column.
@@ -13,15 +14,21 @@ import '../../domain/model/post_block.dart';
 /// static build, so every word, every code sample and every caption is in the
 /// pre-rendered HTML. See CLAUDE.md §0.
 class PostBody extends StatelessComponent {
-  const PostBody({required this.blocks, super.key});
+  const PostBody({required this.blocks, required this.path, super.key});
 
   final List<PostBlock> blocks;
+
+  /// This post's own path. Required because heading anchors have to carry it:
+  /// the document has `<base href="/">`, so a bare `#section` resolves against
+  /// the site root and would send a reader to the **home page** instead of
+  /// down the article. See [RoutePaths.anchor].
+  final String path;
 
   @override
   Component build(BuildContext context) {
     return div(
       classes: 'prose-col',
-      [for (final block in blocks) renderBlock(block)],
+      [for (final block in blocks) renderBlock(block, postPath: path)],
     );
   }
 }
@@ -32,12 +39,17 @@ class PostBody extends StatelessComponent {
 /// [nested] drops the block's own vertical margins: a step already spaces its
 /// children, and the two rhythms fighting is what makes a nested figure sit
 /// visibly wrong inside its step.
-Component renderBlock(PostBlock block, {bool nested = false}) {
+Component renderBlock(
+  PostBlock block, {
+  required String postPath,
+  bool nested = false,
+}) {
   return switch (block) {
     PostHeading(:final text, :final level, :final anchor) => _heading(
         text,
         level,
         anchor,
+        postPath,
       ),
     PostProse(:final text) => p(
         classes: 'reveal prose-p',
@@ -58,7 +70,7 @@ Component renderBlock(PostBlock block, {bool nested = false}) {
       ),
     PostList(:final items, :final ordered) => _list(items, ordered),
     PostNote(:final text, :final tone) => _note(text, tone, nested),
-    PostSteps(:final steps) => _steps(steps),
+    PostSteps(:final steps) => _steps(steps, postPath),
   };
 }
 
@@ -69,10 +81,13 @@ Component renderBlock(PostBlock block, {bool nested = false}) {
 ///
 /// Each carries its own anchor and a hover-revealed `#`, so a reader can link
 /// someone straight to the section that answered their question.
-Component _heading(String text, int level, String anchor) {
+Component _heading(String text, int level, String anchor, String postPath) {
   final inner = [
     a(
-      href: '#$anchor',
+      // `RoutePaths.anchor`, never a bare `#id` — `<base href="/">` makes a
+      // bare fragment resolve against the site root, so this sent readers to
+      // the home page instead of to the section they clicked.
+      href: RoutePaths.anchor(postPath, anchor),
       classes: 'group/anchor no-underline',
       [
         Component.text(text),
@@ -201,7 +216,7 @@ Component _note(String text, PostNoteTone tone, bool nested) {
   );
 }
 
-Component _steps(List<PostStep> steps) {
+Component _steps(List<PostStep> steps, String postPath) {
   return ol(
     classes: 'reveal my-10 space-y-0',
     [
@@ -228,7 +243,10 @@ Component _steps(List<PostStep> steps) {
             ),
             div(
               classes: 'mt-4 space-y-4',
-              [for (final b in step.blocks) renderBlock(b, nested: true)],
+              [
+                for (final b in step.blocks)
+                  renderBlock(b, postPath: postPath, nested: true),
+              ],
             ),
           ],
         ),

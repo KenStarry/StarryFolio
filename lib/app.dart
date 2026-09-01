@@ -14,6 +14,7 @@ import 'features/projects/data/datasource/projects_local_datasource.dart';
 import 'features/projects/presentation/pages/project_detail_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/services/presentation/pages/services_page.dart';
+import 'features/testimonials/presentation/pages/testimonials_page.dart';
 import 'features/writing/data/datasource/writing_local_datasource.dart';
 import 'features/writing/presentation/pages/post_detail_page.dart';
 import 'features/writing/presentation/pages/writing_page.dart';
@@ -62,6 +63,12 @@ class App extends StatelessComponent {
           title: 'About · ${SiteConfig.name}',
           builder: (context, state) =>
               AppLayout(path: state.location, child: const AboutPage()),
+        ),
+        Route(
+          path: RoutePaths.testimonials,
+          title: 'Testimonials · ${SiteConfig.name}',
+          builder: (context, state) =>
+              AppLayout(path: state.location, child: const TestimonialsPage()),
         ),
         Route(
           path: RoutePaths.services,

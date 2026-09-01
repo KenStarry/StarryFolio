@@ -1,6 +1,8 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
+import '../../routing/route_paths.dart';
+
 /// The back-to-top control, pinned bottom-right.
 ///
 /// A plain `<a href="#top">`, not a button with a scroll handler. Three things
@@ -14,13 +16,21 @@ import 'package:jaspr/jaspr.dart';
 ///   hydrate, and no way for it to desync from the real scroll position.
 ///
 /// `#top` is the id already carried by `AppLayout`'s root element, so this
-/// introduces no new anchor to keep in sync.
+/// introduces no new anchor to keep in sync — but the href has to name the
+/// **current path** as well as the fragment. The document carries
+/// `<base href="/">`, which is load-bearing for hydration, and a consequence
+/// is that a bare `#top` resolves against the site root: on every page except
+/// the home page this button navigated *to the home page* rather than
+/// scrolling up. See [RoutePaths.anchor].
 ///
 /// It is deliberately below the nav in the stacking order (`z-40` against the
 /// nav's `z-50`) — the two never overlap, but if a future sheet does, the
 /// navigation should win.
 class BackToTop extends StatelessComponent {
-  const BackToTop({super.key});
+  const BackToTop({this.path = RoutePaths.home, super.key});
+
+  /// Current route location, so the anchor targets *this* page's `#top`.
+  final String path;
 
   @override
   Component build(BuildContext context) {
@@ -29,7 +39,7 @@ class BackToTop extends StatelessComponent {
           'sm:bottom-8 sm:right-8',
       [
         a(
-          href: '#top',
+          href: RoutePaths.anchor(path, 'top'),
           classes: 'to-top-btn press pointer-events-auto flex h-11 w-11 '
               'items-center justify-center rounded-full border '
               'border-ink-700 bg-ink-900/90 text-ink-400 backdrop-blur-sm',

@@ -1,3 +1,5 @@
+import 'person_link.dart';
+
 /// Something someone said about the work.
 ///
 /// ## Attribution is not optional
@@ -16,6 +18,10 @@
 /// [projectSlug] links a quote to the case study it came out of, which is the
 /// difference between a claim and a claim you can go and check.
 ///
+/// [links] are the contributor's *own* profiles, carried as [PersonLink]
+/// rather than `SocialLink` — see that class for why the distinction is not
+/// cosmetic.
+///
 /// `fromMap` parses defensively so this can move behind a CMS without the
 /// component learning anything new.
 class TestimonialModel {
@@ -28,6 +34,7 @@ class TestimonialModel {
     this.source,
     this.projectSlug,
     this.avatar,
+    this.links = const [],
     this.featured = false,
     this.draft = false,
     this.emphasis = '',
@@ -58,10 +65,21 @@ class TestimonialModel {
   /// is honest about being a placeholder in a way a stock face is not.
   final String? avatar;
 
+  /// Where else this person can be found. Rendered as chips beside their
+  /// name, and emitted in the `Review` JSON-LD, so a contributor gets real
+  /// crawlable credit for saying something rather than a dead line of text.
+  final List<PersonLink> links;
+
   /// Leads the band, set larger. At most one should carry this.
   final bool featured;
 
   /// The clause worth reading if you only read one.
+  ///
+  /// **It does two jobs, and the second constrains it.** Inside a full quote
+  /// it is the run set bright against the rest. On the home band it stands
+  /// entirely alone as the pull-quote — so it should be a span that survives
+  /// being read on its own. A fragment opening on a lowercase pronoun is
+  /// perfectly good emphasis and a poor standalone line.
   ///
   /// Must be a **verbatim substring** of [quote]. The featured slot sets it in
   /// `ink-100` against the rest of the quote in `ink-300` — the site's two-tone
@@ -109,6 +127,25 @@ class TestimonialModel {
   String get attribution =>
       company.isEmpty ? role : '$role, $company';
 
+  /// Rough length of the quote, for choosing a type scale and deciding whether
+  /// a card needs a "read in full" affordance.
+  ///
+  /// Words rather than characters: character counts punish long words and a
+  /// quote's *reading* length is what the layout actually has to survive.
+  int get wordCount => quote.trim().split(RegExp(r'\s+')).length;
+
+  /// Whether the home band should tease this rather than print it whole.
+  ///
+  /// The threshold is deliberately low. A home band is a doorway, and a
+  /// hundred-word paragraph in one is a wall — see `TestimonialTeaser`.
+  bool get isLong => wordCount > 45;
+
+  /// The single clause worth reading, for the home teaser.
+  ///
+  /// Falls back to the whole quote when nothing is emphasised, which is
+  /// correct for a short one and why [isLong] gates the teaser separately.
+  String get lede => emphasis.isEmpty ? quote : emphasis;
+
   factory TestimonialModel.fromMap(Map<String, dynamic> map) =>
       TestimonialModel(
         slug: map['slug']?.toString() ?? '',
@@ -119,7 +156,14 @@ class TestimonialModel {
         source: map['source']?.toString(),
         projectSlug: map['projectSlug']?.toString(),
         avatar: map['avatar']?.toString(),
+        links: PersonLink.listOf(map['links']),
         featured: map['featured'] == true,
+        // Both of these used to be dropped here. `draft` in particular is a
+        // safety marker: a round-trip through this parser silently promoted a
+        // labelled placeholder into something that renders as a real
+        // endorsement, which is the exact failure the flag exists to prevent.
+        draft: map['draft'] == true,
+        emphasis: map['emphasis']?.toString() ?? '',
       );
 
   Map<String, dynamic> toMap() => {
@@ -131,7 +175,10 @@ class TestimonialModel {
         if (source != null) 'source': source,
         if (projectSlug != null) 'projectSlug': projectSlug,
         if (avatar != null) 'avatar': avatar,
+        if (links.isNotEmpty) 'links': [for (final l in links) l.url],
         'featured': featured,
+        'draft': draft,
+        if (emphasis.isNotEmpty) 'emphasis': emphasis,
       };
 
   @override

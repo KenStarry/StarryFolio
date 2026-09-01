@@ -57,7 +57,7 @@ final class ContactFormControllerProvider
 }
 
 String _$contactFormControllerHash() =>
-    r'2cbed11fd143256ed88544299e87acf596987598';
+    r'6c8372972b9838fad60715c4c5fe6fb8a1f570d1';
 
 /// Drives the contact form island.
 ///

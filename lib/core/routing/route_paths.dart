@@ -12,6 +12,12 @@ class RoutePaths {
   static const String contact = '/contact';
   static const String about = '/about';
   static const String writing = '/writing';
+
+  /// What other people said. Nested under About in the navigation, but a real
+  /// top-level route: a testimonial's whole value is that it can be linked to,
+  /// and `/about/testimonials` would make every contributor's shareable URL
+  /// longer for no gain.
+  static const String testimonials = '/testimonials';
   /// The documents hub. Named for what it holds rather than for the CV
   /// alone — the CV is one band on it.
   static const String documents = '/documents';

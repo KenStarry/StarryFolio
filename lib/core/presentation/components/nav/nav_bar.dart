@@ -4,23 +4,59 @@ import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 
 import '../../../config/site_config.dart';
 import '../../../routing/route_paths.dart';
+import '../../../state/controllers/nav_dropdown_controller.dart';
 import '../../../state/controllers/nav_menu_controller.dart';
 import '../app_icons.dart';
 
-// `Home` earns a tab now that Services and Works are both standalone pages —
-// without it there is no labelled way back from either.
-//
-// `/writing` is deliberately absent. The route, the pages and the sitemap
-// entries all still exist — it is only the tab that is gone, because seven
-// items had the bar reading as a site map rather than a navigation. Add the
-// line back when the section has enough posts to earn the slot.
-const _links = <({String label, String href})>[
-  (label: 'Home', href: RoutePaths.home),
-  (label: 'Services', href: RoutePaths.services),
-  (label: 'Works', href: RoutePaths.projects),
-  (label: 'About', href: RoutePaths.about),
-  (label: 'Documents', href: RoutePaths.documents),
-  (label: 'Contact', href: RoutePaths.contact),
+/// One item in a dropdown, with a line saying what is behind it.
+///
+/// The blurb is what separates a menu from a list of words: three unlabelled
+/// links under "About" force a reader to guess which one holds what, and
+/// guessing wrong costs a page load.
+typedef NavChild = ({String label, String href, String blurb});
+
+/// A top-level tab. [children] non-empty makes it a dropdown trigger rather
+/// than a link, and its own `href` is then never navigated to — the first
+/// child carries that destination instead.
+typedef NavItem = ({String label, String href, List<NavChild> children});
+
+/// The bar.
+///
+/// **Five items, and it stays five.** Six was already at the edge of reading
+/// as a site map rather than a navigation, and Testimonials would have been a
+/// seventh. So About became a parent instead: it now holds the three pages
+/// that are all, in the end, about the same person, and the bar got *shorter*
+/// while gaining a page.
+///
+/// `/writing` remains deliberately absent. The route, the pages and the
+/// sitemap entries all still exist — the footer index carries it — and it
+/// earns a slot back when the section has enough posts to justify one.
+const _links = <NavItem>[
+  (label: 'Home', href: RoutePaths.home, children: []),
+  (label: 'Services', href: RoutePaths.services, children: []),
+  (label: 'Works', href: RoutePaths.projects, children: []),
+  (
+    label: 'About',
+    href: RoutePaths.about,
+    children: [
+      (
+        label: 'About me',
+        href: RoutePaths.about,
+        blurb: 'The roles, the toolkit, and how the work runs',
+      ),
+      (
+        label: 'Testimonials',
+        href: RoutePaths.testimonials,
+        blurb: 'What it is like on the other side',
+      ),
+      (
+        label: 'Documents',
+        href: RoutePaths.documents,
+        blurb: 'The CV, on paper and on file',
+      ),
+    ],
+  ),
+  (label: 'Contact', href: RoutePaths.contact, children: []),
 ];
 
 /// Sticky top navigation.
@@ -65,9 +101,21 @@ class _NavBarView extends StatelessComponent {
     return path == href || path.startsWith('$href/');
   }
 
+  /// Whether a tab should be lit — its own page, or any page beneath it.
+  ///
+  /// A parent lights when one of its children is current, so a reader on
+  /// `/testimonials` can still see which part of the site they are in. Without
+  /// this the bar would show nothing active on three of the site's pages,
+  /// which is worse than the flat version it replaced.
+  bool _isItemActive(NavItem item) =>
+      item.children.isEmpty
+          ? _isActive(item.href)
+          : item.children.any((c) => _isActive(c.href));
+
   @override
   Component build(BuildContext context) {
     final isOpen = context.watch(navMenuControllerProvider);
+    final openMenu = context.watch(navDropdownControllerProvider);
 
     return header(
       classes: 'sticky top-0 z-50',
@@ -92,15 +140,19 @@ class _NavBarView extends StatelessComponent {
               classes: 'hidden items-center gap-7 lg:flex xl:gap-10',
               [
                 for (final link in _links)
-                  a(
-                    href: link.href,
-                    classes: _isActive(link.href)
-                        ? 'nav-link nav-link-active text-sm'
-                        : 'nav-link link-line text-sm',
-                    attributes:
-                        _isActive(link.href) ? {'aria-current': 'page'} : null,
-                    [Component.text(link.label)],
-                  ),
+                  if (link.children.isEmpty)
+                    a(
+                      href: link.href,
+                      classes: _isActive(link.href)
+                          ? 'nav-link nav-link-active text-sm'
+                          : 'nav-link link-line text-sm',
+                      attributes: _isActive(link.href)
+                          ? {'aria-current': 'page'}
+                          : null,
+                      [Component.text(link.label)],
+                    )
+                  else
+                    _dropdown(context, link, openMenu),
               ],
             ),
 
@@ -139,21 +191,56 @@ class _NavBarView extends StatelessComponent {
             classes: 'relative border-t border-ink-700/70 bg-ink-900 px-6 '
                 'pb-8 pt-2 lg:hidden',
             [
+              // The drawer flattens the tree rather than nesting a
+              // collapsible inside an already-collapsible menu. There is
+              // vertical room here that the bar does not have, and a
+              // disclosure inside a disclosure is two taps to reach a link
+              // that a heading and an indent reach in one.
               for (final link in _links)
-                a(
-                  href: link.href,
-                  classes: 'flex items-center justify-between border-b '
-                      'border-ink-800 py-4 font-display text-lg font-semibold '
-                      '${_isActive(link.href) ? 'text-iris-300' : 'text-ink-100'}',
-                  attributes:
-                      _isActive(link.href) ? {'aria-current': 'page'} : null,
-                  onClick: () =>
-                      context.read(navMenuControllerProvider.notifier).close(),
-                  [
-                    Component.text(link.label),
-                    AppIcons.arrowUpRight(classes: 'h-4 w-4 text-iris-400'),
-                  ],
-                ),
+                if (link.children.isEmpty)
+                  a(
+                    href: link.href,
+                    classes: 'flex items-center justify-between border-b '
+                        'border-ink-800 py-4 font-display text-lg '
+                        'font-semibold '
+                        '${_isActive(link.href) ? 'text-iris-300' : 'text-ink-100'}',
+                    attributes:
+                        _isActive(link.href) ? {'aria-current': 'page'} : null,
+                    onClick: () => context
+                        .read(navMenuControllerProvider.notifier)
+                        .close(),
+                    [
+                      Component.text(link.label),
+                      AppIcons.arrowUpRight(classes: 'h-4 w-4 text-iris-400'),
+                    ],
+                  )
+                else ...[
+                  p(
+                    classes: 'type-eyebrow border-b border-ink-800 pb-3 pt-6 '
+                        'font-mono text-ink-500',
+                    [Component.text(link.label)],
+                  ),
+                  for (final child in link.children)
+                    a(
+                      href: child.href,
+                      classes: 'flex items-center justify-between border-b '
+                          'border-ink-800 py-4 pl-4 font-display text-lg '
+                          'font-semibold '
+                          '${_isActive(child.href) ? 'text-iris-300' : 'text-ink-100'}',
+                      attributes: _isActive(child.href)
+                          ? {'aria-current': 'page'}
+                          : null,
+                      onClick: () => context
+                          .read(navMenuControllerProvider.notifier)
+                          .close(),
+                      [
+                        Component.text(child.label),
+                        AppIcons.arrowUpRight(
+                          classes: 'h-4 w-4 text-iris-400',
+                        ),
+                      ],
+                    ),
+                ],
               div(
                 classes: 'mt-6 flex items-center gap-3',
                 [
@@ -175,6 +262,130 @@ class _NavBarView extends StatelessComponent {
               ),
             ],
           ),
+      ],
+    );
+  }
+
+  /// A tab that opens a panel instead of navigating.
+  ///
+  /// ## No document listeners
+  ///
+  /// Click-outside is handled by a full-bleed transparent `<button>` rendered
+  /// *behind* the panel while it is open, not by a listener on `document`.
+  /// That matters because this component is stateless — there is no dispose
+  /// hook to remove a global listener from, so one added here would accumulate
+  /// on every rebuild and keep firing after the menu was gone.
+  ///
+  /// Escape is handled on the wrapper, which works because focus is inside it
+  /// whenever the panel is open.
+  ///
+  /// ## Click, not hover
+  ///
+  /// A hover-opened menu has no equivalent on touch, opens by accident when
+  /// the pointer crosses it on the way somewhere else, and needs a close delay
+  /// tuned by feel. A click is unambiguous on every input, and the trigger
+  /// carries `aria-expanded` so the state is announced rather than only seen.
+  Component _dropdown(BuildContext context, NavItem item, String? openMenu) {
+    final expanded = openMenu == item.label;
+    final active = _isItemActive(item);
+    final panelId = 'nav-panel-${item.label.toLowerCase()}';
+
+    return div(
+      classes: 'relative',
+      events: {
+        'keydown': (event) {
+          // Only Escape. Everything else — arrows, typing — is left to the
+          // browser, which already moves focus through a list of links
+          // correctly.
+          if (event.type != 'keydown') return;
+          context.read(navDropdownControllerProvider.notifier).close();
+        },
+      },
+      [
+        button(
+          classes: 'nav-link inline-flex items-center gap-1.5 text-sm '
+              '${active ? 'nav-link-active' : 'link-line'}',
+          attributes: {
+            'type': 'button',
+            'aria-expanded': '$expanded',
+            'aria-haspopup': 'true',
+            'aria-controls': panelId,
+            if (active) 'aria-current': 'page',
+          },
+          onClick: () => context
+              .read(navDropdownControllerProvider.notifier)
+              .toggle(item.label),
+          [
+            Component.text(item.label),
+            span(
+              classes: 'transition-transform duration-300 ease-soft '
+                  '${expanded ? 'rotate-180' : ''}',
+              attributes: const {'aria-hidden': 'true'},
+              [AppIcons.chevronDown(classes: 'h-3.5 w-3.5')],
+            ),
+          ],
+        ),
+
+        if (expanded) ...[
+          // Catches a click anywhere else on the page. `aria-hidden` and
+          // `tabindex=-1`: a keyboard user closes with Escape or by tabbing
+          // past the panel, and a full-screen button in the tab order would
+          // be a control nobody can see.
+          button(
+            classes: 'fixed inset-0 z-40 cursor-default',
+            attributes: const {
+              'type': 'button',
+              'tabindex': '-1',
+              'aria-hidden': 'true',
+            },
+            onClick: () =>
+                context.read(navDropdownControllerProvider.notifier).close(),
+            [],
+          ),
+
+          div(
+            id: panelId,
+            classes: 'nav-panel absolute left-1/2 top-[calc(100%+1.25rem)] '
+                'z-50 w-72 -translate-x-1/2 border border-ink-700 '
+                'bg-ink-850 p-2 shadow-2xl shadow-ink-950/70',
+            [
+              for (final child in item.children)
+                a(
+                  href: child.href,
+                  classes: 'group block px-4 py-3 transition-colors '
+                      'duration-300 hover:bg-ink-800 '
+                      '${_isActive(child.href) ? 'bg-ink-800' : ''}',
+                  attributes: _isActive(child.href)
+                      ? {'aria-current': 'page'}
+                      : null,
+                  onClick: () => context
+                      .read(navDropdownControllerProvider.notifier)
+                      .close(),
+                  [
+                    span(
+                      classes: 'flex items-center justify-between gap-3 '
+                          'font-display text-sm font-bold '
+                          '${_isActive(child.href) ? 'text-iris-300' : 'text-ink-100'}',
+                      [
+                        Component.text(child.label),
+                        span(
+                          classes: 'text-iris-400 opacity-0 transition-all '
+                              'duration-300 ease-soft group-hover:opacity-100',
+                          attributes: const {'aria-hidden': 'true'},
+                          [AppIcons.arrow(classes: 'h-3.5 w-3.5')],
+                        ),
+                      ],
+                    ),
+                    span(
+                      classes: 'mt-1 block text-xs leading-relaxed '
+                          'text-ink-500',
+                      [Component.text(child.blurb)],
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ],
       ],
     );
   }
