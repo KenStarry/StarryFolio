@@ -1,105 +1,136 @@
-/// One role held, for the experience timeline on `/about`.
+import 'role_stint.dart';
+
+/// One **company**, and every title held there.
 ///
-/// [projectSlug] is the join between a job and the case study that came out of
-/// it. Where it is set the entry links straight through to
-/// `/projects/<slug>` — a CV line that can be clicked into a real build is
-/// worth more than the line on its own, and it keeps the two pages feeding
-/// each other rather than repeating each other.
+/// ## The shape changed, and the reason matters
 ///
-/// [draft] exists because a wrong date on a live portfolio is worse than an
-/// admitted one. While it is `true` the entry renders a quiet
-/// "dates to confirm" marker beside the period; clearing the flag removes it.
-/// It is the only content field that changes what the component says about
-/// itself, and it is meant to be temporary.
+/// This used to be one role at one company, which made a promotion
+/// indistinguishable from a new job: both rendered as sibling rows on the same
+/// timeline. That throws away the more flattering of the two facts. Staying
+/// somewhere and moving up is a different thing from leaving, and the model
+/// now says so — the entry is the employer, and [roles] is the progression
+/// inside it.
+///
+/// [period] and [kind] are derived from the stints rather than stored, so the
+/// company header cannot claim a range its own roles do not cover. Everything
+/// else about the company is carried here because it does not change when a
+/// title does: where the office is, which mark goes on the spine.
 ///
 /// `fromMap` parses defensively so this content can move behind a CMS without
 /// the page learning anything new.
 class ExperienceModel {
   const ExperienceModel({
     required this.slug,
-    required this.role,
     required this.company,
-    required this.period,
-    required this.summary,
+    required this.roles,
     this.location = '',
     this.kind = '',
-    this.highlights = const [],
-    this.stack = const [],
-    this.projectSlug,
-    this.current = false,
+    this.logo,
+    this.blurb = '',
     this.draft = false,
   });
 
   final String slug;
 
-  /// Job title, as it would read on a contract.
-  final String role;
-
   final String company;
 
-  /// Human range — `2023 — Present`. A string rather than two dates because it
-  /// is display copy: some roles overlap, some are open-ended, and a formatter
-  /// that has to model both ends up lying about one.
-  final String period;
-
-  /// Two or three sentences on what the job actually was.
-  final String summary;
+  /// Titles held here, **newest first**. One entry is an ordinary job; two or
+  /// more is a progression, and the surface renders it as one.
+  final List<RoleStint> roles;
 
   final String location;
 
-  /// `Full-time`, `Contract`, `Freelance`. Rendered as a small marker beside
-  /// the period.
+  /// `Full-time`, `Contract`, `Freelance`.
   final String kind;
 
-  /// What changed because of the work. Verbs, not responsibilities — a
-  /// responsibility list describes a job description, an outcome list
-  /// describes a person.
-  final List<String> highlights;
+  /// Path under `web/` to a monochrome company mark.
+  ///
+  /// Null renders a drawn monogram plate instead, which is deliberate rather
+  /// than a placeholder: a logo nobody has the rights to is worse than a
+  /// letter, and the two occupy the same box so dropping a file in later
+  /// changes nothing else on the page.
+  final String? logo;
 
-  final List<String> stack;
+  /// One line on what the company does, for readers who do not know it.
+  final String blurb;
 
-  /// Slug of the case study this role produced, if there is one.
-  final String? projectSlug;
-
-  /// The role held today. Lights the live dot and keeps the entry first.
-  final bool current;
-
-  /// The period is authored, not verified. See the class doc.
+  /// Company-level detail is authored rather than confirmed.
   final bool draft;
+
+  /// The full range across every stint — the earliest start to the latest end.
+  ///
+  /// Derived rather than stored. A company period held as its own field is a
+  /// second place for the same fact to live, and the first time a stint was
+  /// edited without it the header would have been quietly wrong. Roles are
+  /// newest first, so the range runs from the last one's start to the first
+  /// one's end.
+  String get period {
+    if (roles.isEmpty) return '';
+    if (roles.length == 1) return roles.first.period;
+    return '${roles.last.start} - ${roles.first.end}';
+  }
+
+  /// Total months across the whole tenure, or null when the dates cannot be
+  /// read. See [RoleStint.months] for why null beats a guess.
+  int? get months {
+    if (roles.isEmpty) return null;
+    return RoleStint(title: '', period: period).months;
+  }
+
+  /// `2 yrs 4 mos`, or null.
+  String? get duration =>
+      roles.isEmpty ? null : RoleStint(title: '', period: period).duration;
+
+  /// Whether this is where the work happens today.
+  bool get current => roles.any((role) => role.current);
+
+  /// Whether anything under this company still carries authored dates.
+  bool get hasDraft => draft || roles.any((role) => role.draft);
+
+  /// More than one title held here.
+  bool get isProgression => roles.length > 1;
+
+  /// Every case study produced here, across all titles, in order and without
+  /// repeats — a project worked on under two titles is still one project.
+  List<String> get projects {
+    final seen = <String>{};
+    return [
+      for (final role in roles)
+        for (final slug in role.projects)
+          if (seen.add(slug)) slug,
+    ];
+  }
+
+  /// The company's initial, for the monogram plate.
+  String get initial =>
+      company.isEmpty ? '·' : company.substring(0, 1).toUpperCase();
 
   factory ExperienceModel.fromMap(Map<String, dynamic> map) => ExperienceModel(
         slug: map['slug']?.toString() ?? '',
-        role: map['role']?.toString() ?? '',
         company: map['company']?.toString() ?? '',
-        period: map['period']?.toString() ?? '',
-        summary: map['summary']?.toString() ?? '',
         location: map['location']?.toString() ?? '',
         kind: map['kind']?.toString() ?? '',
-        highlights: _stringList(map['highlights']),
-        stack: _stringList(map['stack']),
-        projectSlug: map['projectSlug']?.toString(),
-        current: map['current'] == true,
+        logo: map['logo']?.toString(),
+        blurb: map['blurb']?.toString() ?? '',
         draft: map['draft'] == true,
+        roles: map['roles'] is List
+            ? (map['roles'] as List)
+                .whereType<Map<String, dynamic>>()
+                .map(RoleStint.fromMap)
+                .toList(growable: false)
+            : const [],
       );
 
   Map<String, dynamic> toMap() => {
         'slug': slug,
-        'role': role,
         'company': company,
-        'period': period,
-        'summary': summary,
         'location': location,
         'kind': kind,
-        'highlights': highlights,
-        'stack': stack,
-        if (projectSlug != null) 'projectSlug': projectSlug,
-        'current': current,
+        if (logo != null) 'logo': logo,
+        'blurb': blurb,
         'draft': draft,
+        'roles': [for (final role in roles) role.toMap()],
       };
-
-  static List<String> _stringList(Object? value) => value is List
-      ? value.map((e) => e.toString()).toList(growable: false)
-      : const [];
 
   @override
   bool operator ==(Object other) =>

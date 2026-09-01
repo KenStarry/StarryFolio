@@ -39,8 +39,18 @@ class AboutProfile {
 
   /// The role held today, if one is marked current.
   ExperienceModel? get currentRole {
-    for (final role in experience) {
-      if (role.current) return role;
+    for (final entry in experience) {
+      if (entry.current) return entry;
+    }
+    return null;
+  }
+
+  /// The title held today, across every company.
+  String? get currentTitle {
+    for (final entry in experience) {
+      for (final role in entry.roles) {
+        if (role.current) return role.title;
+      }
     }
     return null;
   }

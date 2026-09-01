@@ -89,7 +89,10 @@ class DocumentsPage extends AsyncStatelessComponent {
               path: RoutePaths.documents,
               employers: [
                 for (final role in profile.experience)
-                  (name: role.company, role: role.role),
+                  (
+                    name: role.company,
+                    role: role.roles.isEmpty ? '' : role.roles.first.title,
+                  ),
               ],
               education: [
                 for (final school in profile.education) school.institution,

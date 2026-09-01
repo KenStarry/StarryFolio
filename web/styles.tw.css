@@ -722,6 +722,289 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     EXPERIENCE
+
+     Not a timeline. A timeline was the first instinct and it was wrong: a rule
+     running down three screens with paragraphs hanging off it is a CV with
+     better spacing, and this site is not trying to be a CV.
+
+     What replaced it is the shape the rest of the site already uses for its
+     strongest content — the full-width band, one per subject, alternating
+     tone, with the ghost wordmark behind it. A company is treated exactly the
+     way a flagship project is, because on a portfolio it is the same kind of
+     claim.
+
+     The band leads with **figures**, not prose. `3.1 → 4.1` over `Play Store
+     rating` is the same fact that used to be a bullet, and it survives being
+     scanned in a way the sentence never did.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── The career strip ────────────────────────────────────────────────────
+     One bar, each company holding its true share of the total span. It is the
+     one thing the old spine did well — sequence and duration at a glance —
+     kept, compressed into a single strip, and made proportional so the shape
+     of a career is legible before a word is read. Widths come from real
+     parsed months, so it cannot flatter. */
+  .span-bar {
+    @apply flex h-2 w-full overflow-hidden rounded-sm border border-ink-700
+           bg-ink-850;
+  }
+
+  .span-seg {
+    @apply h-full;
+    background: color-mix(in oklab, var(--color-iris-500) 28%, transparent);
+    transition: background-color 0.45s var(--ease-soft);
+  }
+
+  .span-seg-now {
+    background: color-mix(in oklab, var(--color-iris-400) 72%, transparent);
+  }
+
+  .span-key {
+    @apply inline-flex items-baseline gap-2;
+  }
+
+  .span-key-dot {
+    @apply h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full bg-iris-500/40;
+  }
+
+  .span-key-dot-now {
+    @apply bg-iris-400;
+  }
+
+  /* ── The band ────────────────────────────────────────────────────────────
+     A company, full width, alternating ground. Same object as a project
+     showcase, which is the point: the page stops having two ideas of how
+     important work is presented. */
+  .xp-band {
+    @apply relative isolate overflow-hidden py-20 sm:py-24;
+  }
+
+  /* The company mark. Square, not round: every avatar on this site is a
+     circle, and a round logo box would read as a person. */
+  .xp-mark {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden
+           border border-ink-700 bg-ink-850;
+    transition: border-color 0.5s var(--ease-soft),
+                background-color 0.5s var(--ease-soft);
+  }
+
+  .xp-band:hover .xp-mark {
+    @apply bg-ink-800;
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+  }
+
+  .xp-monogram {
+    @apply font-display text-xl font-extrabold text-ink-500;
+    transition: color 0.5s var(--ease-soft);
+  }
+
+  .xp-band:hover .xp-monogram {
+    @apply text-iris-400;
+  }
+
+  /* ── Figures ─────────────────────────────────────────────────────────────
+     The band's centre of gravity. Set at stat scale on a hairline, so three
+     of them read as a row of evidence rather than as three more sentences. */
+  .xp-figure {
+    @apply border-t border-ink-700 pt-4;
+    transition: border-color 0.45s var(--ease-soft);
+  }
+
+  .xp-band:hover .xp-figure {
+    border-color: color-mix(in oklab, var(--color-iris-500) 35%, transparent);
+  }
+
+  .xp-figure-value {
+    @apply font-display text-2xl font-extrabold leading-none tracking-tight
+           text-ink-100 sm:text-3xl;
+  }
+
+  .xp-figure-label {
+    @apply mt-2.5 block text-xs leading-snug text-ink-500;
+  }
+
+  /* ── The progression ─────────────────────────────────────────────────────
+     Two titles, inline, with the promotion drawn as an arrow between them
+     rather than as two rows on a rule. It is one line instead of a nested
+     list, and it says the same thing more plainly. */
+  .xp-track {
+    @apply flex flex-wrap items-center gap-x-3 gap-y-2;
+  }
+
+  .xp-title {
+    @apply inline-flex items-center gap-2 border border-ink-700 bg-ink-850
+           px-3 py-1.5 text-xs text-ink-300;
+    transition: color 0.35s var(--ease-soft),
+                border-color 0.35s var(--ease-soft);
+  }
+
+  .xp-title-now {
+    @apply text-ink-100;
+    border-color: color-mix(in oklab, var(--color-iris-500) 50%, transparent);
+  }
+
+  .xp-arrow {
+    @apply shrink-0 text-iris-400;
+  }
+
+  /* ── Work ────────────────────────────────────────────────────────────────
+     The builds that came out of the company, as a strip of small cards. Small
+     on purpose: at full size they out-weigh the band and the job starts
+     reading as a caption for the work. */
+  .xp-work {
+    @apply flex items-center gap-4 border border-ink-700 bg-ink-850 p-3 pr-4;
+    transition: transform 0.45s var(--ease-soft),
+                border-color 0.45s var(--ease-soft),
+                background-color 0.45s var(--ease-soft);
+  }
+
+  .xp-work:hover {
+    @apply bg-ink-800;
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--color-iris-500) 50%, transparent);
+  }
+
+  .xp-work-thumb {
+    @apply relative flex h-14 w-20 shrink-0 items-center justify-center
+           overflow-hidden border border-ink-700 bg-ink-900;
+  }
+
+  .xp-work-thumb img {
+    @apply h-full w-full object-cover object-top;
+    transition: transform 0.6s var(--ease-soft);
+  }
+
+  .xp-work:hover .xp-work-thumb img {
+    transform: scale(1.06);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     CREDENTIAL PLATE
+
+     Education is presented as a **document**, not as a band. That is the
+     deliberate difference from the experience section directly above it: a job
+     is a body of evidence and gets a full-width band of figures; a credential
+     is a thing somebody signed, and gets a plate.
+
+     The language is the one `/documents` already established for the degree —
+     a double hairline frame, a mark embossed through the ground, ruled type
+     set centre. Two of them side by side read as a wall of framed
+     certificates, which is exactly what an education section is.
+
+     Nothing here is borrowed from `.card`. A credential that hovers and lifts
+     like a project tile reads as a link to somewhere, and these go nowhere.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .plate {
+    @apply relative isolate overflow-hidden border border-ink-700 bg-ink-850
+           px-7 py-10 text-center sm:px-9 sm:py-12;
+    transition: border-color 0.6s var(--ease-soft),
+                background-color 0.6s var(--ease-soft);
+  }
+
+  .plate:hover {
+    @apply bg-ink-800;
+    border-color: color-mix(in oklab, var(--color-iris-500) 38%, transparent);
+  }
+
+  /* The inner rule. Two frames rather than one, because a single border reads
+     as a card and two read as a document. */
+  .plate-frame {
+    @apply pointer-events-none absolute inset-3 border border-ink-700/50;
+    transition: border-color 0.6s var(--ease-soft);
+  }
+
+  .plate:hover .plate-frame {
+    border-color: color-mix(in oklab, var(--color-iris-500) 22%, transparent);
+  }
+
+  /* The mark embossed through the paper: sized past the plate and centred on
+     the text, the way a watermark actually sits. Barely there — it lies
+     directly under the credential line and has to stay felt rather than read. */
+  .plate-watermark {
+    @apply pointer-events-none absolute left-1/2 top-1/2 -z-10 h-72
+           -translate-x-1/2 -translate-y-1/2 text-ink-100/[0.045];
+    background-color: currentColor;
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  /* ── The seal ────────────────────────────────────────────────────────────
+     Drawn, not an image. Where an institution has no stencil cleared for use,
+     a ring carrying its initial is the honest substitute — and since it is
+     built from the palette it never looks like a logo that failed to load.
+
+     The ring is a conic gradient held to two stops so it reads as an engraved
+     rule rather than a spinner. */
+  .plate-seal {
+    @apply relative mx-auto flex h-16 w-16 items-center justify-center
+           rounded-full border border-ink-600;
+    transition: border-color 0.6s var(--ease-soft);
+  }
+
+  .plate:hover .plate-seal {
+    border-color: color-mix(in oklab, var(--color-iris-500) 55%, transparent);
+  }
+
+  /* The inner hairline, offset so the two rings read as a struck seal. */
+  .plate-seal::before {
+    content: "";
+    @apply absolute inset-1.5 rounded-full border border-ink-700;
+  }
+
+  .plate-seal-mark {
+    @apply font-display text-xl font-extrabold text-ink-400;
+    transition: color 0.6s var(--ease-soft);
+  }
+
+  .plate:hover .plate-seal-mark {
+    @apply text-iris-300;
+  }
+
+  /* The crest variant: same height, real mark painted through as a stencil.
+     The **width is set inline** from the crest's own aspect — it was fixed at
+     the MMUST lockup's 1.10 here, which letterboxed a portrait shield to
+     two-thirds the size every other mark is drawn at. Height stays in CSS so
+     every seal shares a baseline. */
+  .plate-seal-crest {
+    @apply h-16 border-0;
+    background-color: currentColor;
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    @apply text-ink-400;
+    transition: color 0.6s var(--ease-soft);
+  }
+
+  .plate-seal-crest::before {
+    content: none;
+  }
+
+  .plate:hover .plate-seal-crest {
+    @apply text-iris-300;
+  }
+
+  /* The year, set as the credential's date line: small caps, ruled either
+     side, the way a certificate dates itself. */
+  .plate-year {
+    @apply flex items-center justify-center gap-4 font-mono text-[11px]
+           uppercase tracking-[0.22em] text-ink-500;
+  }
+
+  .plate-year::before,
+  .plate-year::after {
+    content: "";
+    @apply h-px w-8 bg-ink-700;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      ADDRESS CHIP
 
      A live URL set as a small monospace plate above a section title.

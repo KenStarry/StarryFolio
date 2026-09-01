@@ -2,6 +2,7 @@ import '../../domain/enum/skill_level.dart';
 import '../../domain/model/about_profile.dart';
 import '../../domain/model/education_model.dart';
 import '../../domain/model/experience_model.dart';
+import '../../domain/model/role_stint.dart';
 import '../../domain/model/facet_model.dart';
 import '../../domain/model/milestone_model.dart';
 import '../../domain/model/process_step_model.dart';
@@ -48,77 +49,121 @@ abstract final class AboutLocalDatasource {
   // case study it produced.
 
   static const List<ExperienceModel> experience = [
+    // ── HealthX Africa ─────────────────────────────────────────────────────
+    //
+    // **The two stints are a scaffold.** The senior role's content is real;
+    // what is authored is the *split* — the March boundary and the junior
+    // stint under it. Both carry `draft: true`, so the page marks the dates
+    // until you correct them.
+    //
+    // Note the shape of the copy here: figures first, one line of prose, then
+    // only what a figure cannot carry. That is deliberate, and it is why this
+    // section stopped reading as a CV.
     ExperienceModel(
       slug: 'healthx',
-      role: 'Senior Flutter Engineer & UI/UX',
       company: 'HealthX Africa',
-      period: 'Jan 2026 - Present',
       kind: 'Full-time',
       location: 'Nairobi',
-      current: true,
-      projectSlug: 'healthx',
-      summary: 'Sole engineer and designer on Kenya\'s most comprehensive '
-          'telehealth platform. Research, brand, architecture, development, '
-          'QA and a dual-store release. If it shipped, it was me.',
-      highlights: [
-        'Zero to both stores in under three months',
-        'Product UI/UX across 10+ feature modules, with no designer or PM',
-        'Established the company brand identity, now used company-wide',
-        'Feature-driven Clean Architecture on Riverpod 3',
-        'Real-time video consultations on LiveKit, e-pharmacy, biometric auth',
-        'Kenya DPA 2019 compliance, staged rollouts, TestFlight betas',
-      ],
-      stack: [
-        'Flutter',
-        'Riverpod 3',
-        'LiveKit',
-        'Clean Architecture',
-        'Hive',
+      blurb: "Kenya's most comprehensive telehealth platform.",
+      roles: [
+        RoleStint(
+          title: 'Senior Flutter Engineer & UI/UX',
+          period: 'Mar 2026 - Present',
+          current: true,
+          draft: true,
+          projects: ['healthx', 'healthx-portal'],
+          summary: 'Sole engineer and designer. Research, brand, architecture, '
+              'QA and a dual-store release. If it shipped, it was me.',
+          metrics: [
+            (value: '10+', label: 'feature modules'),
+            (value: '3 mos', label: 'zero to both stores'),
+            (value: '100%', label: 'of it mine'),
+          ],
+          highlights: [
+            'Set the company brand identity, now used company-wide',
+            'Live video consults on LiveKit, e-pharmacy, biometric auth',
+            'Kenya DPA 2019 compliance, staged rollouts, TestFlight betas',
+          ],
+          stack: [
+            'Flutter',
+            'Riverpod 3',
+            'LiveKit',
+            'Clean Architecture',
+            'Hive',
+          ],
+        ),
+        // TODO: replace with the real first role. Everything here is authored.
+        RoleStint(
+          title: 'Flutter Developer',
+          period: 'Jan 2026 - Mar 2026',
+          draft: true,
+          summary: 'Joined to build the mobile app, and ended up owning the '
+              'design system that came with it.',
+        ),
       ],
     ),
+
+    // ── Dentsu Kenya ───────────────────────────────────────────────────────
     ExperienceModel(
       slug: 'dentsu',
-      role: 'Flutter Developer',
       company: 'Dentsu Kenya',
-      period: 'Apr 2024 - Sep 2025',
       kind: 'Consultant',
       location: 'Nairobi',
-      projectSlug: 'britam-app',
-      summary: 'A full architectural rebuild of the legacy MyBritam insurance '
-          'platform. Insurance is the kind of work where a mistyped field has '
-          'a financial consequence, which does wonders for your attention to '
-          'detail.',
-      highlights: [
-        'Play Store rating from 3.1 to 4.1 through stability and UI/UX work',
-        '100% feature parity across Android, iOS and Web from one codebase',
-        'CI/CD on GitHub Actions and Azure DevOps, synchronised across three '
-            'platforms',
-        'Deep linking and real-time WebSocket updates',
-      ],
-      stack: [
-        'Flutter',
-        'Clean Architecture',
-        'GitHub Actions',
-        'Azure DevOps',
+      blurb: 'Global network agency, on the Britam Insurance account.',
+      roles: [
+        RoleStint(
+          title: 'Flutter Developer',
+          period: 'Apr 2024 - Sep 2025',
+          projects: ['britam-app', 'britam-portal'],
+          summary: 'A full architectural rebuild of the legacy MyBritam '
+              'platform. Insurance is where a mistyped field has a financial '
+              'consequence, which does wonders for your attention to detail.',
+          metrics: [
+            (value: '3.1 → 4.1', label: 'Play Store rating'),
+            (value: '100%', label: 'parity across 3 platforms'),
+            (value: '1', label: 'codebase for all of it'),
+          ],
+          highlights: [
+            'CI/CD on GitHub Actions and Azure DevOps, synchronised across '
+                'every platform',
+            'Deep linking and real-time WebSocket updates',
+          ],
+          stack: [
+            'Flutter',
+            'Clean Architecture',
+            'GitHub Actions',
+            'Azure DevOps',
+          ],
+        ),
       ],
     ),
+
+    // ── Podii Consultants ──────────────────────────────────────────────────
     ExperienceModel(
       slug: 'podii',
-      role: 'Flutter Developer',
       company: 'Podii Consultants',
-      period: 'May 2023 - Mar 2024',
       kind: 'Full-time',
       location: 'Nairobi',
-      projectSlug: 'elvs',
-      summary: 'Internal tooling, and my first real fight with the offline '
-          'problem. Building for people whose connectivity you simply cannot '
-          'assume changes what finished means.',
-      highlights: [
-        'ELVS Mobile: a business workflow app with role-based access control',
-        'Offline sync and state restoration on SQLite, built for data integrity '
-            'in low-connectivity environments',
+      blurb: 'Product engineering studio building for East African operators.',
+      roles: [
+        RoleStint(
+          title: 'Flutter Developer',
+          period: 'May 2023 - Mar 2024',
+          projects: ['elvs'],
+          summary: 'Internal tooling, and my first real fight with the offline '
+              'problem. Building for people whose connectivity you cannot '
+              'assume changes what finished means.',
+          metrics: [
+            (value: 'Offline', label: 'first, on SQLite'),
+            (value: 'RBAC', label: 'role-based access control'),
+          ],
+          highlights: [
+            'State restoration built for data integrity where the network '
+                'drops mid-write',
+          ],
+          stack: ['Flutter', 'Dart', 'SQLite'],
+        ),
       ],
-      stack: ['Flutter', 'Dart', 'SQLite'],
     ),
   ];
 
@@ -127,16 +172,48 @@ abstract final class AboutLocalDatasource {
   static const List<EducationModel> education = [
     EducationModel(
       slug: 'degree',
-      qualification: 'BSc Computer Science, First Class Honours',
+      kind: 'Degree',
+      qualification: 'BSc Computer Science',
+      honours: 'First Class Honours',
       institution: 'Masinde Muliro University of Science and Technology',
       period: '2024',
+      location: 'Kakamega',
+      // The crest is a stencil: alpha only, no colour, so `currentColor` is
+      // painted through it. See CLAUDE.md — it is the only way a two-colour
+      // third-party logo can enter a palette of two tones and no accent hue.
+      crest: 'images/mmust-crest.webp',
+      crestWidth: 512,
+      crestHeight: 464,
       // Kept straight. A credential is the one place on this site where
       // formality is the point, and a joke here would undercut the thing a
       // reader is being asked to take seriously.
       note: 'Four years of theory that still shows up in the work, usually at '
-          'the least convenient moment. Everything framework-shaped came '
-          'after, and keeps coming.',
+          'the least convenient moment.',
       focus: ['Algorithms', 'Systems', 'Databases', 'HCI'],
+    ),
+    EducationModel(
+      slug: 'starehe',
+      kind: 'Secondary',
+      qualification: 'Kenya Certificate of Secondary Education',
+      institution: "Starehe Boys' Centre and School",
+      period: '2016 - 2019',
+      location: 'Nairobi',
+      // A portrait shield, where the MMUST lockup is landscape. Both are
+      // stencils: alpha only, no colour, so `currentColor` paints through.
+      crest: 'images/starehe-crest.webp',
+      crestWidth: 430,
+      crestHeight: 512,
+      // No grade is claimed here on purpose. A result is a verifiable fact
+      // and this file is not the place to guess one — add it when it is to
+      // hand, or leave the credential to stand on the school's name.
+      //
+      // Nothing in this note is an achievement claim: Starehe's admissions
+      // policy is a matter of public record, and what it says about the four
+      // years is left for the reader to take or leave.
+      note: 'A national school that admits on merit and means, which is a '
+          'particular kind of company to keep at sixteen. Where the habit of '
+          'taking things apart started.',
+      focus: ['Mathematics', 'Physics', 'Computer Studies'],
     ),
   ];
 

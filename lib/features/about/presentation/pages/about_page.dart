@@ -12,10 +12,12 @@ import '../../../../core/presentation/components/section_rail.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/seo/page_meta.dart';
 import '../../../../core/seo/structured_data.dart';
+import '../../../projects/domain/model/project_model.dart';
 import '../../domain/model/about_profile.dart';
 import '../components/about_dossier.dart';
-import '../components/education_card.dart';
-import '../components/experience_entry.dart';
+import '../components/career_span.dart';
+import '../components/credential_plate.dart';
+import '../components/experience_band.dart';
 import '../components/facet_grid.dart';
 import '../components/milestone_spine.dart';
 import '../components/process_arc.dart';
@@ -59,15 +61,13 @@ class AboutPage extends AsyncStatelessComponent {
   Future<Component> build(BuildContext context) async {
     final result = await Locator.about.getProfile();
 
-    // Which project slugs actually have a page. A role can name a project that
-    // was never written up, and linking to a route the router never generated
-    // would ship a dead link.
-    final projects = await Locator.projects.getProjects();
-    final caseStudySlugs = projects
-        .getOrElse((_) => const [])
-        .where((item) => item.hasCaseStudy)
-        .map((item) => item.slug)
-        .toSet();
+    // The whole projects list, not just the slugs that have a page: the
+    // experience timeline shows a thumbnail and tagline for each build under
+    // the role that produced it, and `RoleWorkCard` guards its own link on
+    // `hasCaseStudy` — so a project named by a role but never written up
+    // renders as a plain row rather than a dead link.
+    final projectsResult = await Locator.projects.getProjects();
+    final projects = projectsResult.getOrElse((_) => const []);
 
     return result.fold(
       (error) => Component.fragment([
@@ -90,7 +90,10 @@ class AboutPage extends AsyncStatelessComponent {
           SchemaOrg.profilePage(
             employers: [
               for (final role in profile.experience)
-                (name: role.company, role: role.role),
+                (
+                  name: role.company,
+                  role: role.roles.isEmpty ? '' : role.roles.first.title,
+                ),
             ],
             education: [
               for (final school in profile.education) school.institution,
@@ -114,10 +117,7 @@ class AboutPage extends AsyncStatelessComponent {
           classes: 'rail-scope',
           [
             _Story(profile: profile),
-            _Experience(
-              profile: profile,
-              caseStudySlugs: caseStudySlugs,
-            ),
+            _Experience(profile: profile, projects: projects),
             _Education(profile: profile),
             _Skills(profile: profile),
             _Process(profile: profile),
@@ -222,38 +222,48 @@ class _Story extends StatelessComponent {
 }
 
 class _Experience extends StatelessComponent {
-  const _Experience({required this.profile, required this.caseStudySlugs});
+  const _Experience({required this.profile, required this.projects});
 
   final AboutProfile profile;
 
-  /// Project slugs with a generated case study page, so a role never links to
-  /// one that does not exist.
-  final Set<String> caseStudySlugs;
+  /// Every project, for resolving the slugs each role names.
+  final List<ProjectModel> projects;
 
   @override
   Component build(BuildContext context) {
-    return SectionBlock(
-      id: 'experience',
-      classes: 'relative tl-2',
-      eyebrow: 'Experience',
-      heading: 'Where the work',
-      headingTail: 'actually happened.',
-      children: [
-        if (profile.experience.isEmpty)
-          const ErrorNotice(message: 'No roles to show yet.')
-        else
-          div(
-            classes: 'mt-4',
-            [
-              for (final role in profile.experience)
-                ExperienceEntry(
-                  experience: role,
-                  caseStudySlugs: caseStudySlugs,
-                ),
-            ],
-          ),
-      ],
-    );
+    final entries = profile.experience;
+
+    return Component.fragment([
+      // The heading and the strip share a section; the companies do not.
+      //
+      // A band is full width and sets its own ground, so it cannot live inside
+      // `SectionBlock`'s centred container — nesting it there would put a
+      // max-width column around something whose whole point is to span. The
+      // heading section closes, and the bands follow as siblings.
+      SectionBlock(
+        id: 'experience',
+        classes: 'relative tl-2 !pb-12',
+        eyebrow: 'Experience',
+        heading: 'Where the work',
+        headingTail: 'actually happened.',
+        children: [
+          if (entries.isEmpty)
+            const ErrorNotice(message: 'No roles to show yet.')
+          else
+            CareerSpan(experience: entries),
+        ],
+      ),
+
+      for (final (i, entry) in entries.indexed)
+        ExperienceBand(
+          experience: entry,
+          projects: projects,
+          index: i + 1,
+          // The heading section sits on the base tone, so the first band
+          // raises to separate itself from it.
+          raised: i.isEven,
+        ),
+    ]);
   }
 }
 
@@ -271,9 +281,14 @@ class _Education extends StatelessComponent {
       eyebrow: 'Education',
       heading: 'The fundamentals',
       headingTail: 'that do not expire.',
+      // Newest first everywhere else on this page, and here too: the degree
+      // leads, secondary follows. A reader wants the most recent credential
+      // first, and the plates read left to right as time running backwards in
+      // exactly the way the experience bands do.
+      bodyClasses: 'grid gap-5 lg:grid-cols-2 lg:gap-6',
       children: [
         for (final school in profile.education)
-          EducationCard(education: school),
+          CredentialPlate(education: school),
       ],
     );
   }

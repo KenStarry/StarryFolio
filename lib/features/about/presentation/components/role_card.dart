@@ -10,6 +10,11 @@ import '../../domain/model/experience_model.dart';
 /// it* in about twenty words, where the prose version took a hundred and
 /// eighty and still had to be read in order.
 ///
+/// The entry is a *company* now rather than a single role, so the card leads
+/// with the most recent title held there. On the home band that is the right
+/// summary: four cards saying where the work happened and what he was called
+/// while it did, with the full progression one click away on `/about`.
+///
 /// It borrows the project cards' floating object — a real surface, a hairline,
 /// lift and accent on hover — but nothing else. A project card leads with a
 /// cover image; a role has no image, so the company's own initial is ghosted
@@ -64,7 +69,7 @@ class RoleCard extends StatelessComponent {
 
         p(
           classes: 'mt-1 text-xs leading-snug text-ink-400',
-          [Component.text(role.role)],
+          [Component.text(role.roles.isEmpty ? '' : role.roles.first.title)],
         ),
       ],
     );

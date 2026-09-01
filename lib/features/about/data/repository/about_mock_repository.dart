@@ -4,6 +4,7 @@ import '../../domain/enum/skill_level.dart';
 import '../../domain/model/about_profile.dart';
 import '../../domain/model/education_model.dart';
 import '../../domain/model/experience_model.dart';
+import '../../domain/model/role_stint.dart';
 import '../../domain/model/milestone_model.dart';
 import '../../domain/model/skill_group_model.dart';
 import '../../domain/model/skill_model.dart';
@@ -24,14 +25,24 @@ class AboutMockRepository implements AboutRepository {
     experience: [
       ExperienceModel(
         slug: 'placeholder',
-        role: 'Placeholder Engineer',
         company: 'Placeholder Co.',
-        period: '2024 - Present',
-        current: true,
-        summary: 'Stand-in copy so the timeline can be checked without real '
-            'content.',
-        highlights: ['One outcome', 'Another outcome'],
-        stack: ['Flutter'],
+        roles: [
+          RoleStint(
+            title: 'Placeholder Engineer',
+            period: 'Jan 2025 - Present',
+            current: true,
+            summary: 'Stand-in copy so the timeline can be checked without '
+                'real content.',
+            highlights: ['One outcome', 'Another outcome'],
+            stack: ['Flutter'],
+          ),
+          RoleStint(
+            title: 'Placeholder Junior',
+            period: 'Jan 2024 - Jan 2025',
+            summary: 'A second stint, so the progression spine and the '
+                'promotion marker are exercised too.',
+          ),
+        ],
       ),
     ],
     education: [

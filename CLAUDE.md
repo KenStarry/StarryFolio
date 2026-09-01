@@ -638,6 +638,96 @@ radios, and sibling selectors hide non-matching cards (`#pf-*` in
 would ship crawlers one category and hide the rest behind JS, which §0 forbids.
 Every card stays in the document; `display:none` is presentational.
 
+**An experience entry is a *company*, not a role.** `ExperienceModel` holds a
+list of `RoleStint`, which is what lets a promotion read as one title becoming
+another rather than as two jobs at the same place.
+
+**It is not a timeline, and it was one for exactly one iteration.** A rule down
+three screens with paragraphs hanging off it is a CV with better spacing. What
+that spine did well — sequence and duration at a glance — is now one
+proportional strip (`CareerSpan`), which freed each company to be a full-width
+band on alternating ground with the ghost wordmark behind it. A company is
+presented exactly as a flagship project is, because on a portfolio it is the
+same kind of claim.
+
+**Figures carry a band, not prose.** `RoleStint.metrics` is the row of numbers
+at stat scale, and it is why the section stopped reading as a CV: "Play Store
+rating from 3.1 to 4.1 through stability work" is a sentence carrying a number
+that every scanning reader skips, where `3.1 → 4.1` over `Play Store rating` is
+read in a glance. Nothing in `metrics` is new information — every value is
+lifted from copy already on the page. Two or three per role; the fourth figure
+is always the weakest.
+
+Three rules hold the rest together:
+
+- **The company period is derived, never stored.** It runs from the last
+  stint's start to the first one's end (roles are newest first). Held as its
+  own field it would be a second home for the same fact, and the first edit to
+  a stint would leave the header quietly wrong.
+- **Durations return `null` rather than a guess.** `RoleStint.months` parses
+  `Mar 2026`, `March 2026` or a bare year and gives up on anything else. A
+  duration is a number on a CV; an absent badge beats a wrong one. `Present`
+  resolves against the build date.
+- **The strip's widths are inline styles, not classes.** Tailwind's scanner
+  reads source literals, so a computed `w-[37%]` is purged. A percentage on the
+  element is the only correct way to size something from data.
+
+**Education is a plate, not a band.** The experience section presents a job as
+a body of evidence; a credential is a thing somebody signed, so it borrows the
+document language `/documents` already uses — double hairline frame, the mark
+embossed through the ground, type set centre, the date ruled either side. Two
+of them side by side read as a wall of framed certificates. Presenting both
+sections the same way would flatten the difference and make the page repeat
+itself.
+
+**An institution's mark is a stencil or it is a drawn seal.** `crest` points at
+an alpha-only image so `currentColor` paints through it — the same rule the
+degree crest follows. Where no mark is cleared for use, a ring carrying the
+institution's initial is drawn from the palette instead. That is deliberate,
+not a placeholder: a logo nobody has the rights to is worse than a letter, and
+a drawn seal never reads as an image that failed to load.
+
+**Regenerate a crest stencil with the documented formula and nothing else.**
+`alpha = existing alpha x (1 - luminance)`, Rec. 709 luminance, an alpha floor
+of ~34 to stop JPEG ringing engraving as haze, trimmed to its bounding box,
+long edge to 512, `cwebp -q 75 -alpha_q 45`. A gamma curve on the alpha was
+tried on the Starehe shield to lift its filled areas toward MMUST's linework
+profile and it is not worth it: it moved the clear area from 30% to 37% while
+visibly flattening the lion, which is the part worth keeping.
+
+**A filled crest and a linework crest will not have the same alpha profile,
+and that is fine.** MMUST is 53% clear because it is drawing; Starehe is 30%
+because it is a shield with fields in it. Both engrave correctly at watermark
+scale, which is the size that matters.
+
+**`crestWidth`/`crestHeight` are fields, and the box derives its width from
+them.** The same rule as `ProjectModel.mockupWidth/Height`: shape is data, not
+an assumption. The seal and the watermark each fix a *height* and compute
+width, so a landscape lockup and a portrait shield sit on one baseline the way
+seals on a page do. The width used to be hard-coded to MMUST's 1.10, which
+letterboxed a portrait crest to two-thirds the size every other mark is drawn
+at.
+
+**The mask URL is an inline `style`, never a class.** It varies per
+institution, and Tailwind's scanner reads source literals, so a class built by
+interpolation is purged. Positioning and sizing stay in CSS; only the URL is
+inline.
+
+**`honours` is its own field.** Run into `qualification` it reads as an
+unusually long degree title and the grade disappears into the middle of it.
+
+**Never claim a grade that is not to hand.** The Starehe entry names the school
+and says nothing about a result, because a result is a verifiable fact and this
+repo is not the place to guess one.
+
+**Never `@apply` a named group.** `group/w` is a marker Tailwind reads off the
+markup to scope `group-hover/w:` on descendants — it generates no rule, so
+`@apply group/w` fails the build with `Cannot apply unknown utility class`.
+That surfaces through `jaspr_tailwind` as `PathNotFoundException: web/styles.css`,
+which looks exactly like the missing-binary symptom and sends you to the wrong
+place. Run `tailwindcss -i web/styles.tw.css -o /tmp/out.css` to see the real
+error.
+
 **Works splits into collections, and a collection is a *view* rather than a
 fourth property.** `ProjectCollection` holds a predicate over the axes that
 already exist, so nothing on `ProjectModel` records which collection it is in:
