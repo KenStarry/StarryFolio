@@ -260,6 +260,61 @@ table reads `ProjectsLocalDatasource.caseStudySlugs`, because static generation 
 enumerate every page synchronously before any async work runs. A project with no `features`
 and no `modules` has no case study written, so it gets no route and cannot be linked to.
 
+#### Mockups: the rules that keep biting
+
+**`mockupImage`, not `coverImage`.** A cover is cropped to fill its box and
+keeps whatever backdrop the file carries. A mockup is a *transparent* render
+placed on the section's own ground with the accent bloom behind it. Every
+project here uses a mockup; the one time a cover was used, the card sat on a
+flat studio grey belonging to no palette on this site.
+
+**Key the backdrop out before converting.** Figma laptop and phone renders
+export onto a flat `#444444` studio ground. Flood fill from the corners rather
+than matching the colour globally, so the device's own dark greys stay opaque,
+and let alpha rise with distance from the backdrop so the cast shadow survives
+as a soft edge instead of a hard cutout:
+
+```python
+mark = im.copy()
+for xy in [(0,0), (w-1,0), (0,h-1), (w-1,h-1)]:
+    ImageDraw.floodfill(mark, xy, SENTINEL, thresh=26)
+# inside the filled region: alpha = clamp((68 - luminance) * 3)
+```
+
+Then `cwebp -q 84 -alpha_q 90 -resize 1400 0`. Check the result with
+`sips -g hasAlpha` before wiring it in.
+
+**Shape is a field, not an assumption.** `ProjectModel.mockupWidth/Height` and
+`ProjectFeature.imageWidth/Height` default to the portrait phone render
+(914×1200) every project used until the HealthX Portal arrived with a 4:3
+laptop. Two things read them:
+
+- The `width`/`height` attributes, so the browser reserves the right box.
+  Hardcoded phone values on a landscape image cause layout shift this site
+  otherwise does not have.
+- `ProjectModel.isWideMockup`, which switches treatments. A portrait render is
+  overscaled past its frame and bottom-anchored so the device reads large;
+  doing that to a landscape render **crops the top of the screen off**. Wide
+  renders are contained and centred instead, take the larger half of the case
+  study hero split (`0.78fr_1.22fr`), fill their column and scale past it.
+
+**A feature with an image is a spotlight; without one it is a footnote.**
+`ProjectDetailPage` splits `features` into `_shots` (image present, full
+alternating band) and `_notes` (no image, a small text block at the foot of the
+page). Adding an image promotes a feature between these silently, so check
+which treatment you meant. Alternation is automatic on `index.isOdd` and needs
+no per-feature flag.
+
+**Scope datasource edits to the project, never to the label.** `Consult`,
+`Pharmacy` and `Records` appear both as HealthX app modules and as Portal
+features. Slice the file between `slug: '<this>'` and the next `slug:` before
+matching, and assert the marker occurs exactly once inside that slice.
+
+**Content lives on exactly one page.** The Portal was once a module inside the
+HealthX case study *and* its own project entry. Promoting it to a case study
+meant moving that content, not copying it: the same words on two pages is
+duplication, not depth.
+
 #### The three axes — keep them separate
 
 A project is described on three independent axes. They answer different questions, and

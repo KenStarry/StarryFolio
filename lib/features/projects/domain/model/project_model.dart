@@ -31,6 +31,8 @@ class ProjectModel {
     this.featured = false,
     this.coverImage,
     this.mockupImage,
+    this.mockupWidth = 914,
+    this.mockupHeight = 1200,
     this.applicationCategory,
     this.ogCard,
   });
@@ -151,6 +153,22 @@ class ProjectModel {
   /// own silhouette and must sit unframed on the section ground.
   final String? mockupImage;
 
+  /// Intrinsic pixels of [mockupImage], defaulting to the portrait phone
+  /// render most projects use.
+  ///
+  /// Two things read this. The `width`/`height` attributes come from it, so
+  /// the browser reserves the right box before the file lands. And
+  /// [isWideMockup] switches `ProjectCover` between two treatments, because a
+  /// laptop and a phone cannot share one: the phone treatment overscales past
+  /// the frame and anchors to the bottom, which on a landscape render clips
+  /// the top of the screen clean off.
+  final int mockupWidth;
+  final int mockupHeight;
+
+  /// Whether the mockup is wider than it is tall, i.e. a desktop or tablet
+  /// render rather than a phone.
+  bool get isWideMockup => mockupWidth > mockupHeight;
+
   /// Purpose-built 1200x630 share card, as a path under `web/`.
   ///
   /// **JPEG, never WebP.** Several scrapers, LinkedIn's among them, will not
@@ -216,6 +234,8 @@ class ProjectModel {
         },
         coverImage: map['coverImage']?.toString(),
         mockupImage: map['mockupImage']?.toString(),
+        mockupWidth: int.tryParse(map['mockupWidth']?.toString() ?? '') ?? 914,
+        mockupHeight: int.tryParse(map['mockupHeight']?.toString() ?? '') ?? 1200,
         featured: map['featured'] == true,
         applicationCategory: map['applicationCategory']?.toString(),
         ogCard: map['ogCard']?.toString(),
@@ -241,6 +261,8 @@ class ProjectModel {
         'ogCard': ogCard,
         'coverImage': coverImage,
         'mockupImage': mockupImage,
+        'mockupWidth': mockupWidth,
+        'mockupHeight': mockupHeight,
         'featured': featured,
       };
 

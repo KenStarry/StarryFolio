@@ -13,6 +13,8 @@ class ProjectFeature {
     required this.description,
     this.points = const [],
     this.image,
+    this.imageWidth = 914,
+    this.imageHeight = 1200,
   });
 
   /// Short eyebrow — the area of the product this belongs to.
@@ -25,9 +27,20 @@ class ProjectFeature {
   /// not documentation.
   final List<String> points;
 
-  /// Path under `web/` to a transparent device render. Null renders the
-  /// spotlight as a text-only band rather than leaving an empty column.
+  /// Path under `web/` to a device render. Null renders the spotlight as a
+  /// text-only band rather than leaving an empty column.
   final String? image;
+
+  /// Intrinsic pixels of [image], defaulting to the portrait phone render most
+  /// spotlights use.
+  ///
+  /// These become the `width`/`height` attributes, which is how the browser
+  /// reserves the right box before the file arrives. Leaving the phone default
+  /// on a landscape laptop shot makes the page reserve a tall column and then
+  /// reflow when the image loads, which is layout shift the site otherwise
+  /// does not have.
+  final int imageWidth;
+  final int imageHeight;
 
   factory ProjectFeature.fromMap(Map<String, dynamic> map) => ProjectFeature(
         label: map['label']?.toString() ?? '',
@@ -38,6 +51,8 @@ class ProjectFeature {
           _ => const [],
         },
         image: map['image']?.toString(),
+        imageWidth: int.tryParse(map['imageWidth']?.toString() ?? '') ?? 914,
+        imageHeight: int.tryParse(map['imageHeight']?.toString() ?? '') ?? 1200,
       );
 
   Map<String, dynamic> toMap() => {
@@ -46,5 +61,7 @@ class ProjectFeature {
         'description': description,
         'points': points,
         if (image != null) 'image': image,
+        'imageWidth': imageWidth,
+        'imageHeight': imageHeight,
       };
 }

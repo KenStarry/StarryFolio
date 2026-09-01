@@ -141,11 +141,11 @@ class ProjectFeatureSpotlight extends StatelessComponent {
               src: '/$image',
               alt: '${feature.title}, ${feature.label}',
               // Spotlights are always below the fold on a case study.
-              attributes: const {
+              attributes: {
                 'loading': 'lazy',
                 'decoding': 'async',
-                'width': '914',
-                'height': '1200',
+                'width': '${feature.imageWidth}',
+                'height': '${feature.imageHeight}',
               },
               classes: 'showcase-device relative w-full '
                   '${muted ? 'max-w-[15rem] opacity-90 lg:max-w-xs' : 'max-w-sm lg:max-w-md'}',

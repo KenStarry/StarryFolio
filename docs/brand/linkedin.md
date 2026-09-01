@@ -49,7 +49,7 @@ a lot. I remain unbothered.
 
 Shipped and on the stores: HealthX (telehealth, Android and iOS), Flow Music
 Player (offline music, endlessly tunable and genuinely pretty), RezQ (resume
-right way round), and work for Britam and Podii.
+building, the right way round), and work for Britam and Podii.
 
 Open source: flutter_extend, a Dart extension library with 37 extensions, 80
 tests and 13 releases of continuous maintenance.

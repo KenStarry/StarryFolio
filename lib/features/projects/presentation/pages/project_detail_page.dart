@@ -173,8 +173,11 @@ class _Hero extends StatelessComponent {
             ),
 
             div(
+              // A phone render is happy in the narrower column; a laptop is
+              // not. Landscape mockups take the larger half so the device
+              // leads the hero rather than sitting beside it as a garnish.
               classes: 'mt-10 grid items-center gap-14 lg:gap-16 '
-                  '${mockup == null ? '' : 'lg:grid-cols-[1fr_0.9fr]'}',
+                  '${mockup == null ? '' : (project.isWideMockup ? 'lg:grid-cols-[0.78fr_1.22fr]' : 'lg:grid-cols-[1fr_0.9fr]')}',
               [
                 div(
                   classes: 'reveal',
@@ -241,11 +244,11 @@ class _Hero extends StatelessComponent {
                   div(
                     classes: 'reveal relative flex items-center justify-center',
                     [
-                      const div(
+                      div(
                         classes: 'bloom pointer-events-none absolute inset-0 '
-                            '-m-12',
-                        attributes: {'aria-hidden': 'true'},
-                        [],
+                            '${project.isWideMockup ? '-m-20' : '-m-12'}',
+                        attributes: const {'aria-hidden': 'true'},
+                        const [],
                       ),
                       div(
                         classes: 'pointer-events-none absolute inset-0 flex '
@@ -255,14 +258,20 @@ class _Hero extends StatelessComponent {
                       img(
                         src: '/$mockup',
                         alt: '${project.name}, ${project.tagline}',
-                        attributes: const {
+                        attributes: {
                           'decoding': 'async',
                           'fetchpriority': 'high',
-                          'width': '914',
-                          'height': '1200',
+                          'width': '${project.mockupWidth}',
+                          'height': '${project.mockupHeight}',
                         },
-                        classes: 'showcase-device relative w-full max-w-sm '
-                            'lg:max-w-md',
+                        // A landscape render at a portrait render's width
+                        // reads much smaller: same box, far less height. So a
+                        // wide mockup takes the whole column and is allowed to
+                        // bleed past it, which is what makes the hero read as
+                        // a device shot rather than a text block with a
+                        // picture next to it.
+                        classes: 'showcase-device relative w-full '
+                            '${project.isWideMockup ? 'max-w-none lg:scale-[1.18] lg:origin-left' : 'max-w-sm lg:max-w-md'}',
                       ),
                     ],
                   ),

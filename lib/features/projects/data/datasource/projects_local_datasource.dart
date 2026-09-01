@@ -90,7 +90,7 @@ abstract final class ProjectsLocalDatasource {
               'Toll-free fallback when the connection will not hold a video call',
             ],
             image: 'images/healthx-mockup.webp',
-          ),
+        ),
           ProjectFeature(
             label: 'Pharmacy',
             title: 'Photograph the script. Track the box.',
@@ -103,7 +103,7 @@ abstract final class ProjectsLocalDatasource {
               'Reorder from any past prescription in two taps',
             ],
             image: 'images/healthx-mockup.webp',
-          ),
+        ),
           ProjectFeature(
             label: 'Appointments',
             title: 'Booking that survives a bad signal.',
@@ -129,7 +129,7 @@ abstract final class ProjectsLocalDatasource {
               'Shareable receipts without a round trip to the server',
             ],
             image: 'images/healthx-mockup.webp',
-          ),
+        ),
   ],
         ),
         ProjectModule(
@@ -177,48 +177,6 @@ abstract final class ProjectsLocalDatasource {
                 'Urgent clinical signals still reach you inside Bloom',
                 'Auth is byte-for-byte identical across both worlds',
               ],
-            ),
-          ],
-        ),
-        ProjectModule(
-          name: 'Portal',
-          kind: 'Surface',
-          tagline: 'The same care, on a bigger screen.',
-          blurb: 'The clinical half again, in the browser. Not a cut-down '
-              'companion: the same consultations, the same pharmacy, the same '
-              'records, for the moments a phone is simply the wrong tool. Bloom '
-              'stays on mobile, where a reflective habit belongs.',
-          accent: '#E9552B',
-          badge: 'Web',
-          surfaces: ['Consult', 'Pharmacy', 'Orders', 'Records'],
-          features: [
-            ProjectFeature(
-              label: 'Consult',
-              title: 'Take the call at a desk.',
-              description: 'The same consultation, joined from a laptop, '
-                  'useful when you need to take notes, or when the person who '
-                  'books the appointment is not the person attending it.',
-            ),
-            ProjectFeature(
-              label: 'Pharmacy',
-              title: 'A prescription is easier to read at full size.',
-              description: 'Uploading from a desktop means a scanned script '
-                  'rather than a photograph of one, and a basket that is far '
-                  'quicker to assemble with a keyboard.',
-            ),
-            ProjectFeature(
-              label: 'Orders',
-              title: 'A wide screen is a better dashboard.',
-              description: 'Order history, delivery status and repeat orders '
-                  'laid out at once instead of paged through, the view that '
-                  'suits someone managing care for a whole household.',
-            ),
-            ProjectFeature(
-              label: 'Records',
-              title: 'Read it, print it, keep it.',
-              description: 'The same record the app holds, in a form you can '
-                  'actually print or hand to a clinic that still runs on '
-                  'paper.',
             ),
           ],
         ),
@@ -572,17 +530,119 @@ abstract final class ProjectsLocalDatasource {
       slug: 'healthx-portal',
       name: 'HealthX Customer Portal',
       tagline: 'Consultations and prescriptions, no download required.',
-      year: '',
+      year: '2026',
       status: ProjectStatus.shipped,
       category: ProjectCategory.enterprise,
       client: 'HealthX Africa',
       platforms: [ProjectPlatform.web],
-      stack: [],
+      // `mockupImage`, not `coverImage`. A cover is cropped to fill its box and
+      // keeps whatever backdrop the file carries, which is why this card used
+      // to sit on a flat studio grey that belongs to no palette here. A mockup
+      // is a transparent render placed on the section's own ground with the
+      // accent bloom behind it, which is what RezQ, Flow and the app all use.
+      // It also gives the case study hero its device.
+      mockupImage: 'images/healthx-portal-signin.webp',
+      // Landscape, unlike every other mockup here, which is what flips
+      // `ProjectCover` to the contained treatment.
+      mockupWidth: 1400,
+      mockupHeight: 1050,
+      // The same stack as the app, because it is the same product: the portal
+      // is the web build, not a separate codebase.
+      stack: [
+        'Flutter Web',
+        'Riverpod 3',
+        'GoRouter',
+        'Dio',
+        'Clean Architecture',
+      ],
       summary: [
         'The browser counterpart to the HealthX app: consultations, '
             'prescriptions, orders and health records for people who would '
             'rather not install anything, or who are reaching for a laptop '
             'rather than a phone.',
+        'Not a cut-down companion. The same consultations, the same pharmacy, '
+            'the same records, for the moments a phone is simply the wrong '
+            'tool. Bloom stays on mobile, where a reflective habit belongs.',
+        'The interesting constraint is that a portal is where the household '
+            'shows up. Someone managing care for a parent does it at a desk, '
+            'with a keyboard, in a tab they leave open. That is a different '
+            'posture from the app, and it changes what belongs on screen at '
+            'once.',
+      ],
+      // Lifted wholesale out of the HealthX app case study, where these four
+      // were a `Portal` module. The same content rendering on two pages is
+      // duplication, not depth: the app case study now points here instead,
+      // and this is the page that owns the browser surface.
+      features: [
+        // ─────────────────────────────────────────────────────────────
+        // Each spotlight is meant to carry its own render. Two exist so
+        // far; the rest are written and waiting on images. To add one, drop
+        // the transparent export in `web/images/` and uncomment its `image`
+        // line. **Key the studio backdrop out first** or the card picks up a
+        // grey that belongs to no palette here.
+        //
+        //   healthx-portal-consult.webp
+        //   healthx-portal-pharmacy.webp
+        //   healthx-portal-orders.webp
+        //   healthx-portal-records.webp
+        // ─────────────────────────────────────────────────────────────
+        ProjectFeature(
+          label: 'Consult',
+          title: 'Take the call at a desk.',
+          description: 'The same consultation, joined from a laptop, useful '
+              'when you need to take notes, or when the person who books the '
+              'appointment is not the person attending it.',
+          // image: 'images/healthx-portal-consult.webp',
+          // imageWidth: 1400, imageHeight: 1050,
+          // PLACEHOLDER, standing in until the real render lands.
+          // Replace with healthx-portal-consult.webp and key the
+          // studio backdrop out first, or the card picks up a grey that
+          // belongs to no palette here.
+          image: 'images/healthx-portal-home.webp',
+          imageWidth: 1400,
+          imageHeight: 1050,
+        ),
+        ProjectFeature(
+          label: 'Pharmacy',
+          title: 'A prescription is easier to read at full size.',
+          description: 'Uploading from a desktop means a scanned script '
+              'rather than a photograph of one, and a basket that is far '
+              'quicker to assemble with a keyboard.',
+          // PLACEHOLDER, standing in until the real render lands.
+          // Replace with healthx-portal-pharmacy.webp and key the
+          // studio backdrop out first, or the card picks up a grey that
+          // belongs to no palette here.
+          image: 'images/healthx-portal-signin.webp',
+          imageWidth: 1400,
+          imageHeight: 1050,
+        ),
+        ProjectFeature(
+          label: 'Orders',
+          title: 'A wide screen is a better dashboard.',
+          description: 'Order history, delivery status and repeat orders laid '
+              'out at once instead of paged through, the view that suits '
+              'someone managing care for a whole household.',
+          // PLACEHOLDER, standing in until the real render lands.
+          // Replace with healthx-portal-orders.webp and key the
+          // studio backdrop out first, or the card picks up a grey that
+          // belongs to no palette here.
+          image: 'images/healthx-portal-home.webp',
+          imageWidth: 1400,
+          imageHeight: 1050,
+        ),
+        ProjectFeature(
+          label: 'Records',
+          title: 'Read it, print it, keep it.',
+          description: 'The same record the app holds, in a form you can '
+              'actually print or hand to a clinic that still runs on paper.',
+          // PLACEHOLDER, standing in until the real render lands.
+          // Replace with healthx-portal-records.webp and key the
+          // studio backdrop out first, or the card picks up a grey that
+          // belongs to no palette here.
+          image: 'images/healthx-portal-signin.webp',
+          imageWidth: 1400,
+          imageHeight: 1050,
+        ),
       ],
       links: [
         AppLink(

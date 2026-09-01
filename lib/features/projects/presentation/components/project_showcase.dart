@@ -171,14 +171,16 @@ class ProjectShowcase extends StatelessComponent {
                 alt: '${project.name}, ${project.tagline}',
                 // The featured mockup is the largest paint on this page and
                 // sits near the fold, so it is loaded eagerly and prioritised.
-                // Intrinsic ratio only — the browser needs *a* ratio to
-                // reserve space and avoid a layout shift, and every mockup is
-                // authored to the same 4:5 crop.
-                attributes: const {
+                // Intrinsic ratio only: the browser needs *a* ratio to
+                // reserve space and avoid a layout shift. It comes from the
+                // model rather than a constant because mockups are no longer
+                // all the same shape, a laptop render being 4:3 landscape
+                // where a phone is 4:5 portrait.
+                attributes: {
                   'decoding': 'async',
                   'fetchpriority': 'high',
-                  'width': '914',
-                  'height': '1200',
+                  'width': '${project.mockupWidth}',
+                  'height': '${project.mockupHeight}',
                 },
                 classes: 'showcase-device relative w-full '
                     '${compact ? 'max-w-md lg:max-w-xl' : 'max-w-md lg:max-w-lg'}',

@@ -55,13 +55,26 @@ class ProjectCover extends StatelessComponent {
               img(
                 src: '/$mockup',
                 alt: '${project.name}, ${project.tagline}',
-                attributes: const {'loading': 'lazy', 'decoding': 'async'},
-                // Overscaled past the box height and bottom-anchored, so the
-                // devices read large and the frame crops their base rather
-                // than letterboxing them into a small centred thumbnail.
-                classes: 'h-[126%] w-full translate-y-[6%] object-contain '
-                    'object-bottom transition-transform duration-700 '
-                    'ease-soft group-hover:translate-y-[2%]',
+                attributes: {
+                  'loading': 'lazy',
+                  'decoding': 'async',
+                  'width': '${project.mockupWidth}',
+                  'height': '${project.mockupHeight}',
+                },
+                // Two treatments, because a phone and a laptop do not share
+                // one. A portrait render is overscaled past the box and
+                // anchored to the bottom, so the devices read large and the
+                // frame crops their base rather than letterboxing them into a
+                // small centred thumbnail. Doing that to a landscape render
+                // crops the top of the screen off instead, so a wide mockup is
+                // contained and centred with room to breathe.
+                classes: project.isWideMockup
+                    ? 'h-full w-full scale-[0.92] object-contain object-center '
+                        'transition-transform duration-700 ease-soft '
+                        'group-hover:scale-[0.96]'
+                    : 'h-[126%] w-full translate-y-[6%] object-contain '
+                        'object-bottom transition-transform duration-700 '
+                        'ease-soft group-hover:translate-y-[2%]',
               ),
             ],
           ),
