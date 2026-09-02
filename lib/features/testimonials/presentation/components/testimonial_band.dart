@@ -56,13 +56,16 @@ class TestimonialBand extends StatelessComponent {
     final others = testimonials.length - 1;
 
     return section(
-      classes: 'relative overflow-hidden bg-ink-800 py-24 sm:py-32',
+      classes: 'relative isolate overflow-hidden bg-ink-800 py-24 sm:py-32',
       [
+        // Was `small` and hung bottom-right, from before the home page's
+        // ghosts became a wayfinding system. Normalised: every band below the
+        // hero now names its destination from the same corner at the same
+        // scale, and `Said` is what `/testimonials` ghosts on its own header.
         const GhostText(
           'Said',
-          size: GhostSize.small,
           faint: true,
-          classes: 'absolute -bottom-8 right-0',
+          classes: GhostText.bandCorner,
         ),
 
         div(

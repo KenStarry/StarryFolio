@@ -40,6 +40,7 @@ class ServicesSection extends StatelessComponent {
     return SectionBlock(
       id: 'services',
       eyebrow: 'Services',
+      ghost: 'Services',
       heading: 'What I do,\nand how far in.',
       tone: SectionTone.raised,
       lead: 'Six things people hire me for, usually several at once, which '

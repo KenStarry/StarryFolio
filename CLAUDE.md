@@ -594,6 +594,21 @@ merely tidy, and it is the pattern to reach for when a section needs depth:
 - **Anchored to something real.** It echoes the adjacent heading or name. A
   decorative word with no referent is just noise.
 
+**On the home page the motif is wayfinding, not just texture.** Every band
+below the hero ghosts the *name of the page it leads to* — About, Services,
+Said, Contact — and each destination's own `PageHeader` ghosts the same word,
+so the door and the room share a watermark. That only reads as a system if the
+placement never varies, which is why `GhostText.bandCorner` is a constant
+rather than a string retyped at each call site, and why `SectionBlock` takes a
+`ghost` parameter instead of every band positioning its own.
+
+**One ghost per band, and the stronger one wins.** The work band gets no
+wayfinding mark because `ProjectShowcase` already sets the featured project's
+name behind the device, which is the golden-standard use of the motif. Two
+faint marks in one band are two whispers where one statement is wanted, and
+the one that would lose is the better of the two. The hero is likewise exempt:
+its `Starry` is identity, centred behind the portrait, doing a different job.
+
 The footer wordmark is the same idea at page scale, and `PageHeader` carries it
 on every inner page — the page's own name bleeding off the bottom-left corner,
 sized in three steps by word length (`.ghost-title-lg/md/sm`), because one clamp

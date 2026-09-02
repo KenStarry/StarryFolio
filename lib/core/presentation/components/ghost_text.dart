@@ -40,6 +40,22 @@ class GhostText extends StatelessComponent {
     super.key,
   });
 
+  /// The canonical placement for a band's **wayfinding** ghost: hung off the
+  /// bottom-left corner and bleeding past it.
+  ///
+  /// On the home page every band below the hero carries one naming the page it
+  /// leads to, and each destination's own `PageHeader` ghosts the same word —
+  /// so the door and the room share a watermark. That only reads as a system
+  /// if the placement never varies, which is why it is a constant rather than
+  /// a string retyped at five call sites.
+  ///
+  /// A section using it needs `relative isolate overflow-hidden`: `isolate`
+  /// gives `-z-10` a stacking context to sit in rather than dropping the mark
+  /// behind the section's own background, and `overflow-hidden` is what does
+  /// the bleeding.
+  static const String bandCorner =
+      'absolute -bottom-6 -left-4 -z-10 sm:-left-8';
+
   final String text;
   final GhostSize size;
 

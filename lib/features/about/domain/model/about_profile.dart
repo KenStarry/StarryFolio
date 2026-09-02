@@ -1,7 +1,5 @@
 import 'education_model.dart';
 import 'experience_model.dart';
-import 'facet_model.dart';
-import 'milestone_model.dart';
 import 'process_step_model.dart';
 import 'skill_group_model.dart';
 
@@ -21,8 +19,6 @@ class AboutProfile {
     this.education = const [],
     this.skillGroups = const [],
     this.process = const [],
-    this.milestones = const [],
-    this.facets = const [],
   });
 
   /// Reverse-chronological. The first entry is the current role.
@@ -32,10 +28,7 @@ class AboutProfile {
   final List<SkillGroupModel> skillGroups;
   final List<ProcessStepModel> process;
 
-  /// Chronological — the spine reads downward as time moves forward.
-  final List<MilestoneModel> milestones;
 
-  final List<FacetModel> facets;
 
   /// The role held today, if one is marked current.
   ExperienceModel? get currentRole {

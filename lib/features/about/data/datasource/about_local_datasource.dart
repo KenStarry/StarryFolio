@@ -3,8 +3,6 @@ import '../../domain/model/about_profile.dart';
 import '../../domain/model/education_model.dart';
 import '../../domain/model/experience_model.dart';
 import '../../domain/model/role_stint.dart';
-import '../../domain/model/facet_model.dart';
-import '../../domain/model/milestone_model.dart';
 import '../../domain/model/process_step_model.dart';
 import '../../domain/model/skill_group_model.dart';
 import '../../domain/model/skill_model.dart';
@@ -18,7 +16,7 @@ import '../../domain/model/skill_model.dart';
 /// ─────────────────────────────────────────────────────────────────────────
 /// **The CV is the source of truth for this file.**
 ///
-/// [experience], [education], [skillGroups] and [milestones] are transcribed
+/// [experience], [education] and [skillGroups] are transcribed
 /// from `Kenneth_Michuki_Resume.pdf` — the same document served at
 /// `/cv.pdf` — so the page, the `/cv` route and the downloadable file cannot
 /// state three different careers. When the CV changes, change it here first
@@ -28,18 +26,12 @@ import '../../domain/model/skill_model.dart';
 /// `dates to confirm` marker rather than presenting a guess as a fact. The
 /// flags are gone because the dates are now real; the mechanism stays on the
 /// models for the next time something is authored ahead of being confirmed.
-///
-/// [facets] is the exception — it is the one band that is not about work, and
-/// the CV has nothing to say about it.
-/// ─────────────────────────────────────────────────────────────────────────
 abstract final class AboutLocalDatasource {
   static const AboutProfile profile = AboutProfile(
     experience: experience,
     education: education,
     skillGroups: skillGroups,
     process: process,
-    milestones: milestones,
-    facets: facets,
   );
 
   // ── Experience ───────────────────────────────────────────────────────────
@@ -334,74 +326,6 @@ abstract final class AboutLocalDatasource {
       artefact: 'Signed builds and a listing that converts',
       blurb: 'Release is a feature. Signing, rollouts and crash reporting '
           'wired before launch, not after the first bad review.',
-    ),
-  ];
-
-  // ── Milestones ───────────────────────────────────────────────────────────
-  //
-  // Chronological. The spine reads downward as time moves forward.
-
-  static const List<MilestoneModel> milestones = [
-    MilestoneModel(
-      year: '2019',
-      title: 'First widget tree',
-      note: 'Swapped a screenful of Android XML for it. Never went back.',
-    ),
-    MilestoneModel(
-      year: '2023',
-      title: 'Paid to write Dart',
-      note: 'Podii, and the offline problem, building for connectivity you '
-          'cannot assume.',
-    ),
-    MilestoneModel(
-      year: '2024',
-      title: 'First Class Honours',
-      note: 'BSc Computer Science, Masinde Muliro. Finished while shipping '
-          'insurance software full-time.',
-    ),
-    MilestoneModel(
-      year: '2025',
-      title: 'Three platforms, one codebase',
-      note: 'MyBritam on Android, iOS and Web, and a Play rating from 3.1 to '
-          '4.1.',
-    ),
-    MilestoneModel(
-      year: '2026',
-      title: 'Zero to both stores in three months',
-      note: 'HealthX, solo: research, brand, architecture, QA and release.',
-    ),
-  ];
-
-  // ── Beyond the code ──────────────────────────────────────────────────────
-
-  static const List<FacetModel> facets = [
-    FacetModel(
-      title: 'A side project I actually use',
-      icon: 'device',
-      marker: 'CribLynk',
-      blurb: 'Where framework opinions get tested against something I have to '
-          'live with.',
-    ),
-    FacetModel(
-      title: 'A camera roll full of UI',
-      icon: 'layers',
-      marker: 'Screenshots',
-      blurb: 'Sheet easings, empty states, transitions that landed. Polish is '
-          'stolen carefully.',
-    ),
-    FacetModel(
-      title: 'Teaching what I just learned',
-      icon: 'compass',
-      marker: 'Community',
-      blurb: 'Explaining a thing badly is how you find out you did not '
-          'understand it.',
-    ),
-    FacetModel(
-      title: 'Nairobi, and the light here',
-      icon: 'globe',
-      marker: 'UTC+3',
-      blurb: 'Building where a mid-range phone on two bars is the default, not '
-          'the edge case.',
     ),
   ];
 }

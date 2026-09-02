@@ -101,6 +101,24 @@ class ExperienceModel {
     ];
   }
 
+  /// The tenure as bare years — `2024 - 2025`, or `2026 - Now`.
+  ///
+  /// A ledger wants a column it can align, and `Apr 2024 - Sep 2025` is too
+  /// long to sit in one without wrapping or shrinking the type past reading
+  /// size. Months matter on `/about`, where the full band has room for them;
+  /// on a doorway the year is the whole useful fact.
+  ///
+  /// Falls back to [period] when there is no year to find, rather than
+  /// returning something confidently wrong.
+  String get yearSpan {
+    final years = RegExp(r'\d{4}').allMatches(period).map((m) => m.group(0)!);
+    if (years.isEmpty) return period;
+    final first = years.first;
+    if (current) return '$first - Now';
+    final last = years.last;
+    return first == last ? first : '$first - $last';
+  }
+
   /// The company's initial, for the monogram plate.
   String get initial =>
       company.isEmpty ? '·' : company.substring(0, 1).toUpperCase();

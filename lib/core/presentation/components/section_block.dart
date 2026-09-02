@@ -2,6 +2,7 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 import 'eyebrow.dart';
+import 'ghost_text.dart';
 import 'two_tone_title.dart';
 
 /// Ground tone for a section.
@@ -32,6 +33,7 @@ class SectionBlock extends StatelessComponent {
     this.eyebrow,
     this.heading,
     this.headingTail = '',
+    this.ghost = '',
     this.lead,
     this.tone = SectionTone.base,
     this.classes = '',
@@ -52,6 +54,12 @@ class SectionBlock extends StatelessComponent {
   /// site's headline treatment — see CLAUDE.md.
   final String headingTail;
   final String? lead;
+  /// A wayfinding watermark naming the page this section leads to.
+  ///
+  /// See [GhostText.bandCorner]. Empty renders none, which is right for a
+  /// section that is not a doorway.
+  final String ghost;
+
   final SectionTone tone;
   final String classes;
   final String bodyClasses;
@@ -71,8 +79,18 @@ class SectionBlock extends StatelessComponent {
 
     return section(
       id: id,
-      classes: '$ground py-24 sm:py-32 lg:py-40 $classes',
+      // `isolate` and `overflow-hidden` only when there is a ghost: the first
+      // gives its `-z-10` somewhere to sit rather than dropping it behind the
+      // section background, the second is what crops the bleed. Adding them
+      // unconditionally would make every section on the site a stacking
+      // context for no reason.
+      classes: '$ground py-24 sm:py-32 lg:py-40 '
+          '${ghost.isEmpty ? '' : 'relative isolate overflow-hidden '}'
+          '$classes',
       [
+        if (ghost.isNotEmpty)
+          GhostText(ghost, faint: true, classes: GhostText.bandCorner),
+
         div(
           classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [

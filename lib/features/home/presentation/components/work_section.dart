@@ -54,6 +54,17 @@ class WorkSection extends StatelessComponent {
     return SectionBlock(
       id: 'work',
       eyebrow: 'Selected work',
+      // **No wayfinding ghost here, deliberately.** Every other band below the
+      // hero names its destination in the corner, but this one already
+      // carries a watermark: `ProjectShowcase` sets the featured project's own
+      // name enormous behind the device, which is the golden-standard use of
+      // the motif (CLAUDE.md) and the single detail that makes the band read
+      // as premium.
+      //
+      // A second faint mark in the same band would be two whispers where one
+      // statement is wanted, and the one that would lose is the better of the
+      // two. The band's texture slot is taken by something stronger, so the
+      // system yields rather than doubling up.
       heading: 'Things I built,\nand still like.',
       lead: 'Products where the whole surface was mine: design system, '
           'architecture, release. No handoffs, no telephone game.',

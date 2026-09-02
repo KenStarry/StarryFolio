@@ -880,6 +880,88 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     CAREER LEDGER
+
+     The home page's About band, and the fourth distinct way this site presents
+     the same career — which is the point, not an accident:
+
+       /about header      four ruled figures
+       /about experience  full-width bands, metrics at stat scale
+       /about education   framed plates
+       home               this: a ledger
+
+     Four cards in a row was what this replaced. They were tidy and completely
+     flat: four boxes of equal weight read as a grid, and a grid has no
+     subject. A ledger has one — the row you are on now — and it reads in a
+     single downward glance the way a contents page does.
+
+     Each row is a *link* into `/about`, so the whole band is a doorway rather
+     than a heading with a doorway bolted to the corner.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .ledger-row {
+    @apply relative grid grid-cols-[2.5rem_1fr] items-center gap-x-4 gap-y-1
+           border-t border-ink-800 py-5
+           sm:grid-cols-[2.5rem_7.5rem_1fr] sm:gap-x-6;
+    transition: border-color 0.4s var(--ease-soft),
+                background-color 0.4s var(--ease-soft);
+  }
+
+  .ledger-row:hover,
+  .ledger-row:focus-visible {
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+  }
+
+  /* The company mark. Square, like every institutional mark on this site —
+     the round frames are reserved for people. */
+  .ledger-mark {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden
+           border border-ink-700 bg-ink-850 font-display text-sm font-extrabold
+           text-ink-500;
+    transition: color 0.4s var(--ease-soft),
+                border-color 0.4s var(--ease-soft),
+                background-color 0.4s var(--ease-soft);
+  }
+
+  .ledger-row:hover .ledger-mark {
+    @apply bg-ink-800 text-iris-300;
+    border-color: color-mix(in oklab, var(--color-iris-500) 50%, transparent);
+  }
+
+  .ledger-years {
+    @apply font-mono text-[11px] text-ink-500;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .ledger-row:hover .ledger-years {
+    @apply text-ink-300;
+  }
+
+  .ledger-company {
+    @apply font-display text-lg font-bold tracking-tight text-ink-100
+           sm:text-xl;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .ledger-row:hover .ledger-company {
+    @apply text-iris-300;
+  }
+
+  .ledger-role {
+    @apply mt-0.5 text-xs text-ink-500;
+  }
+
+  /* The row you are on now. Lit rather than boxed: a filled row in a ledger
+     reads as a selected table cell, where a lit one reads as current. */
+  .ledger-row-now .ledger-company {
+    @apply text-ink-100;
+  }
+
+  .ledger-row-now .ledger-mark {
+    @apply text-iris-400;
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      CREDENTIAL PLATE
 
      Education is presented as a **document**, not as a band. That is the
@@ -1654,63 +1736,6 @@
   .skill-row:hover .meter-dot-on {
     @apply bg-iris-400;
     box-shadow: 0 0 8px 0 color-mix(in oklab, var(--color-iris-400) 55%, transparent);
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════
-     MILESTONE SPINE
-
-     A vertical line the entries hang off, which *fills as you scroll it*. The
-     fill is a scroll-driven animation on a second, accent-coloured line laid
-     over the resting one — so where the timeline is unsupported the spine is
-     simply drawn complete, which is exactly what it should look like at rest.
-     ═══════════════════════════════════════════════════════════════════════ */
-  @keyframes spine-grow {
-    from { transform: scaleY(0); }
-    to   { transform: scaleY(1); }
-  }
-
-  .spine-fill {
-    transform-origin: top center;
-    background: linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--color-iris-400) 85%, transparent),
-      color-mix(in oklab, var(--color-iris-500) 25%, transparent)
-    );
-  }
-
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .spine-fill {
-        animation: spine-grow linear both;
-        animation-timeline: view();
-        animation-range: entry 15% cover 65%;
-      }
-    }
-  }
-
-  /* The dot on the spine, ringed by the section ground so the line appears to
-     pass behind it rather than through it. */
-  .spine-node {
-    @apply relative z-10 block h-2.5 w-2.5 shrink-0 rounded-full border
-           border-ink-600 bg-ink-900;
-    transition: border-color 0.5s var(--ease-soft),
-                background-color 0.5s var(--ease-soft),
-                transform 0.5s var(--ease-spring);
-  }
-
-  .milestone:hover .spine-node {
-    @apply border-iris-400 bg-iris-400;
-    transform: scale(1.25);
-    box-shadow: 0 0 16px 1px color-mix(in oklab, var(--color-iris-400) 55%, transparent);
-  }
-
-  /* The year, set enormous and faint behind its own entry. The ghost-wordmark
-     motif at the smallest scale it works at — texture, always `aria-hidden`,
-     always echoing a real label a few pixels away. */
-  .ghost-year {
-    font-size: clamp(3.5rem, 8vw, 6rem);
-    line-height: 0.78;
-    letter-spacing: -0.05em;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════

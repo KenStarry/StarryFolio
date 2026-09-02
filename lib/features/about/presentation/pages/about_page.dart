@@ -18,8 +18,6 @@ import '../components/about_dossier.dart';
 import '../components/career_span.dart';
 import '../components/credential_plate.dart';
 import '../components/experience_band.dart';
-import '../components/facet_grid.dart';
-import '../components/milestone_spine.dart';
 import '../components/process_arc.dart';
 import '../components/skill_matrix.dart';
 
@@ -53,8 +51,6 @@ class AboutPage extends AsyncStatelessComponent {
     (anchor: 'education', label: 'Education'),
     (anchor: 'skills', label: 'Toolkit'),
     (anchor: 'process', label: 'How I work'),
-    (anchor: 'milestones', label: 'Milestones'),
-    (anchor: 'beyond', label: 'Beyond the code'),
   ];
 
   @override
@@ -121,8 +117,6 @@ class AboutPage extends AsyncStatelessComponent {
             _Education(profile: profile),
             _Skills(profile: profile),
             _Process(profile: profile),
-            _Milestones(profile: profile),
-            _Beyond(profile: profile),
 
             const SectionRail(path: RoutePaths.about, stops: _stops),
           ],
@@ -327,43 +321,6 @@ class _Process extends StatelessComponent {
       heading: 'Four steps, and',
       headingTail: 'what each hands over.',
       children: [ProcessArc(steps: profile.process)],
-    );
-  }
-}
-
-class _Milestones extends StatelessComponent {
-  const _Milestones({required this.profile});
-
-  final AboutProfile profile;
-
-  @override
-  Component build(BuildContext context) {
-    return SectionBlock(
-      id: 'milestones',
-      classes: 'relative tl-6',
-      eyebrow: 'Milestones',
-      heading: 'How it went,',
-      headingTail: 'roughly.',
-      children: [MilestoneSpine(milestones: profile.milestones)],
-    );
-  }
-}
-
-class _Beyond extends StatelessComponent {
-  const _Beyond({required this.profile});
-
-  final AboutProfile profile;
-
-  @override
-  Component build(BuildContext context) {
-    return SectionBlock(
-      id: 'beyond',
-      classes: 'relative tl-7',
-      tone: SectionTone.raised,
-      eyebrow: 'Beyond the code',
-      heading: 'The part that',
-      headingTail: 'is not work.',
-      children: [FacetGrid(facets: profile.facets)],
     );
   }
 }

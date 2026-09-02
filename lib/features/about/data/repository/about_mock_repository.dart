@@ -5,7 +5,6 @@ import '../../domain/model/about_profile.dart';
 import '../../domain/model/education_model.dart';
 import '../../domain/model/experience_model.dart';
 import '../../domain/model/role_stint.dart';
-import '../../domain/model/milestone_model.dart';
 import '../../domain/model/skill_group_model.dart';
 import '../../domain/model/skill_model.dart';
 import '../../domain/repository/about_repository.dart';
@@ -59,9 +58,6 @@ class AboutMockRepository implements AboutRepository {
         name: 'Core',
         skills: [SkillModel('Dart', SkillLevel.core)],
       ),
-    ],
-    milestones: [
-      MilestoneModel(year: '2020', title: 'Placeholder milestone'),
     ],
   );
 

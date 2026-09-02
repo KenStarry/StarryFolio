@@ -4,6 +4,7 @@ import 'package:jaspr/jaspr.dart';
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/eyebrow.dart';
+import '../../../../core/presentation/components/ghost_text.dart';
 import '../../../../core/routing/route_paths.dart';
 import '../../../../core/presentation/components/cta_button.dart';
 
@@ -18,8 +19,18 @@ class ContactSection extends StatelessComponent {
   Component build(BuildContext context) {
     return section(
       id: 'contact',
-      classes: 'bg-ink-800 py-24 sm:py-32 lg:py-40',
+      classes: 'relative isolate overflow-hidden bg-ink-800 py-24 sm:py-32 '
+          'lg:py-40',
       [
+        // Not a `SectionBlock` — this band is a two-column split rather than a
+        // centred measure — so the wayfinding ghost is placed by hand, from
+        // the same constant every other band uses.
+        const GhostText(
+          'Contact',
+          faint: true,
+          classes: GhostText.bandCorner,
+        ),
+
         div(
           classes: 'mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
