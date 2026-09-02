@@ -138,8 +138,22 @@ class SiteConfig {
   static const String cvFile = '/cv.pdf';
 
   static const bool available = true;
+
+  /// The line beside the live dot, in six places: the hero, the footer, the
+  /// mobile nav, the contact page, the services page and the About dossier.
+  ///
+  /// **It describes the work, not the worker.** This read "Free for new work"
+  /// and carried two misreadings, both worse than saying nothing: `free` sits
+  /// one word from `work` and primes the no-cost interpretation on a page
+  /// where somebody is deciding whether to ask about a rate, and anything
+  /// resembling "open to work" is the phrase an employer scans for.
+  ///
+  /// A *project* is commissioned by definition, and taking one on alongside a
+  /// full-time role is an ordinary thing to say. Keep any future wording on
+  /// that side of the line: name the work, never the availability of the
+  /// person.
   static const String availabilityLabel =
-      'Free for new work, and unreasonably keen';
+      'Taking on new projects, and unreasonably keen';
 
   /// The introduction column's statement: the first line anyone actually
   /// reads.
