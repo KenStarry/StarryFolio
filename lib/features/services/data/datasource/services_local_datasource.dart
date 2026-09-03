@@ -15,15 +15,11 @@ abstract final class ServicesLocalDatasource {
       title: 'Mobile\ndevelopment',
       blurb: 'iOS and Android from one Flutter codebase: architecture, state, '
           'offline behaviour and a release pipeline that runs itself.',
-      detail: 'The core of what I do. One Flutter codebase serving both stores, '
-          'built to hold up on a mid-range Android phone with two bars of '
-          'signal, because that is what most of your users actually have. '
-          'Clean Architecture, a real state layer, and offline behaviour '
-          'designed in from the first screen rather than bolted on when the '
-          'complaints arrive.',
+      detail: 'The core of what I do. One codebase, both stores, built to hold up on a mid-range Android phone with two bars of signal.',
       icon: 'device',
       ctaQuestion: 'Need an app?',
       featured: true,
+      collectionSlug: 'mobile',
       tags: ['Flutter', 'Riverpod', 'BLoC', 'Clean Architecture'],
       deliverables: [
         'A single codebase shipping to the App Store and Play Store',
@@ -37,14 +33,10 @@ abstract final class ServicesLocalDatasource {
       title: 'UI/UX\ndesign',
       blurb: 'A token-driven system before the first screen: type, colour, '
           'motion and every state, so screen forty still looks like screen one.',
-      detail: 'Design and build are the same job done twice when they are split '
-          'between two people. I set the system first: tokens, type ramp, '
-          'spacing, motion curves and every state a component can be in, then '
-          'build against it. The result is a product that stays coherent as it '
-          'grows, and a handoff that is a codebase rather than a folder of '
-          'screens.',
+      detail: 'Design and build are the same job done twice when they are split between two people. I set the system first, then build against it.',
       icon: 'layers',
       ctaQuestion: 'Need a design system?',
+      collectionSlug: 'design',
       tags: ['Figma', 'Design tokens', 'Motion', 'Accessibility'],
       deliverables: [
         'Design tokens wired into the code, not just the Figma file',
@@ -58,13 +50,10 @@ abstract final class ServicesLocalDatasource {
       title: 'Web\ndevelopment',
       blurb: 'Marketing sites and web apps that load fast, rank well and are '
           'still readable with JavaScript switched off.',
-      detail: 'Sites built to be found. Static rendering where the content is '
-          'the point, so crawlers and social scrapers get real HTML instead of '
-          'an empty shell waiting on a bundle. Where an app needs to be an app, '
-          'Flutter Web or a hydrated island, but only where the interaction '
-          'actually earns the JavaScript.',
+      detail: 'Sites built to be found. Pre-rendered where the content is the point, so crawlers get real HTML instead of an empty shell.',
       icon: 'globe',
       ctaQuestion: 'Need a web presence?',
+      collectionSlug: 'web',
       tags: ['Jaspr', 'Flutter Web', 'Static rendering', 'SEO'],
       deliverables: [
         'Pre-rendered pages that index without waiting on JavaScript',
@@ -78,11 +67,7 @@ abstract final class ServicesLocalDatasource {
       title: 'Desktop\napplications',
       blurb: 'macOS, Windows and Linux from the same codebase, for tools that '
           'belong on a real machine rather than in a tab.',
-      detail: 'Some work does not belong in a browser tab. Internal tools, '
-          'operator consoles and anything that needs the filesystem, a serial '
-          'port or hardware acceleration ships better as a desktop build, and '
-          'with Flutter that is the same codebase you already have, not a '
-          'second team.',
+      detail: 'Some work does not belong in a browser tab. Native windows, real file access, and a binary you can hand somebody.',
       icon: 'monitor',
       ctaQuestion: 'Need it on the desktop?',
       tags: ['Flutter Desktop', 'FFI', 'Platform channels'],
@@ -98,11 +83,7 @@ abstract final class ServicesLocalDatasource {
       title: 'Ship\n& operate',
       blurb: 'Store listings, CI/CD, staged rollouts and the crash dashboards '
           'you actually want to open on a Monday morning.',
-      detail: 'The part that decides whether the work you paid for reaches '
-          'anyone. Release pipelines that do not need a specific person '
-          'awake, staged rollouts that let you stop a bad build at two percent '
-          'instead of a hundred, and crash reporting that points at a line '
-          'number rather than a vibe.',
+      detail: 'The part that decides whether the work you paid for ever reaches anyone. Signing, rollouts, crash triage, store listings.',
       icon: 'rocket',
       ctaQuestion: 'Need to ship?',
       tags: ['CI/CD', 'Fastlane', 'Firebase', 'Shorebird'],
@@ -118,11 +99,7 @@ abstract final class ServicesLocalDatasource {
       title: 'Consultancy\n& review',
       blurb: 'A second pair of eyes on an architecture, a codebase or a team '
           'that has hit the wall, and a written route out.',
-      detail: 'Sometimes the useful thing is not another pair of hands. I read '
-          'the codebase, talk to the people building it, and write down what is '
-          'actually slowing you down, with an order to fix it in. Equally '
-          'useful before you start, when the decision is which architecture to '
-          'commit to and how much it will cost you later.',
+      detail: 'Sometimes the useful thing is not another pair of hands. An audit, a second opinion, or a fortnight of unblocking your team.',
       icon: 'compass',
       ctaQuestion: 'Need a second opinion?',
       tags: ['Architecture review', 'Code audit', 'Mentoring'],

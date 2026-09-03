@@ -36,6 +36,7 @@ enum ProjectCollection {
         'mid-range phone with two bars of signal, because that is the phone '
         'most people actually have.',
     blurb: 'Flutter apps shipped to both stores',
+    collective: 'mobile apps',
   ),
 
   web(
@@ -48,6 +49,7 @@ enum ProjectCollection {
         'customers find. Rendered so a crawler sees the same page a person '
         'does.',
     blurb: 'Portals and sites that load fast and rank',
+    collective: 'web projects',
   ),
 
   design(
@@ -60,6 +62,7 @@ enum ProjectCollection {
         'once and built against. The same products as elsewhere on this site, '
         'seen from the side that decides how they feel.',
     blurb: 'Design systems, motion and interface craft',
+    collective: 'design cases',
   ),
 
   packages(
@@ -72,6 +75,7 @@ enum ProjectCollection {
         'instead, which is a different discipline from shipping an app and a '
         'harder one to fake.',
     blurb: 'Published, versioned and maintained in the open',
+    collective: 'packages',
   );
 
   const ProjectCollection({
@@ -82,6 +86,7 @@ enum ProjectCollection {
     required this.titleTail,
     required this.lead,
     required this.blurb,
+    required this.collective,
   });
 
   /// URL segment, and the anchor its tile links to.
@@ -105,6 +110,14 @@ enum ProjectCollection {
 
   /// One line for the collection's tile on `/projects`.
   final String blurb;
+
+  /// The plural noun for counting: `All 7 mobile apps`.
+  ///
+  /// [label] cannot do this job. It is a nav item, so it reads as a heading —
+  /// `Web`, `Design` — and "All 3 web" is not a sentence. Two fields because
+  /// they are two different registers, not because one is a formatting of the
+  /// other.
+  final String collective;
 
   /// Whether [project] belongs in this collection.
   ///

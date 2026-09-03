@@ -880,6 +880,124 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     SERVICES
+
+     Six full-width bands, alternating and zig-zagging, was rhythm without a
+     subject — the same failure the experience timeline had. Alternation makes
+     a page feel ordered; it does not make any part of it matter more than any
+     other, and six identical anything reads as a list.
+
+     Two ideas replace it.
+
+     **An index at the top.** Every service as one ruled row, scannable in a
+     glance, each linking down to its band. It answers "what do you do" before
+     a reader has scrolled, and it carries real copy where the jump pills it
+     replaced carried only a label.
+
+     **Deliverables lead the band.** They were in a bordered panel off to one
+     side, which is the most generic container this site owns. They are also
+     the only genuinely concrete thing on the page: "a replayable write queue"
+     is what somebody is buying, where "mobile development" is a category. So
+     they get the wide column, numbered and ruled, set like a specification.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── The index ───────────────────────────────────────────────────────── */
+  .svc-row {
+    @apply relative grid grid-cols-[2.5rem_1fr_1.5rem] items-baseline gap-x-5
+           border-t border-ink-800 py-5
+           lg:grid-cols-[2.5rem_14rem_1fr_1.5rem] lg:gap-x-8;
+    transition: border-color 0.4s var(--ease-soft);
+  }
+
+  .svc-row:hover,
+  .svc-row:focus-visible {
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+  }
+
+  .svc-row-num {
+    @apply font-mono text-[11px] text-ink-600;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .svc-row:hover .svc-row-num {
+    @apply text-iris-400;
+  }
+
+  .svc-row-title {
+    @apply font-display text-lg font-bold tracking-tight text-ink-100
+           sm:text-xl;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .svc-row:hover .svc-row-title {
+    @apply text-iris-300;
+  }
+
+  /* Hidden below `lg`: at narrow widths the title and the blurb stack, and a
+     third column of prose turns each row into a paragraph. */
+  .svc-row-blurb {
+    @apply hidden text-sm leading-relaxed text-ink-500 lg:block;
+  }
+
+  .svc-row-mark {
+    @apply justify-self-end text-ink-700;
+    transition: color 0.4s var(--ease-soft),
+                transform 0.45s var(--ease-spring);
+  }
+
+  .svc-row:hover .svc-row-mark {
+    @apply text-iris-400;
+    transform: translateX(3px);
+  }
+
+  /* ── The band ────────────────────────────────────────────────────────── */
+
+  /* The icon, given a plate rather than floating loose in the copy. Square,
+     like every other institutional mark on this site. */
+  .svc-mark {
+    @apply inline-flex h-12 w-12 items-center justify-center border
+           border-ink-700 bg-ink-850 text-iris-400;
+    transition: border-color 0.5s var(--ease-soft),
+                background-color 0.5s var(--ease-soft),
+                transform 0.5s var(--ease-spring);
+  }
+
+  .svc-band:hover .svc-mark {
+    @apply bg-ink-800;
+    border-color: color-mix(in oklab, var(--color-iris-500) 45%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* ── Deliverables, as a specification ────────────────────────────────── */
+  .deliverable {
+    @apply grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 border-t
+           border-ink-700/60 py-4;
+    transition: border-color 0.4s var(--ease-soft);
+  }
+
+  .deliverable:hover {
+    border-color: color-mix(in oklab, var(--color-iris-500) 40%, transparent);
+  }
+
+  .deliverable-num {
+    @apply font-mono text-[10px] text-ink-600;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .deliverable:hover .deliverable-num {
+    @apply text-iris-400;
+  }
+
+  .deliverable-text {
+    @apply text-[0.9375rem] leading-relaxed text-ink-300;
+    transition: color 0.4s var(--ease-soft);
+  }
+
+  .deliverable:hover .deliverable-text {
+    @apply text-ink-100;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      CAREER LEDGER
 
      The home page's About band, and the fourth distinct way this site presents

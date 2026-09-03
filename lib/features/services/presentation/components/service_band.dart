@@ -1,43 +1,77 @@
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
+import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/config/site_config.dart';
 import '../../../../core/presentation/components/app_icons.dart';
-import '../../../../core/presentation/components/cta_button.dart';
+import '../../../../core/presentation/components/ghost_text.dart';
+import '../../../projects/domain/model/project_model.dart';
+import '../../../projects/presentation/components/project_mini_card.dart';
 import '../../domain/model/service_model.dart';
 
-/// One service, given a full band on `/services`.
+/// One service, given a band on `/services`.
 ///
-/// A service has no screenshot to show, so the visual anchor has to come from
-/// somewhere else: an oversized ghosted numeral behind the copy, the icon at
-/// display size, and a ruled deliverables panel. That is the deliberate
-/// difference from `/projects`, where a device mockup does that work.
+/// ## The deliverables lead
 ///
-/// Each band closes with its own question — "Need an app?" — rather than
-/// deferring every enquiry to one contact section at the foot of the page. A
-/// reader who is sold on band three should not have to scroll past three more
-/// to act on it, and the mail subject arrives pre-filled with the service, so
-/// the first reply already knows what it is about.
+/// They used to sit in a bordered panel off to one side — the most generic
+/// container this site owns — while the copy took the wide column. That had it
+/// backwards. "A replayable write queue" is what somebody is actually buying;
+/// "mobile development" is the category it files under. So the deliverables
+/// take the wide column, numbered and ruled, set like a specification, and the
+/// prose narrows to a column beside them.
+///
+/// ## No zig-zag
+///
+/// Consecutive bands used to mirror. Alternation makes a page feel ordered but
+/// it cannot make any part of it matter more than another, and six mirrored
+/// bands read as a list that is trying hard. Every band now has the same
+/// anatomy and the ground alternates alone, which is quieter and lets the
+/// content differ instead of the layout.
+///
+/// ## It shows the work
+///
+/// Where a service has shipped examples, the band closes on two of them and a
+/// way through to the collection page holding the rest. Where it has none —
+/// nobody has a gallery of release engineering — the deliverables simply take
+/// the band. That asymmetry is driven by real data rather than smoothed over.
+///
+/// ## It still closes itself
+///
+/// Each band keeps its own question — "Need an app?" — because a reader sold
+/// on band three should not have to scroll past three more to act on it, and
+/// the mail subject arrives pre-filled so the first reply already knows the
+/// topic. What changed is the weight: six solid buttons down a page is six
+/// demands, so it is a quiet link now and the page's one real button waits at
+/// the end.
 class ServiceBand extends StatelessComponent {
   const ServiceBand({
     required this.service,
     required this.index,
-    required this.reversed,
     required this.raised,
     required this.timeline,
+    this.work = const [],
+    this.collectionPath = '',
+    this.collectionLabel = '',
+    this.collectionCount = 0,
     super.key,
   });
 
   final ServiceModel service;
 
-  /// One-based position, rendered as the `01` marker and the ghost numeral.
-  final int index;
+  /// Two shipped examples of this service, resolved by the page. Empty where
+  /// the service has no gallery — nobody has a portfolio of release
+  /// engineering, and inventing one would be worse than the gap.
+  final List<ProjectModel> work;
 
-  /// Mirrors the layout so consecutive bands zig-zag rather than repeat.
-  ///
-  /// Uses CSS `order`, not swapped markup — the copy stays first in the DOM
-  /// either way, so reading and tab order never diverge from the visual.
-  final bool reversed;
+  /// Where "view all" goes, and what it says. Passed in rather than derived
+  /// so the band stays free of the projects *domain* while still linking into
+  /// it — the page owns that resolution.
+  final String collectionPath;
+  final String collectionLabel;
+  final int collectionCount;
+
+  /// One-based position, rendered as the marker and the ghost numeral.
+  final int index;
 
   final bool raised;
 
@@ -55,126 +89,127 @@ class ServiceBand extends StatelessComponent {
 
     return section(
       id: service.slug,
-      classes: '$timeline relative overflow-hidden '
-          '${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-28',
+      classes: 'svc-band group relative isolate scroll-mt-24 overflow-hidden '
+          '$timeline ${raised ? 'bg-ink-800' : 'bg-ink-900'} py-20 sm:py-24',
       [
+        // The numeral, at band scale. Texture, never content — it repeats the
+        // marker printed a few pixels above it.
+        GhostText(
+          number,
+          faint: true,
+          classes: GhostText.bandCorner,
+        ),
+
         div(
           classes: 'relative mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12',
           [
             div(
-              classes: 'grid items-center gap-14 lg:gap-20 '
-                  '${reversed ? 'lg:grid-cols-[0.9fr_1.1fr]' : 'lg:grid-cols-[1.1fr_0.9fr]'}',
+              classes: 'grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20',
               [
-                // ── Copy ──
+                // ── What it is ──
                 div(
-                  classes: 'reveal relative '
-                      '${reversed ? 'lg:order-2' : 'lg:order-1'}',
+                  classes: 'reveal',
                   [
-                    // Ghost numeral — the motif, at band scale. Texture, never
-                    // content, so it is hidden from assistive tech.
                     div(
-                      classes: 'pointer-events-none absolute -left-4 -top-24 '
-                          '-z-10 select-none font-display font-extrabold '
-                          'leading-none tracking-tighter text-ink-100/[0.035] '
-                          'text-[clamp(7rem,16vw,13rem)]',
-                      attributes: const {'aria-hidden': 'true'},
-                      [Component.text(number)],
-                    ),
-
-                    div(
-                      classes: 'flex items-center gap-3',
+                      classes: 'flex items-center gap-4',
                       [
                         span(
-                          classes: 'text-iris-400',
+                          classes: 'svc-mark',
                           [AppIcons.byName(service.icon, classes: 'h-6 w-6')],
                         ),
-                        const span(classes: 'h-px w-8 bg-ink-600', []),
                         span(
                           classes: 'type-eyebrow font-mono text-ink-500',
-                          [Component.text('Service $number')],
+                          [Component.text(number)],
                         ),
                       ],
                     ),
 
                     h2(
-                      classes: 'type-section mt-6 font-display font-extrabold '
+                      classes: 'type-section mt-7 font-display font-extrabold '
                           'text-ink-100',
                       _titleLines(service.title),
                     ),
 
                     p(
-                      classes: 'mt-6 max-w-lg text-base leading-relaxed '
-                          'text-ink-300',
+                      classes: 'mt-6 max-w-md text-sm leading-relaxed '
+                          'text-ink-400 sm:text-[0.9375rem]',
                       [
                         Component.text(
-                          service.detail.isEmpty ? service.blurb : service.detail,
+                          service.detail.isEmpty
+                              ? service.blurb
+                              : service.detail,
                         ),
                       ],
                     ),
 
+                    // The stack as a mono line rather than pills. Six rows of
+                    // pills down a page is a lot of capsules, and these are
+                    // tools rather than categories — a list reads truer.
                     if (service.tags.isNotEmpty)
-                      div(
-                        classes: 'mt-8 flex flex-wrap gap-2',
-                        [
-                          for (final tag in service.tags)
-                            span(classes: 'pill', [Component.text(tag)]),
-                        ],
+                      p(
+                        classes: 'mt-7 font-mono text-[11px] leading-relaxed '
+                            'text-ink-500',
+                        [Component.text(service.tags.join('  ·  '))],
                       ),
                   ],
                 ),
 
-                // ── Deliverables + CTA ──
+                // ── What you get ──
                 div(
-                  classes: 'reveal '
-                      '${reversed ? 'lg:order-1' : 'lg:order-2'}',
+                  classes: 'reveal',
                   [
-                    div(
-                      classes: 'border border-ink-700 bg-ink-850 p-7 sm:p-8',
-                      [
-                        const p(
-                          classes: 'type-eyebrow font-mono text-ink-500',
-                          [Component.text("What you get")],
-                        ),
-                        const div(classes: 'divider mt-5', []),
+                    const p(
+                      classes: 'type-eyebrow font-mono text-ink-500',
+                      [Component.text('What you get')],
+                    ),
 
-                        ul(
-                          classes: 'mt-6 space-y-4',
-                          [
-                            for (final item in service.deliverables)
-                              li(
-                                classes: 'flex gap-4 text-sm leading-relaxed '
-                                    'text-ink-300',
+                    div(
+                      classes: 'mt-5',
+                      [
+                        for (final (i, item) in service.deliverables.indexed)
+                          div(
+                            classes: 'deliverable',
+                            [
+                              span(
+                                classes: 'deliverable-num',
+                                attributes: const {'aria-hidden': 'true'},
                                 [
-                                  const span(
-                                    classes: 'mt-2 h-px w-4 shrink-0 '
-                                        'bg-iris-500',
-                                    [],
+                                  Component.text(
+                                    (i + 1).toString().padLeft(2, '0'),
                                   ),
-                                  Component.text(item),
                                 ],
                               ),
-                          ],
+                              span(
+                                classes: 'deliverable-text',
+                                [Component.text(item)],
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+
+                    // The band's own close, set quiet.
+                    div(
+                      classes: 'mt-9 flex flex-wrap items-baseline gap-x-5 '
+                          'gap-y-2',
+                      [
+                        p(
+                          classes: 'font-display text-base font-bold '
+                              'tracking-tight text-ink-100',
+                          [Component.text(service.ctaQuestion)],
                         ),
-
-                        const div(classes: 'divider-quiet mt-8', []),
-
-                        // The band's own close.
-                        div(
-                          classes: 'mt-7',
+                        a(
+                          href: mailto,
+                          classes: 'link-line group/cta inline-flex '
+                              'items-center gap-2.5 text-sm font-medium '
+                              'text-ink-300 transition-colors duration-300 '
+                              'hover:text-iris-300',
                           [
-                            p(
-                              classes: 'font-display text-xl font-bold '
-                                  'tracking-tight text-ink-100',
-                              [Component.text(service.ctaQuestion)],
-                            ),
-                            div(
-                              classes: 'mt-5',
-                              [
-                                CtaButton(
-                                  label: 'Start the conversation',
-                                  href: mailto,
-                                ),
-                              ],
+                            const Component.text('Start there'),
+                            span(
+                              classes: 'transition-transform duration-500 '
+                                  'ease-soft group-hover/cta:translate-x-1',
+                              [AppIcons.arrow(classes: 'h-4 w-4')],
                             ),
                           ],
                         ),
@@ -184,6 +219,67 @@ class ServiceBand extends StatelessComponent {
                 ),
               ],
             ),
+
+            // ── What it looks like shipped ──
+            //
+            // The page had no images at all while the rest of the site is
+            // full of device mockups, which is most of why it read as a
+            // document rather than a portfolio.
+            //
+            // Two real builds per service, and a way through to the rest.
+            //
+            // These were briefly full device renders standing on the section
+            // ground, on the theory that phones under `Mobile` and laptops
+            // under `Web` would make each band feel like its own place. They
+            // did not: at strip scale the renders read as loose clutter where
+            // the cards read as a contained set, and the band lost the tidy
+            // foot it closes on. Cards it is.
+            if (work.isNotEmpty) ...[
+              const div(classes: 'divider-quiet mt-14', []),
+              div(
+                classes: 'reveal mt-8',
+                [
+                  div(
+                    classes: 'flex flex-wrap items-baseline justify-between '
+                        'gap-4',
+                    [
+                      const p(
+                        classes: 'type-eyebrow font-mono text-ink-500',
+                        [Component.text('Shipped with this')],
+                      ),
+                      if (collectionPath.isNotEmpty)
+                        Link(
+                          to: collectionPath,
+                          classes: 'link-line group/all inline-flex '
+                              'items-center gap-2.5 text-sm text-ink-300 '
+                              'transition-colors duration-300 '
+                              'hover:text-iris-300',
+                          children: [
+                            Component.text(
+                              collectionCount > work.length
+                                  ? 'All $collectionCount $collectionLabel'
+                                  : 'See the $collectionLabel',
+                            ),
+                            span(
+                              classes: 'transition-transform duration-500 '
+                                  'ease-soft group-hover/all:translate-x-1',
+                              [AppIcons.arrow(classes: 'h-4 w-4')],
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+
+                  div(
+                    classes: 'mt-5 grid gap-3 sm:grid-cols-2',
+                    [
+                      for (final project in work)
+                        ProjectMiniCard(project: project),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ],

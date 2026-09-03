@@ -4,20 +4,24 @@ import 'package:jaspr_router/jaspr_router.dart';
 
 import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/routing/route_paths.dart';
-import '../../../projects/domain/model/project_model.dart';
+import '../../domain/model/project_model.dart';
 
-/// A case study produced under one role, as a compact card.
+/// A project at its smallest useful size: thumbnail, name, tagline, arrow.
 ///
-/// The join between a job and the thing it made. A CV line that can be clicked
-/// into a real build is worth more than the line on its own, and it is what
-/// stops `/about` and `/projects` restating each other.
+/// Used wherever a *different* subject needs to point at real work — a role on
+/// `/about`, a service on `/services`. It lives in the projects feature
+/// because it renders a project, and both consumers pass one in rather than
+/// each keeping a near-identical card of its own.
 ///
-/// Deliberately small. The full [ProjectCard] leads with a cover at 4:3 and
-/// would out-weigh the role it sits under — the work would be reading as the
-/// point and the job as its caption. Here the thumbnail is a strip, the name
-/// carries the row, and the whole card is the target.
-class RoleWorkCard extends StatelessComponent {
-  const RoleWorkCard({required this.project, super.key});
+/// Deliberately small. The full `ProjectCard` leads with a 4:3 cover and would
+/// out-weigh whatever it sits under, so the work would read as the point and
+/// its host as the caption. Here the thumbnail is a strip, the name carries
+/// the row, and the whole card is the target.
+///
+/// A project with no case study renders as a plain row rather than a link that
+/// 404s — the same guard every other case-study link on this site carries.
+class ProjectMiniCard extends StatelessComponent {
+  const ProjectMiniCard({required this.project, super.key});
 
   final ProjectModel project;
 

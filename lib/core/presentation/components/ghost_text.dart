@@ -40,14 +40,19 @@ class GhostText extends StatelessComponent {
     super.key,
   });
 
-  /// The canonical placement for a band's **wayfinding** ghost: hung off the
-  /// bottom-left corner and bleeding past it.
+  /// The canonical placement for a band's ghost: hung off the bottom-left
+  /// corner and bleeding past it.
   ///
-  /// On the home page every band below the hero carries one naming the page it
-  /// leads to, and each destination's own `PageHeader` ghosts the same word —
-  /// so the door and the room share a watermark. That only reads as a system
-  /// if the placement never varies, which is why it is a constant rather than
-  /// a string retyped at five call sites.
+  /// One constant rather than a string retyped at a dozen call sites, because
+  /// the motif only reads as a system if the placement never varies. What the
+  /// *word* is depends on the band:
+  ///
+  /// * On the home page it is **wayfinding** — each band names the page it
+  ///   leads to, and each destination's own `PageHeader` ghosts the same word,
+  ///   so the door and the room share a watermark.
+  /// * On `/services` it is the band's numeral, and on `/about` the company
+  ///   name. Both echo a marker printed a few pixels away, which is the rule
+  ///   the motif actually asks for: texture that repeats something real.
   ///
   /// A section using it needs `relative isolate overflow-hidden`: `isolate`
   /// gives `-z-10` a stacking context to sit in rather than dropping the mark

@@ -687,6 +687,28 @@ Three rules hold the rest together:
   reads source literals, so a computed `w-[37%]` is purged. A percentage on the
   element is the only correct way to size something from data.
 
+**`/services` leads with deliverables, not with the service name.** They used
+to sit in a bordered panel off to one side while the prose took the wide
+column, which had it backwards: "a replayable write queue" is what somebody is
+buying, where "mobile development" is the category it files under. They now
+take the wide column, numbered and ruled, set like a specification.
+
+**The bands do not zig-zag.** Six mirrored, alternating bands was rhythm
+without a subject — the same failure the experience timeline had. Alternation
+makes a page feel ordered; it cannot make any part of it matter more than
+another. Every band now shares one anatomy and only the ground alternates, so
+the content differs instead of the layout.
+
+**The capability index replaced the jump pills.** A pill carried a label and
+nothing else, so a reader had to scroll six full-width bands to learn what any
+of them meant. The index rows carry the blurb that was already written and
+still anchor down the page, so nothing was lost.
+
+**One solid button per page.** Each band keeps its own question, because a
+reader sold on band three should not scroll past three more to act on it, but
+it is a quiet link — six solid buttons down a page is six demands, and the
+page's one real button waits at the close.
+
 **Education is a plate, not a band.** The experience section presents a job as
 a body of evidence; a credential is a thing somebody signed, so it borrows the
 document language `/documents` already uses — double hairline frame, the mark

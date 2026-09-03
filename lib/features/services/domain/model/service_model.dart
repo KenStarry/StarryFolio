@@ -17,6 +17,7 @@ class ServiceModel {
     this.deliverables = const [],
     this.ctaQuestion = 'Got a project?',
     this.tags = const [],
+    this.collectionSlug,
     this.featured = false,
   });
 
@@ -49,6 +50,20 @@ class ServiceModel {
 
   final List<String> tags;
 
+  /// Slug of the `ProjectCollection` holding work sold under this service —
+  /// `mobile`, `web`, `design`, `packages`.
+  ///
+  /// A plain string rather than the enum, deliberately: the services domain
+  /// has no business importing the projects domain, and the page that renders
+  /// both is the right place to resolve one into the other. It is the same
+  /// shape `ExperienceModel.projectSlug` and `TestimonialModel.projectSlug`
+  /// already use.
+  ///
+  /// Null where a service has no shipped examples, which is honest rather than
+  /// a gap: nobody has a gallery of release engineering. Those bands give the
+  /// deliverables the full width instead.
+  final String? collectionSlug;
+
   /// Renders as the inverted card in the home overview row.
   ///
   /// Both design references make exactly one card in a row a filled block, and
@@ -65,6 +80,7 @@ class ServiceModel {
         deliverables: _stringList(map['deliverables']),
         ctaQuestion: map['ctaQuestion']?.toString() ?? 'Got a project?',
         tags: _stringList(map['tags']),
+        collectionSlug: map['collectionSlug']?.toString(),
         featured: map['featured'] == true,
       );
 
@@ -77,6 +93,7 @@ class ServiceModel {
         'deliverables': deliverables,
         'ctaQuestion': ctaQuestion,
         'tags': tags,
+        if (collectionSlug != null) 'collectionSlug': collectionSlug,
         'featured': featured,
       };
 

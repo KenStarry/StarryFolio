@@ -5,7 +5,7 @@ import '../../../../core/presentation/components/app_icons.dart';
 import '../../../../core/presentation/components/ghost_text.dart';
 import '../../../projects/domain/model/project_model.dart';
 import '../../domain/model/experience_model.dart';
-import 'role_work_card.dart';
+import '../../../projects/presentation/components/project_mini_card.dart';
 
 /// One company, given a full band.
 ///
@@ -231,7 +231,7 @@ class ExperienceBand extends StatelessComponent {
                     classes: 'mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3',
                     [
                       for (final project in work)
-                        RoleWorkCard(project: project),
+                        ProjectMiniCard(project: project),
                     ],
                   ),
                 ],
