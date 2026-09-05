@@ -55,20 +55,20 @@ class HonoursBand extends StatelessComponent {
     final degree = education;
     if (degree == null) return const div([]);
 
-    // `qualification` is authored as `BSc Computer Science, First Class
-    // Honours`. The honours half is the headline and the subject is the
-    // qualifier, so the two are split rather than set as one long line, and
-    // split here rather than stored apart because every other surface wants
-    // the whole string.
+    // **The honours leads, the subject qualifies it.** A First Class is the
+    // part that carries weight in a strip this size; the degree it was
+    // awarded in is the qualifier, so it sits back a step in both tone and
+    // weight, following the site's two-tone headline rule.
     //
-    // Falls back to setting the whole string bright when there is no comma to
-    // split on: better a single-tone line than the qualification printed
-    // twice, which is what the previous separator-based split did the moment
-    // the separator changed.
-    final parts = degree.qualification.split(',');
-    final subject = parts.first.trim();
-    final honour =
-        parts.length > 1 ? parts.sublist(1).join(',').trim() : '';
+    // Read straight off the model's own fields. This used to split
+    // `qualification` on a comma, which worked while the string was authored
+    // as `BSc Computer Science, First Class Honours` and silently stopped the
+    // moment `honours` became its own field: the split found nothing, the
+    // fallback fired, and the band quietly went back to printing the degree
+    // alone. That is exactly the failure a derived value invites, which is
+    // why it now reads what the datasource actually stores.
+    final subject = degree.qualification.trim();
+    final honour = degree.honours.trim();
 
     return section(
       classes: 'relative bg-ink-900 pb-20 sm:pb-24',
@@ -141,9 +141,19 @@ class HonoursBand extends StatelessComponent {
                     div(
                       classes: 'min-w-0 flex-1',
                       [
-                        const p(
+                        // The year comes off the same entry as everything
+                        // else on the plate rather than being typed here,
+                        // where it would be a second place for the date to
+                        // live and a first place for it to go stale.
+                        p(
                           classes: 'type-eyebrow font-mono text-ink-500',
-                          [Component.text('Conferred 2024')],
+                          [
+                            Component.text(
+                              degree.period.isEmpty
+                                  ? 'Conferred'
+                                  : 'Conferred ${degree.period}',
+                            ),
+                          ],
                         ),
                         // Two-tone, following the site's headline rule: the
                         // clause that qualifies sits back a step in both
